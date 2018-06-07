@@ -19,10 +19,9 @@ bool map::init()
 	 base->setScale(0.15, 0.15);
 	 base->setPosition(Vec2(x, y));
 	addChild(base, 2, 200);
-	//setViewpointCenter(base->getPosition());
+	
 
-	_collidable = _tileMap->getLayer("collidable");
-	_collidable->setVisible(false);
+	
 	return true;
 }
 void map::onEnter() {
@@ -39,6 +38,7 @@ void map::onEnter() {
 		EventMouse* em = (EventMouse*)e;
 		auto location = em->getLocation();
 		location.y = 900 - location.y;
+		//基本创建建筑的事件
 		if (buttonlayer->buildornot == 1&&!(buttonlayer->isTap(em,buttonlayer->getChildByTag(MINEBUTTONTAG)))  )
 		{
 			Sprite*mine = Sprite::create("mine.png");
@@ -75,7 +75,7 @@ void map::onEnter() {
 			}
 			buttonlayer->set = 0;
 		}
-		//this->setViewpointCenter(location);
+
 	};
 	listener->onMouseDown = [](Event *e) {
 		EventMouse* em = (EventMouse*)e;
@@ -97,32 +97,3 @@ void map::onExit() {
 	log("mouseTouchEvent onExit");
 	Director::getInstance()->getEventDispatcher()->removeAllEventListeners();
 }
-	
-/*void map::setViewpointCenter(Vec2 position)
-{
-	log("setViewpointCenter");
-
-	log("position (%f ,%f) ", position.x, position.y);
-
-	Size visibleSize = Director::getInstance()->getVisibleSize();
-	//可以防止，视图左边超出屏幕之外。
-	int x = MAX(position.x, visibleSize.width / 2);
-	int y = MAX(position.y, visibleSize.height / 2);
-	
-	//可以防止，视图右边超出屏幕之外。
-	x = MIN(x, (_tileMap->getMapSize().width * _tileMap->getTileSize().width)
-		- visibleSize.width / 2);
-	y = MIN(y, (_tileMap->getMapSize().height * _tileMap->getTileSize().height)
-		- visibleSize.height / 2);
-
-	//屏幕中心点
-	Vec2 pointA = Vec2(visibleSize.width / 2, visibleSize.height / 2);
-	//使精灵处于屏幕中心，移动地图目标位置
-	Vec2 pointB = Vec2(x, y);
-	log("目标位置 (%f ,%f) ", pointB.x, pointB.y);
-
-	//地图移动偏移量
-	Vec2 offset = pointA - pointB;
-	log("offset (%f ,%f) ", offset.x, offset.y);
-	this->setPosition(offset);
-}*/

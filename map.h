@@ -6,7 +6,7 @@ USING_NS_CC;
 class map : public Layer
 {
 	cocos2d::TMXTiledMap* _tileMap;
-	cocos2d::TMXLayer* _collidable;
+
 	cocos2d::Sprite* base;
 	Vec2 repair;
 public:
