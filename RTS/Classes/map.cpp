@@ -60,7 +60,7 @@ void mymap::scheduleBlood(float delta) {
 	for (int i = 0; i < blood.size(); i++)
 	{
 		auto progress = (ProgressTimer *)this->getChildByTag(bloodnum);
-		progress->setPercentage(50);  //这里是百分制显示
+		progress->setPercentage(buildings.at(i)->health/1000*100);  //这里是百分制显示
 		if (progress->getPercentage() < 0) {
 			num += 1;
 		}
