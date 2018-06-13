@@ -27,21 +27,10 @@ bool button::init()
 	carincbutton->setPosition(Vec2(400, 27));
 	addChild(carincbutton, 1, CARINCBUTTONTAG);
 	carincbutton->setScale(0.1, 0.11);
-
-	//调整视角用的按钮
-	setupbutton = Sprite::create("setup.png");
-	setupbutton->setPosition(Vec2(800, 875));
-	addChild(setupbutton, 1, UPBUTTONTAG);
-	setdownbutton = Sprite::create("setdown.png");
-	setdownbutton->setPosition(Vec2(800, 25));
-	addChild(setdownbutton, 1, DOWNBUTTONTAG);
-	setleftbutton = Sprite::create("setleft.png");
-	setleftbutton->setPosition(Vec2(25, 450));
-	addChild(setleftbutton, 1, LEFTBUTTONTAG);
-	setrightbutton = Sprite::create("setright.png");
-	setrightbutton->setPosition(Vec2(1575, 450));
-	addChild(setrightbutton, 1, RIGHTBUTTONTAG);
-
+	soldierbutton = Sprite::create("soldierbutton.png");//士兵按钮
+	soldierbutton->setPosition(Vec2(500, 27));
+	addChild(soldierbutton, 1,SOLDIERBUTTONTAG);
+	//soldierbutton->setScale(0.1, 0.11);
 
 	//显示钱与电力
 	moneypowerlist = Sprite::create("moneypowerlist.png");//右上钱和电力状态栏
@@ -52,7 +41,7 @@ bool button::init()
 	smoney = String::createWithFormat("%d", money);
 	lblmoney = Label::createWithTTF(smoney->getCString(), "fonts/Marker Felt.ttf", 24);
 	lblmoney->setColor(Color3B::YELLOW);
-	lblmoney->setPosition(1380, 875);
+	lblmoney->setPosition(1370, 875);
 	this->addChild(lblmoney, 1, MONEYTAG);
 	moneypng = Sprite::create("money.png");
 	moneypng->setScale(0.9, 0.9);
@@ -62,14 +51,129 @@ bool button::init()
 	spower = String::createWithFormat("%d", power);
 	lblpower = Label::createWithTTF(spower->getCString(), "fonts/Marker Felt.ttf", 24);
 	lblpower->setColor(Color3B::BLUE);
-	lblpower->setPosition(1500, 875);
+	lblpower->setPosition(1460, 875);
 	this->addChild(lblpower, 1, POWERTAG);
 	powerpng = Sprite::create("power.png");
 	powerpng->setScale(0.8, 0.8);
-	powerpng->setPosition(1523, 875);
+	powerpng->setPosition(1483, 875);
 	this->addChild(powerpng, 1, POWERPNG);
+	schedule(schedule_selector(button::scheduleMoneyPower),10.0f);//调整金钱的函数
+	schedule(schedule_selector(button::schedulebutton), 0.1f);//调整建筑能否建造（钱和电力够不够）
 	return true;
 }
+
+//调整金钱
+void button::scheduleMoneyPower(float delta)
+{
+	money +=1000 ;
+	this->removeChildByTag(MONEYTAG);
+	smoney = String::createWithFormat("%d", money);
+	lblmoney = Label::createWithTTF(smoney->getCString(), "fonts/Marker Felt.ttf", 24);
+	lblmoney->setColor(Color3B::YELLOW);
+	lblmoney->setPosition(1370, 875);
+	this->addChild(lblmoney, 1, MONEYTAG);
+	power += 1000;
+	this->removeChildByTag(POWERTAG);
+	spower = String::createWithFormat("%d", power);
+	lblpower = Label::createWithTTF(spower->getCString(), "fonts/Marker Felt.ttf", 24);
+	lblpower->setColor(Color3B::YELLOW);
+	lblpower->setPosition(1460, 875);
+	this->addChild(lblpower, 1, POWERTAG);
+}
+
+//调整建筑能否建造（钱和电力够不够）
+void button::schedulebutton(float delta)
+{
+	//barrack
+	this->removeChildByTag(BARRACKBUTTONTAG);
+	if (money < 1000)
+	{
+		barrackbutton = Sprite::create("barrackbuttoncannot.png");
+		buildornot = 0;
+	}
+	else
+	{
+		barrackbutton = Sprite::create("barrackbutton.png");
+	}
+	barrackbutton->setPosition(Vec2(300, 27));
+	barrackbutton->setScale(0.1, 0.1);
+	addChild(barrackbutton, 1,BARRACKBUTTONTAG);
+	//mine
+	this->removeChildByTag(MINEBUTTONTAG);
+	if (money < 1000)
+	{
+		minebutton = Sprite::create("minebuttoncannot.png");
+		buildornot = 0;
+	}
+	else
+	{
+		minebutton = Sprite::create("minebutton.png");
+	}
+	minebutton->setPosition(Vec2(100, 23));
+	minebutton->setScale(0.2, 0.2);
+	addChild(minebutton, 1,MINEBUTTONTAG);
+	//epower
+	this->removeChildByTag(EPOWERBUTTONTAG);
+	if (money < 1000)
+	{
+		epowerbutton = Sprite::create("epowerbuttoncannot.png");
+		buildornot = 0;
+	}
+	else
+	{
+		epowerbutton = Sprite::create("epowerbutton.png");
+	}
+	epowerbutton->setPosition(Vec2(200, 27));
+	epowerbutton->setScale(0.15, 0.15);
+	addChild(epowerbutton, 1,EPOWERBUTTONTAG);
+	//carinc
+	this->removeChildByTag(CARINCBUTTONTAG);
+	if (money < 1000)
+	{
+		carincbutton = Sprite::create("carincbuttoncannot.png");
+		buildornot = 0;
+	}
+	else
+	{
+		carincbutton = Sprite::create("carincbutton.png");
+	}
+	carincbutton->setPosition(Vec2(400, 27));
+	carincbutton->setScale(0.1, 0.1);
+	addChild(carincbutton, 1, CARINCBUTTONTAG);
+}
+
+//购买建筑后更新金钱
+void button::updatemoney(int buildchoice)
+{
+	switch (buildchoice)
+	{
+	case 1:
+		money -= 1000;//矿厂钱数
+		break;
+	case 2:
+		money -= 1000;//兵营钱数
+		break;
+	case 3:
+		money -= 1000;//电厂钱数
+		break;
+	case 4:
+		money -= 1000;//车厂钱数
+		break;
+	case 5:
+		money -= 1000;//士兵钱数
+		break;
+	default:
+		break;
+	}
+	this->removeChildByTag(MONEYTAG);
+	smoney = String::createWithFormat("%d", money);
+	lblmoney = Label::createWithTTF(smoney->getCString(), "fonts/Marker Felt.ttf", 24);
+	lblmoney->setColor(Color3B::YELLOW);
+	lblmoney->setPosition(1370, 875);
+	this->addChild(lblmoney, 1, MONEYTAG);
+}
+
+
 void button::onEnter() {
 	Layer::onEnter();
 	log("mouseTouchEvent onEnter");
@@ -87,6 +191,8 @@ void button::onExit() {
 	log("mouseTouchEvent onExit");
 	Director::getInstance()->getEventDispatcher()->removeAllEventListeners();
 }
+
+//判断能否点到精灵图片上的函数
 bool button::isTap(cocos2d::EventMouse*em, cocos2d::Node*node)
 {
 	Vec2 location1 = em->getLocation();
@@ -104,33 +210,38 @@ bool button::onMouseDown(Event*e)
 {
 	return true;
 }
+
 void button::onMouseUp(Event*e)
 {
 	EventMouse* em = (EventMouse*)e;
 	auto minebuttontag = this->getChildByTag(MINEBUTTONTAG);
-	auto upbuttontag = this->getChildByTag(UPBUTTONTAG);
-	auto downbuttontag = this->getChildByTag(DOWNBUTTONTAG);
-	auto leftbuttontag = this->getChildByTag(LEFTBUTTONTAG);
-	auto rightbuttontag = this->getChildByTag(RIGHTBUTTONTAG);
-	//auto location = em->getLocation();
+	auto barrackbuttontag = this->getChildByTag(BARRACKBUTTONTAG);
+	auto epowerbuttontag = this->getChildByTag(EPOWERBUTTONTAG);
+	auto carincbuttontag = this->getChildByTag(CARINCBUTTONTAG);
+	auto soldierbuttontag = this->getChildByTag(SOLDIERBUTTONTAG);
 	if (this->isTap(em, minebuttontag))
 	{
 		buildornot = 1;
+		buildchoice = 1;
 	}
-	else if (this->isTap(em, upbuttontag))
+	else if (this->isTap(em,barrackbuttontag))
 	{
-		set = 1;
+		buildornot = 1;
+		buildchoice = 2;
 	}
-	else if (this->isTap(em, downbuttontag))
+	else if (this->isTap(em, epowerbuttontag))
 	{
-		set = 2;
+		buildornot = 1;
+		buildchoice = 3;
 	}
-	else if (this->isTap(em, leftbuttontag))
+	else if (this->isTap(em, carincbuttontag))
 	{
-		set = 3;
+		buildornot = 1;
+		buildchoice = 4;
 	}
-	else if (this->isTap(em, rightbuttontag))
+	else if (this->isTap(em, soldierbuttontag))
 	{
-		set = 4;
+		buildornot = 2;
+		buildchoice = 5;
 	}
 }
