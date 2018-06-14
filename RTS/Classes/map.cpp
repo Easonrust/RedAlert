@@ -93,7 +93,7 @@ void mymap::onEnter() {
 		}
 		if (buttonlayer->buildornot == 2)
 		{
-			auto location = buildings.at(0)->getPosition();
+           auto location = buildings.at(0)->getPosition();
 			soldiernum += 1;
 			auto bing = Soldier::create("soldier.png");
 			bing->setPosition(location);

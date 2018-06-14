@@ -15,6 +15,8 @@ class mymap : public Layer
 	int buildingnum=0;//建筑数量
 	int soldiernum = 0;
 	Vec2 barrackpos;
+    Vec2 mouse_up;
+    Vec2 mouse_down;
 	int bloodnum=100;//血量条的数量+100
 public:
 	button*buttonlayer;//按钮层指针（用于信息交互）

@@ -17,33 +17,29 @@ public:
 };
 
 void judge_selected(Vector<Soldier*> vec,Vec2 down,Vec2 up){
-    int abc = 0;
     if(up==down){
         for(int i = 0;i<vec.size();i++){
             auto p = vec.at(i)->getPosition();  //GL
-            if(p.x-32<=down.x && p.x+32>=down.x && p.y-32<=down.y && p.y+32>=down.y){
-                vec.at(i)->setOpacity(123);
+            if(p.x-16<=down.x && p.x+16>=down.x && p.y-16<=down.y && p.y+16>=down.y){
                 //vec.erase(vec.begin()+i);
                 //vec[i]->removeFromParentAndCleanup(true);
                 vec.at(i)->selected = 1;
                 vec.at(i)->blood->setVisible(true);
                 vec.at(i)->progress->setVisible(true);
-                abc = 1;
             }
         }
     }
     if(up!=down){
-        float x_min = up.x>=down.x ? up.x : down.x;
-        float x_max = up.x<down.x ? up.x : down.x;
-        float y_min = up.x>=down.x ? up.x : down.x;
-        float y_max = up.x<down.x ? up.x : down.x;
+        float x_min = min(up.x ,down.x);
+        float x_max = max(up.x , down.x);
+        float y_min = min(up.x , down.x);
+        float y_max = max(up.x , down.x);
         for(int i = 0;i<vec.size();i++){
             auto p = vec.at(i)->getPosition();
             if(p.x>=x_min&& p.x<=x_max&&p.y>=y_min&& p.y<=y_max ){
                 vec.at(i)->blood->setVisible(true);
                 vec.at(i)->progress->setVisible(true);
                 vec.at(i)->selected = 1;
-                abc = 1;
             }
         }
     }
@@ -77,7 +73,7 @@ void Soldier::run(Vector<Soldier*> vec,Vec2 target){
 
 void Soldier::add_bloodbar(Soldier *spr){
     spr->blood = Sprite::create("bar.png");   //¥¥Ω®Ω¯∂»øÚ
-    spr->blood->setPosition(Vec2(spr->getPositionX(),spr->getPositionY()+65)); //…Ë÷√øÚµƒŒª÷√
+    spr->blood->setPosition(Vec2(spr->getPositionX(),spr->getPositionY()+16)); //…Ë÷√øÚµƒŒª÷√
     spr->blood->setScale(0.1);
     spr->blood->setVisible(false);
     spr->progress = ProgressTimer::create(Sprite::create("blood.png")); //¥¥Ω®progress∂‘œÛ
@@ -89,5 +85,4 @@ void Soldier::add_bloodbar(Soldier *spr){
     spr->progress->setBarChangeRate(Vec2(1, 0));
     spr->progress->setPercentage(100);
     spr->progress->setVisible(false);
-    
 }
