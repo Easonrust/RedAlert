@@ -1,11 +1,7 @@
 #include"map.h"
 #include"button.h"
 #include "building.h"
-#include "Soldier.h"
 #include <iostream>
-Vector<building*>buildings;//建筑容器
-Vector<Soldier*>soldiers;
-
 bool mymap::init()
 {
     if (!Layer::init())
@@ -14,7 +10,7 @@ bool mymap::init()
 	}
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
-
+	originmap=this->getPosition();
 	repair = Vec2(0, 0);//移动地图后，在地图上建造精灵时坐标的修正量
 
 	//导入地图
@@ -95,12 +91,12 @@ void mymap::onEnter() {
 		{
            auto location = buildings.at(0)->getPosition();
 			soldiernum += 1;
-			auto bing = Soldier::create("soldier.png");
+			auto bing = Sprite::create("soldier.png");
 			bing->setPosition(location);
-            Soldier::add_bloodbar(bing);
+            //Soldier::add_bloodbar(bing);
 			addChild(bing);
-            addChild(bing->blood);
-            addChild(bing->progress);
+            //addChild(bing->blood);
+            //addChild(bing->progress);
 			soldiers.pushBack(bing);
 			buttonlayer->buildornot = 0;
 		}
@@ -117,38 +113,60 @@ void mymap::onExit() {
 	log("mouseTouchEvent onExit");
 	Director::getInstance()->getEventDispatcher()->removeAllEventListeners();
 }
-void mymap::setmap(float delta )
+void mymap::setmap(float delta)
 {
 	auto listener = EventListenerMouse::create();
 	listener->onMouseMove = [this](Event *e) {
 		EventMouse* em = (EventMouse*)e;
-        auto location = em->getLocation();
-        location = Director::getInstance()->convertToGL(location);
-        auto pos = this->getPosition();
-        
-        if (location.y >= 850)
-        {
-            this->setPosition(Vec2(pos.x, pos.y - 0.05));
-            repair.y += 0.05;
-        }
-        else if (location.y <= 50 )
-        {
-            this->setPosition(Vec2(pos.x, pos.y + 0.05));
-            repair.y -= 0.05;
-        }
-        else if (location.x <= 50)
-        {
-            this->setPosition(Vec2(pos.x+0.05, pos.y));
-            repair.x -= 0.05;
-        }
-        else if (location.x >= 1550)
-        {
-            this->setPosition(Vec2(pos.x-0.05, pos.y));
-            repair.x += 0.05;
-        }
+		auto location = em->getLocation();
+		location.y = 900 - location.y;
+		auto pos1 = this->getPosition();
+		if (location.y >= 800)
+		{
+			Action*action = this->runAction(MoveTo::create(5000, Vec2(pos1.x, pos1.y - 1000)));
+			action->setTag(1);
+		}
+		if (location.y <= 100 && location.y >= 50)
+		{
+			Action*action = this->runAction(MoveTo::create(5000, Vec2(pos1.x, pos1.y + 1000)));
+			action->setTag(2);
+		}
+		else if (location.x <= 100 && location.x >= 50)
+		{
+			Action*action = this->runAction(MoveTo::create(5000, Vec2(pos1.x + 1000, pos1.y)));
+			action->setTag(3);
+		}
+		else if (location.x >= 1500 && location.x <= 1550)
+		{
+			Action*action = this->runAction(MoveTo::create(5000, Vec2(pos1.x - 1000, pos1.y)));
+			action->setTag(4);
+		}
+		if (location.y <= 800)
+		{
+			this->stopActionByTag(1);
+			auto pos1 = this->getPosition();
+			repair = originmap - pos1;
+		}
+		if (location.y >= 100 || location.y <= 50)
+		{
+			this->stopActionByTag(2);
+			auto pos1 = this->getPosition();
+			repair = originmap - pos1;
+		}
+		if (location.x >= 100 || location.x <= 50)
+		{
+			this->stopActionByTag(3);
+			auto pos1 = this->getPosition();
+			repair = originmap - pos1;
+		}
+		if (location.x <= 1500 || location.x >= 1550)
+		{
+			this->stopActionByTag(4);
+			auto pos1 = this->getPosition();
+			repair = originmap - pos1;
+		}
+
 	};
-    
-    
 	EventDispatcher* eventDispatcher = Director::getInstance()->getEventDispatcher();
 	eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
 }
