@@ -8,27 +8,27 @@ bool button::init()
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 	buttonlist = Sprite::create("buttonlist.png");//下方建筑菜单栏
-	buttonlist->setPosition(Vec2(800, 30));
+	buttonlist->setPosition(Vec2(800, 80));
 	buttonlist->setScale(7.3, 1);
 	addChild(buttonlist, 0, BUTTONLISTTAG);
 	minebutton = Sprite::create("minebutton.png");//矿厂按钮
-	minebutton->setPosition(Vec2(100, 23));
+	minebutton->setPosition(Vec2(100, 73));
 	addChild(minebutton, 1, MINEBUTTONTAG);
 	minebutton->setScale(0.2, 0.2);
 	epowerbutton = Sprite::create("epowerbutton.png");//电厂按钮
-	epowerbutton->setPosition(Vec2(200, 27));
+	epowerbutton->setPosition(Vec2(200, 77));
 	addChild(epowerbutton, 1, EPOWERBUTTONTAG);
 	epowerbutton->setScale(0.15, 0.15);
 	barrackbutton = Sprite::create("barrackbutton.png");//兵营按钮
-	barrackbutton->setPosition(Vec2(300, 27));
+	barrackbutton->setPosition(Vec2(300, 77));
 	addChild(barrackbutton, 1, BARRACKBUTTONTAG);
 	barrackbutton->setScale(0.1, 0.1);
 	carincbutton = Sprite::create("carincbutton.png");//车厂按钮
-	carincbutton->setPosition(Vec2(400, 27));
+	carincbutton->setPosition(Vec2(400, 77));
 	addChild(carincbutton, 1, CARINCBUTTONTAG);
 	carincbutton->setScale(0.1, 0.11);
 	soldierbutton = Sprite::create("soldierbutton.png");//士兵按钮
-	soldierbutton->setPosition(Vec2(500, 27));
+	soldierbutton->setPosition(Vec2(500, 77));
 	addChild(soldierbutton, 1,SOLDIERBUTTONTAG);
 	//soldierbutton->setScale(0.1, 0.11);
 
@@ -57,7 +57,7 @@ bool button::init()
 	powerpng->setScale(0.8, 0.8);
 	powerpng->setPosition(1483, 875);
 	this->addChild(powerpng, 1, POWERPNG);
-	schedule(schedule_selector(button::scheduleMoneyPower),10.0f);//调整金钱的函数
+	schedule(schedule_selector(button::scheduleMoneyPower),0.1f);//调整金钱的函数
 	schedule(schedule_selector(button::schedulebutton), 0.1f);//调整建筑能否建造（钱和电力够不够）
 	return true;
 }
@@ -65,14 +65,14 @@ bool button::init()
 //调整金钱
 void button::scheduleMoneyPower(float delta)
 {
-	money +=1000 ;
+	money +=50 ;
 	this->removeChildByTag(MONEYTAG);
 	smoney = String::createWithFormat("%d", money);
 	lblmoney = Label::createWithTTF(smoney->getCString(), "fonts/Marker Felt.ttf", 24);
 	lblmoney->setColor(Color3B::YELLOW);
 	lblmoney->setPosition(1370, 875);
 	this->addChild(lblmoney, 1, MONEYTAG);
-	power += 1000;
+	power += 1;
 	this->removeChildByTag(POWERTAG);
 	spower = String::createWithFormat("%d", power);
 	lblpower = Label::createWithTTF(spower->getCString(), "fonts/Marker Felt.ttf", 24);
@@ -95,7 +95,7 @@ void button::schedulebutton(float delta)
 	{
 		barrackbutton = Sprite::create("barrackbutton.png");
 	}
-	barrackbutton->setPosition(Vec2(300, 27));
+	barrackbutton->setPosition(Vec2(300, 77));
 	barrackbutton->setScale(0.1, 0.1);
 	addChild(barrackbutton, 1,BARRACKBUTTONTAG);
 	//mine
@@ -109,7 +109,7 @@ void button::schedulebutton(float delta)
 	{
 		minebutton = Sprite::create("minebutton.png");
 	}
-	minebutton->setPosition(Vec2(100, 23));
+	minebutton->setPosition(Vec2(100, 77));
 	minebutton->setScale(0.2, 0.2);
 	addChild(minebutton, 1,MINEBUTTONTAG);
 	//epower
@@ -123,7 +123,7 @@ void button::schedulebutton(float delta)
 	{
 		epowerbutton = Sprite::create("epowerbutton.png");
 	}
-	epowerbutton->setPosition(Vec2(200, 27));
+	epowerbutton->setPosition(Vec2(200, 77));
 	epowerbutton->setScale(0.15, 0.15);
 	addChild(epowerbutton, 1,EPOWERBUTTONTAG);
 	//carinc
@@ -137,7 +137,7 @@ void button::schedulebutton(float delta)
 	{
 		carincbutton = Sprite::create("carincbutton.png");
 	}
-	carincbutton->setPosition(Vec2(400, 27));
+	carincbutton->setPosition(Vec2(400, 77));
 	carincbutton->setScale(0.1, 0.1);
 	addChild(carincbutton, 1, CARINCBUTTONTAG);
 }
