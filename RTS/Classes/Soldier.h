@@ -1,3 +1,5 @@
+#ifndef __SOLDIER_H__
+#define __SOLDIER_H__
 #include "cocos2d.h"
 #include <algorithm>
 USING_NS_CC;
@@ -48,7 +50,7 @@ void judge_selected(Vector<Soldier*> vec,Vec2 down,Vec2 up){
         }
     }
 }
-class Soldier* Soldier:: create(const char* filename){
+ Soldier* Soldier:: create(const char* filename){
     Soldier* sprite = new Soldier();
     if (sprite && sprite->initWithFile("soldier.png"))
     {
@@ -91,3 +93,4 @@ void Soldier::add_bloodbar(Soldier *spr){
     spr->progress->setVisible(false);
     
 }
+#endif 

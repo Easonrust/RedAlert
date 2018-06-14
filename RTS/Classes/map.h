@@ -3,14 +3,14 @@
 #define MAPTAG 0
 #include"cocos2d.h"  
 #include"button.h"
-
-
+#include"building.h"
 USING_NS_CC;
 class mymap : public Layer
 {
-    
+	Vec2 originmap;
 	cocos2d::TMXTiledMap* _tileMap;//地图
-	
+	Vector<building*>buildings;//建筑容器
+	Vector<Sprite*>soldiers;
 	Vec2 repair; //坐标修正量
 	int buildingnum=0;//建筑数量
 	int soldiernum = 0;
