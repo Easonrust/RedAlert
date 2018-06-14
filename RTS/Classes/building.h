@@ -40,6 +40,7 @@ void building::add_blood_bar( building* spr){
     spr->progress->setType(ProgressTimer::Type::BAR);        //类型：条状
     spr->progress->setPosition(Vec2(spr->getPositionX(),spr->getPositionY()+65));
     spr->progress->setScale(0.2);
+    spr->progress->setPercentage(100);
     //从右到左减少血量
     spr->progress->setMidpoint(Vec2(0, 0.5));     //如果是从左到右的话，改成(1,0.5)即可
     spr->progress->setBarChangeRate(Vec2(1, 0));
@@ -72,7 +73,17 @@ building* building::createWithBuildingType(Building_type building_type)
         default:
             break;
     }
-    
+    if (sprite && building_type == Base &&sprite->initWithFile("base.png"))
+    {
+        sprite->autorelease();//将精灵放入内存自动池中
+        sprite->setScale(0.15);
+        auto body = PhysicsBody::create();
+        body->addShape(PhysicsShapeCircle::create(sprite->building_r));
+        
+        body->setRotationEnable(false);
+        body->setDynamic(false);
+        return sprite;
+    }
     if (sprite && building_type == Mine &&sprite->initWithFile("mine.png"))
     {
         sprite->autorelease();//将精灵放入内存自动池中

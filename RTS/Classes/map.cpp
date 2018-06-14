@@ -1,9 +1,11 @@
 #include"map.h"
 #include"button.h"
 #include "building.h"
+#include "Soldier.h"
 #include <iostream>
 Vector<building*>buildings;//建筑容器
-Vec2 mouselocation;
+Vector<Soldier*>soldiers;
+
 bool mymap::init()
 {
     if (!Layer::init())
@@ -23,7 +25,7 @@ bool mymap::init()
 	ValueMap spawnPoint = group->getObject("base");
 	float x = spawnPoint["x"].asFloat();
 	float y = spawnPoint["y"].asFloat();
-    auto base = building::createWithBuildingType(Mine);
+    auto base = building::createWithBuildingType(Base);
 	buildingnum += 1;//将地图上目前的建筑总数加一
     base->setPosition(Vec2(x,y));
     building::add_blood_bar(base);
@@ -40,7 +42,12 @@ bool mymap::init()
 
 
 void mymap::scheduleBlood(float delta) {
-	
+    for(int i = 0;i<buildings.size();i++){
+        if(buildings.at(i)->progress->getPercentage()!=100){
+            buildings.at(i)->progress->setPercentage(buildings.at(i)->progress->getPercentage()+0.1);
+            buildings.at(i)->progress->setVisible(true);
+        }
+    }
 }
 void mymap::onEnter() {
 	Layer::onEnter();
@@ -59,7 +66,7 @@ void mymap::onEnter() {
 			buildingnum += 1;//将地图上建筑总数加一
 			Vec2 position = location + repair;//修正量起作用了
 			building*  Building;
-            cout <<buttonlayer->buildchoice<<endl;
+            
             if(buttonlayer->buildchoice==1){
                 Building = building::createWithBuildingType(Mine);
             }
@@ -75,10 +82,11 @@ void mymap::onEnter() {
 			
 			Building->setPosition(position);
             building::add_blood_bar(Building);
+            buildings.pushBack(Building);
 			addChild(Building);//这里精灵的Tag直接设置为建筑总数便于管理
             addChild(Building->progress);
             addChild(Building->bloodbar);
-			buildings.pushBack(Building);//将建筑物添加到容器中
+			//将建筑物添加到容器中
 			buttonlayer->updatemoney(buttonlayer->buildchoice);//购买后更新钱数更新
 			buttonlayer->buildornot = false;//将要不要建建筑设为false
 			buttonlayer->buildchoice = 0;
@@ -87,13 +95,13 @@ void mymap::onEnter() {
 		{
 			auto location = buildings.at(0)->getPosition();
 			soldiernum += 1;
-			auto bing = Sprite::create("soldier.png");
+			auto bing = Soldier::create("soldier.png");
 			bing->setPosition(location);
-			addChild(bing, 5, soldiernum*100);
+            Soldier::add_bloodbar(bing);
+			addChild(bing);
+            addChild(bing->blood);
+            addChild(bing->progress);
 			soldiers.pushBack(bing);
-			float a = (bing->boundingBox().size.width)/2;
-			auto body = PhysicsBody::createCircle(a);
-			bing->setPhysicsBody(body);
 			buttonlayer->buildornot = 0;
 		}
 		
@@ -117,7 +125,7 @@ void mymap::setmap(float delta )
         auto location = em->getLocation();
         location = Director::getInstance()->convertToGL(location);
         auto pos = this->getPosition();
-        std::cout << repair.x <<" "<<repair.y<<endl;
+        
         if (location.y >= 850)
         {
             this->setPosition(Vec2(pos.x, pos.y - 0.05));
