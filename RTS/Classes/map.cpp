@@ -2,6 +2,8 @@
 #include"button.h"
 #include "building.h"
 #include <iostream>
+#include "Soldier.h"
+
 bool mymap::init()
 {
     if (!Layer::init())
@@ -51,11 +53,17 @@ void mymap::onEnter() {
 
 	auto listener = EventListenerMouse::create();
 	listener->onMouseDown = [this](Event *e) {
+        EventMouse* em = (EventMouse*)e;
+        auto location = em->getLocation();
+        location = Director::getInstance()->convertToGL(location);
+        mouse_down = location;
 	};
 	listener->onMouseUp = [this](Event *e) {
 		EventMouse* em = (EventMouse*)e;
 		auto location = em->getLocation();
         location = Director::getInstance()->convertToGL(location);//将鼠标的坐标转换为世界坐标
+        mouse_up = location;
+        //Soldier::judge_selected(soldiers, mouse_down, mouse_up);
 		//基本创建建筑的事件
 		if (buttonlayer->buildornot==1 && !(buttonlayer->isTap(em, buttonlayer->getChildByTag(SOLDIERBUTTONTAG))) &&!(buttonlayer->isTap(em, buttonlayer->getChildByTag(CARINCBUTTONTAG)))&&!(buttonlayer->isTap(em, buttonlayer->getChildByTag(MINEBUTTONTAG)))&& !(buttonlayer->isTap(em, buttonlayer->getChildByTag(EPOWERBUTTONTAG)))&& !(buttonlayer->isTap(em, buttonlayer->getChildByTag(BARRACKBUTTONTAG))))
 		{
@@ -91,12 +99,12 @@ void mymap::onEnter() {
 		{
            auto location = buildings.at(0)->getPosition();
 			soldiernum += 1;
-			auto bing = Sprite::create("soldier.png");
+			auto bing = Soldier::create("soldier.png");
 			bing->setPosition(location);
-            //Soldier::add_bloodbar(bing);
+            Soldier::add_bloodbar(bing);
 			addChild(bing);
-            //addChild(bing->blood);
-            //addChild(bing->progress);
+            addChild(bing->blood);
+            addChild(bing->progress);
 			soldiers.pushBack(bing);
 			buttonlayer->buildornot = 0;
 		}
@@ -192,3 +200,4 @@ bool mymap::canbuild(Vec2 location)
 		return true;
 	}
 }
+
