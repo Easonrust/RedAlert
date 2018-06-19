@@ -1,4 +1,4 @@
-﻿#include "Soldier.h"
+/*#include "Soldier.h"
 #include "cocos2d.h"
 #include <algorithm>
 USING_NS_CC;
@@ -138,3 +138,4 @@ void shelduleAttack(Vector<Soldier*> vec, Vector<Soldier*> enemy, Vec2 target) {
 		}
 	}
 }
+*/

@@ -16,6 +16,7 @@ bool mymap::init()
 	repair = Vec2(0, 0);//移动地图后，在地图上建造精灵时坐标的修正量
 
 						//导入地图
+    
 	_tileMap = TMXTiledMap::create("map/MiddleMap.tmx");
 	addChild(_tileMap, 0, MAPTAG);
 	_collidable = _tileMap->getLayer("collidable");
@@ -25,6 +26,15 @@ bool mymap::init()
 	ValueMap spawnPoint = group->getObject("base");
 	float x = spawnPoint["x"].asFloat();
 	float y = spawnPoint["y"].asFloat();*/
+    auto bing = Soldier::create("base.png");
+    bing->setPosition(720,450);
+    Soldier::add_bloodbar(bing);
+    addChild(bing);
+    addChild(bing->blood);
+    addChild(bing->progress);
+    enemy_soldiers.pushBack(bing);
+    bing->blood->setVisible(true);
+    bing->progress->setVisible(true);
 	auto base = building::createWithBuildingType(Base);
 	buildingnum += 1;//将地图上目前的建筑总数加一
 	base->setPosition(Vec2(300, 300));
@@ -33,13 +43,13 @@ bool mymap::init()
 	addChild(base);
 	addChild(base->bloodbar);
 	addChild(base->progress);
-
-	schedule(schedule_selector(mymap::scheduleBlood), 0.1f);  //刷新函数，每隔0.1秒
+    
+	schedule(schedule_selector(mymap::moveBlood), 0.1f);  //刷新函数，每隔0.1秒
 	schedule(schedule_selector(mymap::setmap), 0.1f);
 	return true;
 }
 //血量刷新函数
-void mymap::scheduleBlood(float delta) {
+void mymap::moveBlood(float delta) {
 	for (int i = 0; i < soldiers.size(); ++i)
 	{
 		if (soldiers.at(i)->selected == 1)
@@ -48,6 +58,31 @@ void mymap::scheduleBlood(float delta) {
 			soldiers.at(i)->progress->setPosition(soldiers.at(i)->getPositionX(), soldiers.at(i)->getPositionY() + 16);
 		}
 	}
+}
+/*void mymap::scheduleBlood_enemy(float delta){
+    int target = 0;
+    for(int i = 0;i<enemy_soldiers.size();i++){
+        if(enemy_soldiers.at(i)->attacker.size()){
+            target = i;
+        }
+    }
+    auto enemy_p = enemy_soldiers.at(target)->getPosition();
+    
+    for(int i = 0;i<enemy_soldiers.at(target)->attacker.size();i++){
+        auto p =enemy_soldiers.at(target)->attacker.at(i)->getPosition();
+        if(p.getDistance(enemy_p)<=200){
+            enemy_soldiers.at(target)->attacker.at(i)->stopAllActions();
+            enemy_soldiers.at(target)->attacker.at(i)->isrun = 0;
+            enemy_soldiers.at(i)->progress->setPercentage(enemy_soldiers.at(i)->progress->getPercentage()-2);
+        }
+    }
+}*/
+void mymap::scheduleBlood_enemy(float delta){
+    for(int i = 0;i<enemy_soldiers.size();i++){
+        if(!enemy_soldiers.at(i)->attacker){
+            enemy_soldiers.at(i)->progress->setPercentage(enemy_soldiers.at(i)->progress->getPercentage()-enemy_soldiers.at(i)->attacker*2);
+        }
+    }
 }
 void mymap::onEnter() {
 	Layer::onEnter();
@@ -74,12 +109,17 @@ void mymap::onEnter() {
 																  //基本创建建筑的事件
 		mouse_up = location+repair;
 		Soldier::judge_selected(soldiers, mouse_down, mouse_up);
+        
 		if (mouse_up==mouse_down&&!buttonlayer->buildornot && !(buttonlayer->isTap(em, buttonlayer->getChildByTag(SOLDIERBUTTONTAG))) && !(buttonlayer->isTap(em, buttonlayer->getChildByTag(CARINCBUTTONTAG))) && !(buttonlayer->isTap(em, buttonlayer->getChildByTag(MINEBUTTONTAG))) && !(buttonlayer->isTap(em, buttonlayer->getChildByTag(EPOWERBUTTONTAG))) && !(buttonlayer->isTap(em, buttonlayer->getChildByTag(BARRACKBUTTONTAG))))
 		{
 
 			Soldier::run(soldiers, mouse_up);
 		}
-			
+        for(int i = 0;i<enemy_soldiers.size();i++){
+            if(Soldier::isTap(location,enemy_soldiers.at(i))){
+                Soldier::attack(soldiers, enemy_soldiers, location);
+            }
+        }
 		if (buttonlayer->buildornot == 1 && !(buttonlayer->isTap(em, buttonlayer->getChildByTag(SOLDIERBUTTONTAG))) && !(buttonlayer->isTap(em, buttonlayer->getChildByTag(CARINCBUTTONTAG))) && !(buttonlayer->isTap(em, buttonlayer->getChildByTag(MINEBUTTONTAG))) && !(buttonlayer->isTap(em, buttonlayer->getChildByTag(EPOWERBUTTONTAG))) && !(buttonlayer->isTap(em, buttonlayer->getChildByTag(BARRACKBUTTONTAG))))
 		{
 			Vec2 position = location + repair;//修正量起作用了

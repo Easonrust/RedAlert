@@ -21,6 +21,7 @@ typedef enum {
 class building : public Sprite {
 public:
 	int building_health;
+    int attacker = 0;
 	int building_r;//°ë¾¶
 	bool Selected = 0;
 	Sprite* bloodbar;

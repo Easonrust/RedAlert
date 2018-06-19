@@ -1,4 +1,4 @@
-﻿#ifndef __SOLDIER_H__
+#ifndef __SOLDIER_H__
 #define __SOLDIER_H__
 #include "cocos2d.h"
 #include <algorithm>
@@ -7,9 +7,12 @@ class Soldier : public Sprite {
 
 public:
 	int health = 100;
+    int attacker = 0;
 	bool selected = 0;
 	bool isrun = 0;
+    bool isattack = 0;
 	int collide_r = 16;
+    Soldier* a_enemy = nullptr;
 	Sprite* blood;
 	//static float speed = 1.0;
 	ProgressTimer* progress;
@@ -51,7 +54,7 @@ public:
 			if(vec.at(i)->isrun == 1)
 			{
 				vec.at(i)->stopAllActions();
-				vec.at(i)->runAction(MoveTo::create(distance/15, target));
+				vec.at(i)->runAction(MoveTo::create(distance/30, target));
 			}
 		}
 		//scheduler(schedule_selector(Soldier::scheduleRun), vec,target,delta);
@@ -75,25 +78,31 @@ public:
 		}
 		
 	}*/
-	static void scheduleRunToAttcak(Vector<Soldier*> vec, Vec2 target, float delta) {
-		for (int i = 0; i<vec.size(); i++) {
-			if (vec.at(i)->isrun) {
-				auto position = vec.at(i)->getPosition();
-				position = Director::getInstance()->convertToGL(position);
-				if ((position).getDistance(target) <= 200) {
-					vec.at(i)->isrun = 0;
-					//unscheduler(schedule_selector(Soldier::scheduleRunToAttack), vec,target,delta);
-					//scheduler(schedule_selector(Soldier::shelduleAttack), vec,target,delta);
-				}
-				else {
-					auto distance = position.getDistance(target);
-					float x = 2 * (target.x - position.x) / distance;
-					float y = 2 * (target.y - position.y) / distance;
-					vec.at(i)->setPosition(position.x + x, position.y + y);
-				}
-			}
-		}
-	}
+	/*
+     static void RunToAttcak(Vector<Soldier*> vec,Vector<Soldier*> enemy,Vec2 target) {
+     int a = 0;
+     for(int i = 0;i<enemy.size();i++){
+     if(isTap(target,enemy.at(i))) a = i;
+     break;
+     }
+     for (int i = 0; i<vec.size(); i++) {
+     if (vec.at(i)->selected) {
+     vec.at(i)->isrun = 1;
+     enemy.at(a)->attacker.pushback(vec.at(i));
+     }
+     auto position = vec.at(i)->getPosition();
+     
+     auto distance = position.getDistance(target);
+     
+     if (vec.at(i)->isrun) {
+     vec.at(i)->stopAllActions();
+     vec.at(i)->runAction(MoveTo::create(distance/30, target));
+     }
+     
+     }
+     }
+     }
+     */
 	static bool judge_selected(Vector<Soldier*> vec, Vec2 down, Vec2 up) {
 		bool isselected = 0;
 		if (up == down) {
@@ -129,11 +138,12 @@ public:
 	static void clear(Vector<Soldier*> vec) {
 		for (int i = 0; i<vec.size(); i++) {
 			vec.at(i)->selected = 0;
+            vec.at(i)->isrun = 0;
 			vec.at(i)->blood->setVisible(false);
 			vec.at(i)->progress->setVisible(false);
 		}
 	}
-	static void attack(Vector<Soldier*> vec, Vector<Soldier*> enemy, float delta) {}
+    
 	void shelduleAttack(Vector<Soldier*> vec, Vector<Soldier*> enemy, Vec2 target) {
 		for (int i = 0; i<enemy.size(); i++) {
 			auto p = enemy.at(i)->getPosition();  //GL
@@ -159,6 +169,38 @@ public:
 		spr->progress->setPercentage(100);
 		spr->progress->setVisible(false);
 	}
+    static bool attack(Vector<Soldier*> vec,Vector<Soldier*> enemy,Vec2 target){
+        int a = 0;
+        for(int i = 0;i<enemy.size();i++){
+            if(isTap(target,enemy.at(i))) a = i;
+            break;
+        }
+        
+        for (int i = 0; i<vec.size(); i++) {
+            if(vec.at(i)->selected && vec.at(i)->getPosition().getDistance(target)<=200){
+                if(vec.at(i)->a_enemy){
+                    vec.at(i)->a_enemy->attacker--;
+                    vec.at(i)->a_enemy = enemy.at(i);
+                    enemy.at(a)->attacker++;
+                }
+                else{
+                    vec.at(i)->a_enemy = enemy.at(i);
+                    enemy.at(a)->attacker++;
+                }
+            }
+            else{
+                vec.at(i)->isrun = 1;
+            }
+        }
+        for(int i = 0; i<vec.size(); i++){
+            auto position = vec.at(i)->getPosition();
+            auto distance = position.getDistance(target);
+            Vec2 arrive(position.x+(target.x-position.x)*(distance-200)/distance,position.y+(target.y-position.y)*(distance-200)/distance);
+            if(vec.at(i)->isrun){
+                vec.at(i)->runAction(MoveTo::create(distance/30, arrive));
+            }
+        }
+    }
 };
 
 
