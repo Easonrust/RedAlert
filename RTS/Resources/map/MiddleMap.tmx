@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.1.5" orientation="orthogonal" renderorder="right-down" width="64" height="64" tilewidth="32" tileheight="32" infinite="0" nextobjectid="2">
+<map version="1.0" tiledversion="1.1.5" orientation="orthogonal" renderorder="right-down" width="128" height="64" tilewidth="32" tileheight="32" infinite="0" nextobjectid="2">
  <tileset firstgid="1" name="dg_grounds32" tilewidth="32" tileheight="32" tilecount="171" columns="9">
   <image source="dg_grounds32.jpg" width="288" height="608"/>
  </tileset>
@@ -11,17 +11,15 @@
    </properties>
   </tile>
  </tileset>
- <layer name="background" width="64" height="64">
+ <layer name="collidable" width="128" height="64" opacity="0.45">
   <data encoding="base64" compression="zlib">
-   eJzt2NEJgzAUheE8u5BQ6AAu0Q0KfRJcwj3csggGLreJSVB7E/kfPpDYUs8xYtLOOdcBAAAAAAAg21tJjed+v3Y5mY8K/Z51bnkti3JGB3tdWuf2HptQ/tjcuJNY7qtMFWQu8dqsx6OSyhljnak090vJ6cI/Vzq3H7fOt2cWenH8jMiZDy3pFZ9TdzKp/GMD9zY3++x+e+jVeZl/Fh3I+eO7s85Vkl/2kPp87JloLTewku+4vTE5HjrXstD7PjR+t9zgXn8S/D6p5bV9yODC+/RQBz6rX+/oDhbX7pp4iHQxRLrQ80Kuhf+9t766k9SzkTJUkOWo0ryS9bUDQC79306K9fWemfss1lkss7eWv2Sup7SWHQAAAAAAoEZfgygg8g==
+   eJztmUEOwjAMBPv/t/SRiEMvQHGSJs7anpEicQBq7xBUp+dxHGfSZbG7PpWVkVb/nqhljX9f1LLGvy9qWePfF7WsPf1732/g32alj/PjNf7r+d85c+DfJqv/nvnfE/yz/5VY5ULhzGml/54elM/advn3YJV/ZZ+9ZOjhDvzbZOjhDvzbZOjhDi//kfOLXv8/PO7/omeXoYc7FOc/NfBfG/zXBv+1Ufb/9B4b/zaq/mfMWCr+lWdFxZreZPK/83oWqv7f4H89Efw/+fyM98xELeuRjK33q/SIfxv8+6KSzQX+fVHJ5gL/vqhkc4F/X1Syufg1Z7esFd85+5wE/zaq8x/+fcC/L6v+657Wo0ZW/7/A/zf497u2QgafVPK/E/zXBv+1Ufb/tC4v/4r5taLqfwb4t8H/nOtEzTFq3S3s8B8ty4g1t+LhX+ksb4SINbeyy3+kPKPV20prX0/7x78u7H+baPX2sNN/lEwj1drLrvv/SL+BKHWOsHv/R8g2Qo2jKOx/9Wwj1DgKz39ssvr3mv+ik7l/9r8N/muD/9rgvzb4rw3+a4P/2uC/NvivDf5rg//atDy/ZOVeL6bY8JQ=
   </data>
  </layer>
- <layer name="collidable" width="64" height="64" opacity="0.45">
+ <layer name="background" width="128" height="64">
   <data encoding="base64" compression="zlib">
-   eJzt1kEKgzAQBVDvf5YesisRpJiEpjXjfw+yEcTMD85k2wAAAAAY8Tqt1vPe91fXU/O369P3VnC131k1t/K408jen+jf51I5x5GsentBVa2aWj1lZTN6fGUzZ101s+d+tUxG/9On1A1AtpQ5f5Z+79n9KoeKWexkcEiuHciR2t+S513ynSe5dgAAAIAVvQEjU90N
+   eJzt3M0JwjAYgOGePYgzOISCAziDMziLXpzBi1tqoaKEqoltvr+8hxe8VAJPIpimPXRddwjYKjPtcVpoEbBcf8kx7R8tDYU//vjjr22Ff3z/21v426im/y35jH97/t/CX7+o/rsC/x3+4fzXBUnZt+T/y967/2ao5JrLkLa5Bf/a66ym/yYp97rjkLa51O+/Zvjjjz/+Ev65cwB/uWr//2P928/a/g/++OOPv7Y5/vh78D8l4d+Of2ofwb+l/V/8x2vl/k+NOYB/m/7/Xo+/b/+p4Y8//vjjjz/+8/n353euX5I6343/fP7bgnL8S77vU/jL+WuPIw1//KP6p/V7wkel8Jf1Hwv/tv01w1/fAH/88ccf/1dzPCcm5T/lHqV2Vv2fe0n44+/Bv+9swBN/XX9vcwD/eezxx//c+ZsDUf2l3v+TnlHF34Z/yfPfU94BNHZOHf+2/aeeW8bfj7/3OYB/vfXvYQ7gX3f94x/f33NR/a2+/9VaUf0XBf7aBvjjjz/++OOPP/74448//vjjjz/++OOPP/41/SOW6689Tu3u1CmNyA==
   </data>
  </layer>
- <objectgroup name="objects">
-  <object id="1" name="base" x="558.333" y="903.333" width="16" height="20.6667"/>
- </objectgroup>
+ <objectgroup name="objects"/>
 </map>
