@@ -8,7 +8,7 @@ class HelloWorld : public cocos2d::Scene
 public:
 	static cocos2d::Scene* createScene();
 
-	
+
 
 
 	CREATE_FUNC(HelloWorld);

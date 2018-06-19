@@ -1,69 +1,69 @@
- #include "SettingScene.h"
+#include "SettingScene.h"
 
 USING_NS_CC;
 using namespace CocosDenshion;
 
 Scene* Setting::createScene()
 {
-    // 'scene' is an autorelease object
-    auto scene = Scene::create();
-    
-    // 'layer' is an autorelease object
-    auto layer = Setting::create();
+	// 'scene' is an autorelease object
+	auto scene = Scene::create();
 
-    // add layer as a child to scene
-    scene->addChild(layer);
+	// 'layer' is an autorelease object
+	auto layer = Setting::create();
 
-    // return the scene
-    return scene;
+	// add layer as a child to scene
+	scene->addChild(layer);
+
+	// return the scene
+	return scene;
 }
 
 // on "init" you need to initialize your instance
 bool Setting::init()
 {
-    //////////////////////////////
-    // 1. super init first
-    if ( !Layer::init() )
-    {
-        return false;
-    }
-    
-    Size visibleSize = Director::getInstance()->getVisibleSize();
-    Vec2 origin = Director::getInstance()->getVisibleOrigin();
+	//////////////////////////////
+	// 1. super init first
+	if (!Layer::init())
+	{
+		return false;
+	}
 
-    Sprite *bg = Sprite::create("background2.png");
-    
-    // position the label on the center of the screen
-    bg->setPosition(Vec2(origin.x + visibleSize.width/2,
-                             origin.y + visibleSize.height /2));
-    this->addChild(bg);
+	Size visibleSize = Director::getInstance()->getVisibleSize();
+	Vec2 origin = Director::getInstance()->getVisibleOrigin();
+
+	Sprite *bg = Sprite::create("background2.png");
+
+	// position the label on the center of the screen
+	bg->setPosition(Vec2(origin.x + visibleSize.width / 2,
+		origin.y + visibleSize.height / 2));
+	this->addChild(bg);
 
 	MenuItemFont::setFontName("Times New Roman");
 	MenuItemFont::setFontSize(50);
 
 	//ÒôÐ§
-    auto soundToggleMenuItem = MenuItemToggle::createWithCallback(CC_CALLBACK_1(Setting::menuSoundToggleCallback, this), 
-												MenuItemFont::create("On"),
-                                                MenuItemFont::create("Off"),
-												NULL);
-	soundToggleMenuItem->setPosition(Director::getInstance()->convertToGL(Vec2(550,300 )));
+	auto soundToggleMenuItem = MenuItemToggle::createWithCallback(CC_CALLBACK_1(Setting::menuSoundToggleCallback, this),
+		MenuItemFont::create("On"),
+		MenuItemFont::create("Off"),
+		NULL);
+	soundToggleMenuItem->setPosition(Director::getInstance()->convertToGL(Vec2(550, 300)));
 
-    //ÒôÀÖ
-    auto musicToggleMenuItem = MenuItemToggle::createWithCallback(CC_CALLBACK_1(Setting::menuMusicToggleCallback, this), 
-												MenuItemFont::create("On"),
-                                                MenuItemFont::create("Off"),
-												NULL);
+	//ÒôÀÖ
+	auto musicToggleMenuItem = MenuItemToggle::createWithCallback(CC_CALLBACK_1(Setting::menuMusicToggleCallback, this),
+		MenuItemFont::create("On"),
+		MenuItemFont::create("Off"),
+		NULL);
 	musicToggleMenuItem->setPosition(Director::getInstance()->convertToGL(Vec2(550, 180)));
 
-    //Ok°´Å¥
+	//Ok°´Å¥
 	MenuItemFont*okMenuItem = MenuItemFont::create("OK", CC_CALLBACK_1(Setting::menuOkCallback, this));
 	okMenuItem->setPosition(Director::getInstance()->convertToGL(Vec2(580, 410)));
 
-	Menu* mu = Menu::create(soundToggleMenuItem, musicToggleMenuItem,okMenuItem, NULL);
+	Menu* mu = Menu::create(soundToggleMenuItem, musicToggleMenuItem, okMenuItem, NULL);
 	mu->setPosition(Vec2::ZERO);
 	this->addChild(mu);
 
-    return true;
+	return true;
 }
 
 void Setting::menuOkCallback(Ref* pSender)

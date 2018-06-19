@@ -44,7 +44,7 @@ building* building::createWithBuildingType(Building_type building_type)
 	if (sprite && building_type == Base &&sprite->initWithFile("base.png"))
 	{
 		sprite->autorelease();//将精灵放入内存自动池中
-		sprite->setScale(0.15);
+		sprite->setScale(0.10);
 		auto body = PhysicsBody::create();
 		body->addShape(PhysicsShapeCircle::create(sprite->building_r));
 

@@ -12,6 +12,7 @@
 #define POWERTAG 8
 #define POWERPNG 9
 #define SOLDIERBUTTONTAG 10
+#define TANKBUTTONTAG 11
 #include"cocos2d.h"
 USING_NS_CC;
 class button : public Layer
@@ -21,27 +22,26 @@ class button : public Layer
 	Sprite*epowerbutton;
 	Sprite*barrackbutton;
 	Sprite*carincbutton;
-
 	Sprite*soldierbutton;
-
+	Sprite*tankbutton;
 	//上下按钮背景栏
 	Sprite*buttonlist;
 	Sprite*moneypowerlist;
 	//钱与电力
 	String*smoney;
 	Sprite*moneypng;
-	int money=1000;
 	Label*lblmoney;
 	String*spower;
 	Sprite*powerpng;
-	int power=1000;
 	Label*lblpower;
 public:
+	int money = 1000;
+	int power = 1000;
 	virtual bool init();
 	virtual void onEnter();
 	virtual void onExit();
 	bool isTap(cocos2d::EventMouse*em, cocos2d::Node*node);
-	int buildornot=0;//按钮是否提供了建造允许
+	int buildornot = 0;//按钮是否提供了建造允许
 	int buildchoice = 0;//修建哪个建筑
 	virtual bool onMouseDown(Event*e);
 	virtual void onMouseUp(Event*e);
@@ -51,3 +51,4 @@ public:
 	CREATE_FUNC(button);
 };
 #endif 
+

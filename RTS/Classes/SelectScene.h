@@ -33,3 +33,4 @@ public:
 };
 
 #endif // __Setting_SCENE_H__
+

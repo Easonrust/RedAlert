@@ -39,7 +39,7 @@ bool Select::init()
 
 	MenuItemFont::setFontName("Times New Roman");
 	MenuItemFont::setFontSize(40);
-	
+
 	// 
 	MenuItemFont*lastMenuItem = MenuItemFont::create("GO BACK", CC_CALLBACK_1(Select::menuLastToggleCallback, this));
 	lastMenuItem->setPosition(Director::getInstance()->convertToGL(Vec2(900, 500)));
@@ -50,7 +50,7 @@ bool Select::init()
 	MenuItemFont*map2MenuItem = MenuItemFont::create("MAP2", CC_CALLBACK_1(Select::menuMap2ToggleCallback, this));
 	map2MenuItem->setPosition(Director::getInstance()->convertToGL(Vec2(580, 300)));
 
-	Menu* mu = Menu::create(lastMenuItem,map2MenuItem, map1MenuItem, NULL);
+	Menu* mu = Menu::create(lastMenuItem, map2MenuItem, map1MenuItem, NULL);
 	mu->setPosition(Vec2::ZERO);
 	this->addChild(mu);
 
@@ -64,7 +64,7 @@ void Select::menuLastToggleCallback(Ref* pSender)
 
 void Select::menuMap1ToggleCallback(Ref* pSender)
 {
-	
+
 }
 
 void Select::menuMap2ToggleCallback(Ref* pSender)

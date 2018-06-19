@@ -29,9 +29,12 @@ bool button::init()
 	carincbutton->setScale(0.1, 0.11);
 	soldierbutton = Sprite::create("soldierbutton.png");//士兵按钮
 	soldierbutton->setPosition(Vec2(500, 27));
-	addChild(soldierbutton, 1,SOLDIERBUTTONTAG);
+	addChild(soldierbutton, 1, SOLDIERBUTTONTAG);
 	//soldierbutton->setScale(0.1, 0.11);
-
+	tankbutton = Sprite::create("tankbutton.png");//坦克按钮
+	tankbutton->setPosition(Vec2(600, 27));
+	addChild(tankbutton, 1, TANKBUTTONTAG);
+	tankbutton->setScale(0.3);
 	//显示钱与电力
 	moneypowerlist = Sprite::create("moneypowerlist.png");//右上钱和电力状态栏
 	moneypowerlist->setPosition(Vec2(1450, 875));
@@ -57,7 +60,7 @@ bool button::init()
 	powerpng->setScale(0.8, 0.8);
 	powerpng->setPosition(1483, 875);
 	this->addChild(powerpng, 1, POWERPNG);
-	schedule(schedule_selector(button::scheduleMoneyPower),0.1f);//调整金钱的函数
+	schedule(schedule_selector(button::scheduleMoneyPower), 0.1f);//调整金钱的函数
 	schedule(schedule_selector(button::schedulebutton), 0.1f);//调整建筑能否建造（钱和电力够不够）
 	return true;
 }
@@ -65,7 +68,7 @@ bool button::init()
 //调整金钱
 void button::scheduleMoneyPower(float delta)
 {
-	money +=50 ;
+	money += 50;
 	this->removeChildByTag(MONEYTAG);
 	smoney = String::createWithFormat("%d", money);
 	lblmoney = Label::createWithTTF(smoney->getCString(), "fonts/Marker Felt.ttf", 24);
@@ -89,7 +92,6 @@ void button::schedulebutton(float delta)
 	if (money < 1000)
 	{
 		barrackbutton = Sprite::create("barrackbuttoncannot.png");
-		buildornot = 0;
 	}
 	else
 	{
@@ -97,13 +99,12 @@ void button::schedulebutton(float delta)
 	}
 	barrackbutton->setPosition(Vec2(300, 27));
 	barrackbutton->setScale(0.1, 0.1);
-	addChild(barrackbutton, 1,BARRACKBUTTONTAG);
+	addChild(barrackbutton, 1, BARRACKBUTTONTAG);
 	//mine
 	this->removeChildByTag(MINEBUTTONTAG);
-	if (money < 1000)
+	if (money < 900)
 	{
 		minebutton = Sprite::create("minebuttoncannot.png");
-		buildornot = 0;
 	}
 	else
 	{
@@ -111,13 +112,12 @@ void button::schedulebutton(float delta)
 	}
 	minebutton->setPosition(Vec2(100, 23));
 	minebutton->setScale(0.2, 0.2);
-	addChild(minebutton, 1,MINEBUTTONTAG);
+	addChild(minebutton, 1, MINEBUTTONTAG);
 	//epower
 	this->removeChildByTag(EPOWERBUTTONTAG);
-	if (money < 1000)
+	if (money < 800)
 	{
 		epowerbutton = Sprite::create("epowerbuttoncannot.png");
-		buildornot = 0;
 	}
 	else
 	{
@@ -125,13 +125,12 @@ void button::schedulebutton(float delta)
 	}
 	epowerbutton->setPosition(Vec2(200, 27));
 	epowerbutton->setScale(0.15, 0.15);
-	addChild(epowerbutton, 1,EPOWERBUTTONTAG);
+	addChild(epowerbutton, 1, EPOWERBUTTONTAG);
 	//carinc
 	this->removeChildByTag(CARINCBUTTONTAG);
-	if (money < 1000)
+	if (money < 700)
 	{
 		carincbutton = Sprite::create("carincbuttoncannot.png");
-		buildornot = 0;
 	}
 	else
 	{
@@ -140,30 +139,59 @@ void button::schedulebutton(float delta)
 	carincbutton->setPosition(Vec2(400, 27));
 	carincbutton->setScale(0.1, 0.1);
 	addChild(carincbutton, 1, CARINCBUTTONTAG);
+	//soldier
+	this->removeChildByTag(SOLDIERBUTTONTAG);
+	if (money <= 100)
+	{
+		soldierbutton = Sprite::create("soldierbuttoncannot.png");
+	}
+	else
+	{
+		soldierbutton = Sprite::create("soldierbutton.png");
+	}
+	soldierbutton->setPosition(Vec2(500, 27));
+	addChild(soldierbutton, 1, SOLDIERBUTTONTAG);
+	//tank
+	this->removeChildByTag(TANKBUTTONTAG);
+	if (money <= 500)
+	{
+		tankbutton = Sprite::create("tankbuttoncannot.png");
+	}
+	else
+	{
+		tankbutton = Sprite::create("tankbutton.png");
+	}
+	tankbutton->setScale(0.3);
+	tankbutton->setPosition(Vec2(600, 27));
+	addChild(tankbutton, 1, TANKBUTTONTAG);
 }
 
 //购买建筑后更新金钱
 void button::updatemoney(int buildchoice)
 {
-	switch (buildchoice)
+	if (buildchoice == 1 && money >= 900)
 	{
-	case 1:
-		money -= 1000;//矿厂钱数
-		break;
-	case 2:
-		money -= 1000;//兵营钱数
-		break;
-	case 3:
-		money -= 1000;//电厂钱数
-		break;
-	case 4:
-		money -= 1000;//车厂钱数
-		break;
-	case 5:
-		money -= 1000;//士兵钱数
-		break;
-	default:
-		break;
+		money -= 900;
+	}
+	else if (buildchoice == 2 && money >= 1000)
+	{
+		money -= 1000;
+	}
+	else if (buildchoice == 3 && money >= 800)
+	{
+		money -= 800;
+	}
+	else if (buildchoice == 4 && money >= 700)
+	{
+		money -= 700;
+	}
+	else if (buildchoice == 5 && money >= 100)
+	{
+		money -= 100;
+	}
+	else if (buildchoice == 6 && money >= 500)
+	{
+		money -= 500;
 	}
 	this->removeChildByTag(MONEYTAG);
 	smoney = String::createWithFormat("%d", money);
@@ -219,12 +247,13 @@ void button::onMouseUp(Event*e)
 	auto epowerbuttontag = this->getChildByTag(EPOWERBUTTONTAG);
 	auto carincbuttontag = this->getChildByTag(CARINCBUTTONTAG);
 	auto soldierbuttontag = this->getChildByTag(SOLDIERBUTTONTAG);
+	auto tankbuttontag = this->getChildByTag(TANKBUTTONTAG);
 	if (this->isTap(em, minebuttontag))
 	{
 		buildornot = 1;
 		buildchoice = 1;
 	}
-	else if (this->isTap(em,barrackbuttontag))
+	else if (this->isTap(em, barrackbuttontag))
 	{
 		buildornot = 1;
 		buildchoice = 2;
@@ -243,5 +272,10 @@ void button::onMouseUp(Event*e)
 	{
 		buildornot = 2;
 		buildchoice = 5;
+	}
+	else if (this->isTap(em, tankbuttontag))
+	{
+		buildornot = 3;
+		buildchoice = 6;
 	}
 }

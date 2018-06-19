@@ -10,26 +10,27 @@
 #include<algorithm>
 USING_NS_CC;
 using namespace std;
-typedef enum{
-    Base = 0,
-    Epower =1,
-    Mine = 2,
-    Barrack = 3,
-    Carinc = 4
+typedef enum {
+	Base = 0,
+	Epower = 1,
+	Mine = 2,
+	Barrack = 3,
+	Carinc = 4
 }Building_type;
 
-class building : public Sprite{
+class building : public Sprite {
 public:
-    int building_health;
-    int building_r;//半径
-    bool Selected = 0;
-    Sprite* bloodbar;
-    ProgressTimer* progress;
-    static building*createWithBuildingType(Building_type building_type);//按照建筑类型进行建造
-    static void judge_seleted(Vector<building*>vec,Vec2 mouse_down,Vec2 mouse_up);//是否选中
-    static void add_blood_bar( building* spr);
-    static bool isTap(cocos2d::Vec2 mouselocation, cocos2d::Node*node);
-    static void clear(Vector<building*>vec);
-    Node* buildingnode;
+	int building_health;
+	int building_r;//半径
+	bool Selected = 0;
+	Sprite* bloodbar;
+	ProgressTimer* progress;
+	static building*createWithBuildingType(Building_type building_type);//按照建筑类型进行建造
+	static void judge_seleted(Vector<building*>vec, Vec2 mouse_down, Vec2 mouse_up);//是否选中
+	static void add_blood_bar(building* spr);
+	static bool isTap(cocos2d::Vec2 mouselocation, cocos2d::Node*node);
+	static void clear(Vector<building*>vec);
+	Node* buildingnode;
 };
 #endif
+
