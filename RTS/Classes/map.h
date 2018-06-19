@@ -18,7 +18,7 @@ class mymap : public Layer
 	Vec2 repair; //坐标修正量
 	int buildingnum = 0;//建筑数量
 	int soldiernum = 0;
-	Vec2 barrackpos;
+               Vec2 barrackpos=Vec2(0,0);
 	Vec2 mouse_up;
 	Vec2 mouse_down;
 	int bloodnum = 100;//血量条的数量+100
@@ -34,7 +34,8 @@ public:
 	virtual void onExit();
 	void moveBlood(float delta);//更新建筑血量的函数
     void scheduleBlood_enemy(float delta);
-	void setmap(float delta);//移动地图的函数
+	void protectmap(float delta);
+                void iscollide(float delta);
 	CREATE_FUNC(mymap);
 };
 

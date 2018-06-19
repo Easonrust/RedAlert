@@ -19,23 +19,23 @@ building* building::createWithBuildingType(Building_type building_type)
 	building*sprite = new building();
 	switch (building_type) {
 	case Base:
-		sprite->building_r = 75;
+		sprite->building_r = 250;
 		sprite->building_health = 1000;
 		break;
 	case Mine:
-		sprite->building_r = 75;
+		sprite->building_r = 180;
 		sprite->building_health = 1000;
 		break;
 	case Epower:
-		sprite->building_r = 75;
+		sprite->building_r = 250;
 		sprite->building_health = 1000;
 		break;
 	case Barrack:
-		sprite->building_r = 75;
+		sprite->building_r = 250;
 		sprite->building_health = 1000;
 		break;
 	case Carinc:
-		sprite->building_r = 75;
+		sprite->building_r = 250;
 		sprite->building_health = 1000;
 		break;
 	default:
@@ -50,17 +50,19 @@ building* building::createWithBuildingType(Building_type building_type)
 
 		body->setRotationEnable(false);
 		body->setDynamic(false);
+		sprite->setPhysicsBody(body);
 		return sprite;
 	}
 	if (sprite && building_type == Mine &&sprite->initWithFile("mine.png"))
 	{
 		sprite->autorelease();//将精灵放入内存自动池中
-		sprite->setScale(0.15);
+		sprite->setScale(0.3);
 		auto body = PhysicsBody::create();
 		body->addShape(PhysicsShapeCircle::create(sprite->building_r));
 
 		body->setRotationEnable(false);
 		body->setDynamic(false);
+		sprite->setPhysicsBody(body);
 		return sprite;
 	}
 	if (sprite && building_type == Barrack &&sprite->initWithFile("barrack.png"))
@@ -72,6 +74,7 @@ building* building::createWithBuildingType(Building_type building_type)
 
 		body->setRotationEnable(false);
 		body->setDynamic(false);
+		sprite->setPhysicsBody(body);
 		return sprite;
 	}
 	if (sprite && building_type == Epower &&sprite->initWithFile("epower.png"))
@@ -83,6 +86,7 @@ building* building::createWithBuildingType(Building_type building_type)
 
 		body->setRotationEnable(false);
 		body->setDynamic(false);
+		sprite->setPhysicsBody(body);
 		return sprite;
 	}
 	if (sprite && building_type == Carinc &&sprite->initWithFile("carinc.png"))
@@ -94,6 +98,7 @@ building* building::createWithBuildingType(Building_type building_type)
 
 		body->setRotationEnable(false);
 		body->setDynamic(false);
+		sprite->setPhysicsBody(body);
 		return sprite;
 	}
 	CC_SAFE_DELETE(sprite);

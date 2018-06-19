@@ -46,6 +46,8 @@ bool mymap::init()
     
 	schedule(schedule_selector(mymap::moveBlood), 0.1f);  //刷新函数，每隔0.1秒
 	schedule(schedule_selector(mymap::setmap), 0.1f);
+	schedule(schedule_selector(mymap::protectmap), 0);
+	schedule(schedule_selector(mymap::iscollide), 0);
 	return true;
 }
 //血量刷新函数
@@ -94,6 +96,56 @@ void mymap::onEnter() {
 		auto location = em->getLocation();
 		location = Director::getInstance()->convertToGL(location);
 		mouse_down = location+repair;
+	};
+	listener->onMouseMove = [this](Event *e) {
+		EventMouse* em = (EventMouse*)e;
+		auto location = em->getLocation();
+		location.y = 900 - location.y;
+		pos1 = this->getPosition();
+		auto tilesize = _tileMap->getTileSize();
+		auto visize = Director::getInstance()->getVisibleSize();
+		if (location.y >= 880 && pos1.y > -700)
+		{
+			Action*actionup = this->runAction(MoveTo::create((pos1.y + 700) / 10, Vec2(pos1.x, -700)));
+			actionup->setTag(1);
+		}
+		if (location.y <= 20 && pos1.y < 0)
+		{
+			//this->stopAllActions();
+			Action*actiondown = this->runAction(MoveTo::create(-pos1.y / 10, Vec2(pos1.x, 0)));
+			actiondown->setTag(2);
+		}
+		else if (location.x <= 20 && pos1.x < 0)
+		{
+			Action*actionleft = this->runAction(MoveTo::create(-pos1.x / 10, Vec2(0, pos1.y)));
+			actionleft->setTag(3);
+		}
+		else if (location.x >= 1580 && pos1.x > -1600)
+		{
+			Action*actionright = this->runAction(MoveTo::create((pos1.x + 1600) / 10, Vec2(-1600, pos1.y)));
+			actionright->setTag(4);
+		}
+		pos1 = this->getPosition();
+		if (location.y < 850)
+		{
+			this->stopActionByTag(1);
+			repair = originmap - pos1;
+		}
+		if (location.y > 20)
+		{
+			this->stopActionByTag(2);
+			repair = originmap - pos1;
+		}
+		if (location.x > 50)
+		{
+			this->stopActionByTag(3);
+			repair = originmap - pos1;
+		}
+		if (location.x < 1550)
+		{
+			this->stopActionByTag(4);
+			repair = originmap - pos1;
+		}
 	};
 	listener->onMouseUp = [this](Event *e) {
 		
@@ -185,61 +237,36 @@ void mymap::onExit() {
 	log("mouseTouchEvent onExit");
 	Director::getInstance()->getEventDispatcher()->removeAllEventListeners();
 }
-void mymap::setmap(float delta)
+void mymap::protectmap(float delta)
 {
-	auto listener = EventListenerMouse::create();
-	listener->onMouseMove = [this](Event *e) {
-		EventMouse* em = (EventMouse*)e;
-		auto location = em->getLocation();
-		location.y = 900 - location.y;
-		auto pos1 = this->getPosition();
-		if (location.y >= 850)
-		{
-			Action*actionup = this->runAction(MoveTo::create(3000, Vec2(pos1.x, pos1.y - 1000)));
-			actionup->setTag(1);
-		}
-		if (location.y <= 20)
-		{
-			Action*actiondown = this->runAction(MoveTo::create(3000, Vec2(pos1.x, pos1.y + 1000)));
-			actiondown->setTag(2);
-		}
-		else if (location.x <= 50)
-		{
-			Action*actionleft = this->runAction(MoveTo::create(3000, Vec2(pos1.x + 1000, pos1.y)));
-			actionleft->setTag(3);
-		}
-		else if (location.x >= 1550)
-		{
-			Action*actionright = this->runAction(MoveTo::create(3000, Vec2(pos1.x - 1000, pos1.y)));
-			actionright->setTag(4);
-		}
-		pos1 = this->getPosition();
 
-		if (location.y < 850)
-		{
-			this->stopActionByTag(1);
-			repair = originmap - pos1;
-		}
-		if (location.y >20)
-		{
-			this->stopActionByTag(2);
-			repair = originmap - pos1;
-		}
-		if (location.x >50)
-		{
-			this->stopActionByTag(3);
-			repair = originmap - pos1;
-		}
-		if (location.x <1550)
-		{
-			this->stopActionByTag(4);
-			repair = originmap - pos1;
-		}
-	};
-
-	EventDispatcher* eventDispatcher = Director::getInstance()->getEventDispatcher();
-	eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
+	pos1 = this->getPosition();
+	//log("%f", pos1.y);
+	log("%f", pos1.x);
+	if (pos1.y < -700)
+	{
+		this->stopActionByTag(1);
+		this->setPositionY(-700);
+	}
+	if (pos1.y > 0)
+	{
+		this->stopActionByTag(2);
+		this->setPositionY(0);
+	}
+	if (pos1.x < -1600)
+	{
+		this->stopActionByTag(4);
+		this->setPositionX(-1600);
+	}
+	if (pos1.x > 0)
+	{
+		this->stopActionByTag(3);
+		this->setPositionX(0);
+	}
+	pos1 = this->getPosition();
+	repair = originmap - pos1;
 }
+
 
 //检测该地点能否建造建筑（不与其他建筑重叠）有bug。。。。没有使用物理引擎，在移动地图后就失效了，唉。。。
 bool mymap::canbuild(Vec2 location)
@@ -262,10 +289,17 @@ bool mymap::canbuild(Vec2 location)
 		return true;
 	}
 }
-Vec2 mymap::tileCoordFromPosition(Vec2 pos)
+Vec2 mymap::tileCoordFromPosition(cocos2d::Vec2 &position)
 {
-	int x = pos.x / _tileMap->getTileSize().width;
-	int y = ((_tileMap->getMapSize().height * _tileMap->getTileSize().height) - pos.y) / _tileMap->getTileSize().height;
+	Size visibleSize = Director::getInstance()->getVisibleSize();
+	Vec2 origin = Director::getInstance()->getVisibleOrigin();
+
+
+	int x = static_cast<int>(((position.x - origin.x)
+		/ (_tileMap->getTileSize().width / CC_CONTENT_SCALE_FACTOR())));
+	float pointHeight = _tileMap->getTileSize().height / CC_CONTENT_SCALE_FACTOR();
+	int y = static_cast<int>(((_tileMap->getMapSize().height * pointHeight - position.y) / pointHeight));
+
 	return Vec2(x, y);
 }
 
@@ -286,4 +320,31 @@ bool mymap::collide(Vec2 pos)
 		}
 	}
 	return false;
+}
+void mymap::iscollide(float delta) {
+	for (int i = 0; i < soldiers.size(); ++i)
+	{
+		Vec2 pos = soldiers.at(i)->getPosition();
+		if (collide(pos + Vec2(0, 1)))
+		{
+			soldiers.at(i)->stopAllActions();
+			soldiers.at(i)->setPosition(pos - Vec2(0, 1));
+		}
+		else if (collide(pos + Vec2(1, 0)))
+		{
+			soldiers.at(i)->stopAllActions();
+			soldiers.at(i)->setPosition(pos - Vec2(1, 0));
+		}
+		else if (collide(pos - Vec2(0, 1)))
+		{
+			soldiers.at(i)->stopAllActions();
+			soldiers.at(i)->setPosition(pos + Vec2(0, 1));
+
+		}
+		else if (collide(pos - Vec2(1, 0)))
+		{
+			soldiers.at(i)->stopAllActions();
+			soldiers.at(i)->setPosition(pos + Vec2(1, 0));
+		}
+	}
 }
