@@ -1,6 +1,7 @@
 #include"map.h"
 #include"button.h"
 #include "building.h"
+#include <string>
 #include <iostream>
 bool mymap::init()
 {
@@ -39,10 +40,12 @@ bool mymap::init()
 }
 //血量刷新函数
 void mymap::scheduleBlood(float delta) {
-	for (int i = 0; i<buildings.size(); i++) {
-		if (buildings.at(i)->progress->getPercentage() != 100) {
-			buildings.at(i)->progress->setPercentage(buildings.at(i)->progress->getPercentage() + 0.1);
-			buildings.at(i)->progress->setVisible(true);
+	for (int i = 0; i < soldiers.size(); ++i)
+	{
+		if (soldiers.at(i)->selected == 1)
+		{
+			soldiers.at(i)->blood->setPosition(soldiers.at(i)->getPositionX(), soldiers.at(i)->getPositionY()+16);
+			soldiers.at(i)->progress->setPosition(soldiers.at(i)->getPositionX(), soldiers.at(i)->getPositionY() + 16);
 		}
 	}
 }
@@ -55,15 +58,28 @@ void mymap::onEnter() {
 		EventMouse* em = (EventMouse*)e;
 		auto location = em->getLocation();
 		location = Director::getInstance()->convertToGL(location);
-		mouse_down = location;
+		mouse_down = location+repair;
 	};
 	listener->onMouseUp = [this](Event *e) {
+		
 		EventMouse* em = (EventMouse*)e;
+		std::string str = " ";
+		str += to_string(static_cast<int>(em->getMouseButton()
+			));
+		if (str  == " 1") {
+			Soldier::clear(soldiers);
+		}
 		auto location = em->getLocation();
-		mouse_up = location;
-		Soldier::judge_selected(soldiers, mouse_down, mouse_up);
 		location = Director::getInstance()->convertToGL(location);//将鼠标的坐标转换为世界坐标
 																  //基本创建建筑的事件
+		mouse_up = location+repair;
+		Soldier::judge_selected(soldiers, mouse_down, mouse_up);
+		if (mouse_up==mouse_down&&!buttonlayer->buildornot && !(buttonlayer->isTap(em, buttonlayer->getChildByTag(SOLDIERBUTTONTAG))) && !(buttonlayer->isTap(em, buttonlayer->getChildByTag(CARINCBUTTONTAG))) && !(buttonlayer->isTap(em, buttonlayer->getChildByTag(MINEBUTTONTAG))) && !(buttonlayer->isTap(em, buttonlayer->getChildByTag(EPOWERBUTTONTAG))) && !(buttonlayer->isTap(em, buttonlayer->getChildByTag(BARRACKBUTTONTAG))))
+		{
+
+			Soldier::run(soldiers, mouse_up);
+		}
+			
 		if (buttonlayer->buildornot == 1 && !(buttonlayer->isTap(em, buttonlayer->getChildByTag(SOLDIERBUTTONTAG))) && !(buttonlayer->isTap(em, buttonlayer->getChildByTag(CARINCBUTTONTAG))) && !(buttonlayer->isTap(em, buttonlayer->getChildByTag(MINEBUTTONTAG))) && !(buttonlayer->isTap(em, buttonlayer->getChildByTag(EPOWERBUTTONTAG))) && !(buttonlayer->isTap(em, buttonlayer->getChildByTag(BARRACKBUTTONTAG))))
 		{
 			Vec2 position = location + repair;//修正量起作用了
