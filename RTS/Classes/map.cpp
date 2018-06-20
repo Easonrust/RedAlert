@@ -48,6 +48,7 @@ bool mymap::init()
 	schedule(schedule_selector(mymap::moveBlood), 0.1f);  //刷新函数，每隔0.1秒
 	schedule(schedule_selector(mymap::protectmap), 0);
 	schedule(schedule_selector(mymap::iscollide), 0);
+    schedule(schedule_selector(mymap::scheduleBlood_enemy), 0.1f);
 	return true;
 }
 //血量刷新函数
@@ -79,13 +80,19 @@ enemy_soldiers.at(i)->progress->setPercentage(enemy_soldiers.at(i)->progress->ge
 }
 }
 }*/
-/*void mymap::scheduleBlood_enemy(float delta) {
-	for (int i = 0; i<enemy_soldiers.size(); i++) {
-		if (!enemy_soldiers.at(i)->attacker) {
-			enemy_soldiers.at(i)->progress->setPercentage(enemy_soldiers.at(i)->progress->getPercentage() - enemy_soldiers.at(i)->attacker * 2);
+void mymap::scheduleBlood_enemy(float delta) {
+	for (int i = 0; i<soldiers.size(); i++) {
+		if (soldiers.at(i)->a_enemy!=nullptr) {
+            if(soldiers.at(i)->getPosition().getDistance(soldiers.at(i)->a_enemy->getPosition())<=200){
+                soldiers.at(i)->stopAllActions();
+                soldiers.at(i)->a_enemy->progress->setPercentage(soldiers.at(i)->a_enemy->progress->getPercentage()-2);
+            }
+            else{
+                Soldier::run(soldiers, soldiers.at(i)->a_enemy->getPosition());
+            }
 		}
 	}
-}*/
+}
 void mymap::onEnter() {
 	Layer::onEnter();
 	log("mouseTouchEvent onEnter");
@@ -167,11 +174,11 @@ void mymap::onEnter() {
 
 			Soldier::run(soldiers, mouse_up);
 		}
-		/*for (int i = 0; i<enemy_soldiers.size(); i++) {
+		for (int i = 0; i<enemy_soldiers.size(); i++) {
 			if (Soldier::isTap(location, enemy_soldiers.at(i))) {
 				Soldier::attack(soldiers, enemy_soldiers, location);
 			}
-		}*/
+		}
 		if (buttonlayer->buildornot == 1 && !(buttonlayer->isTap(em, buttonlayer->getChildByTag(SOLDIERBUTTONTAG))) && !(buttonlayer->isTap(em, buttonlayer->getChildByTag(CARINCBUTTONTAG))) && !(buttonlayer->isTap(em, buttonlayer->getChildByTag(MINEBUTTONTAG))) && !(buttonlayer->isTap(em, buttonlayer->getChildByTag(EPOWERBUTTONTAG))) && !(buttonlayer->isTap(em, buttonlayer->getChildByTag(BARRACKBUTTONTAG))))
 		{
 			Vec2 position = location + repair;//修正量起作用了

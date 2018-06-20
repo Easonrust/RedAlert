@@ -175,8 +175,10 @@ public:
             if(isTap(target,enemy.at(i))) a = i;
             break;
         }
-        
-        for (int i = 0; i<vec.size(); i++) {
+        for(int i = 0;i<vec.size();i++){
+            if(vec.at(i)->selected) vec.at(i)->a_enemy = enemy.at(a);
+        }
+        /*for (int i = 0; i<vec.size(); i++) {
             if(vec.at(i)->selected && vec.at(i)->getPosition().getDistance(target)<=200){
                 if(vec.at(i)->a_enemy){
                     vec.at(i)->a_enemy->attacker--;
@@ -199,7 +201,7 @@ public:
             if(vec.at(i)->isrun){
                 vec.at(i)->runAction(MoveTo::create(distance/30, arrive));
             }
-        }
+        }*/
     }
 };
 
