@@ -13,6 +13,7 @@
 #define POWERPNG 9
 #define SOLDIERBUTTONTAG 10
 #define TANKBUTTONTAG 11
+#define ROBOTBUTTONTAG 12
 #include"cocos2d.h"
 USING_NS_CC;
 class button : public Layer
@@ -24,6 +25,7 @@ class button : public Layer
 	Sprite*carincbutton;
 	Sprite*soldierbutton;
 	Sprite*tankbutton;
+	Sprite*robotbutton;
 	//ÉÏÏÂ°´Å¥±³¾°À¸
 	Sprite*buttonlist;
 	Sprite*moneypowerlist;

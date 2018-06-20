@@ -1,8 +1,8 @@
 #include"building.h"
 void building::add_blood_bar(building* spr) {
-	spr->bloodbar = Sprite::create("bar.png");   //创建进度框
-	spr->bloodbar->setPosition(Vec2(spr->getPositionX(), spr->getPositionY() + 65)); //设置框的位置
-	spr->bloodbar->setScale(0.2);
+	spr->blood = Sprite::create("bar.png");   //创建进度框
+	spr->blood->setPosition(Vec2(spr->getPositionX(), spr->getPositionY() + 65)); //设置框的位置
+	spr->blood->setScale(0.2);
 	auto blood = Sprite::create("blood.png");  //创建血条
 	spr->progress = ProgressTimer::create(blood); //创建progress对象
 	spr->progress->setType(ProgressTimer::Type::BAR);        //类型：条状
@@ -19,24 +19,29 @@ building* building::createWithBuildingType(Building_type building_type)
 	building*sprite = new building();
 	switch (building_type) {
 	case Base:
-		sprite->building_r = 250;
+		sprite->building_r = 180;
 		sprite->building_health = 1000;
+		sprite->originhealth = 1000;
 		break;
 	case Mine:
 		sprite->building_r = 180;
 		sprite->building_health = 1000;
+		sprite->originhealth = 1000;
 		break;
 	case Epower:
 		sprite->building_r = 250;
 		sprite->building_health = 1000;
+		sprite->originhealth = 1000;
 		break;
 	case Barrack:
 		sprite->building_r = 250;
 		sprite->building_health = 1000;
+		sprite->originhealth = 1000;
 		break;
 	case Carinc:
 		sprite->building_r = 250;
 		sprite->building_health = 1000;
+		sprite->originhealth = 1000;
 		break;
 	default:
 		break;
@@ -104,49 +109,35 @@ building* building::createWithBuildingType(Building_type building_type)
 	CC_SAFE_DELETE(sprite);
 	return nullptr;
 }
-void building::judge_seleted(Vector<building*>vec, Vec2 mouse_down, Vec2 mouse_up)
-{
-	if (mouse_up == mouse_down)
-	{
-		for (int i = 0; i < vec.size(); i++) {
-			auto node = vec.at(i)->buildingnode;
-			//auto location = vec[i]->getPosition();//世界坐标
-			//auto p_size = vec[i]->getContentSize();
-			if (isTap(mouse_down, node))//检查是否点到图片上,运用了自定义的函数isTap
-			{
-				vec.at(i)->Selected = 1;
+void building::judge_selected(Vector<building*> vec, Vec2 down, Vec2 up) {
+	if (up == down) {
+		for (int i = 0; i<vec.size(); i++) {
+			auto p = vec.at(i)->getPosition();  //GL
+			if (isTap(down, vec.at(i))) {
+				vec.at(i)->selected = 1;
+				vec.at(i)->blood->setVisible(true);
+				vec.at(i)->progress->setVisible(true);
 			}
 		}
 	}
-	if (mouse_up != mouse_down)
-	{
-		float x_min = min(mouse_up.x, mouse_down.x);
-		float x_max = max(mouse_up.x, mouse_down.x);
-		float y_min = min(mouse_up.y, mouse_down.y);
-		float y_max = max(mouse_up.y, mouse_down.y);
-		for (int i = 0; i < vec.size(); i++)
-		{
-			auto location = vec.at(i)->getPosition();//世界坐标
-			if (location.x >= x_min&&location.x <= x_max&& location.y >= y_min && location.y <= y_max)//这里没有考虑图片大小，觉得需要优化
-			{
-				vec.at(i)->Selected = 1;
+	if (up != down) {
+		float x_min = fmin(up.x, down.x);
+		float x_max = fmax(up.x, down.x);
+		float y_min = fmin(up.y, down.y);
+		float y_max = fmax(up.y, down.y);
+		for (int i = 0; i<vec.size(); i++) {
+			auto p = vec.at(i)->getPosition();
+			if (p.x >= x_min&& p.x <= x_max&&p.y >= y_min&& p.y <= y_max) {
+				vec.at(i)->blood->setVisible(true);
+				vec.at(i)->progress->setVisible(true);
+				vec.at(i)->selected = 1;
 			}
 		}
 	}
 }
-void building::clear(Vector<building*>vec)
+ bool building:: isTap(cocos2d::Vec2 location, cocos2d::Node*node)//判断是否点中精灵的函数
 {
-	for (int i = 0; i < vec.size(); i++)
-	{
-		vec.at(i)->Selected = 0;
-		//血条消失
-	}
-}
-bool building::isTap(cocos2d::Vec2 mouselocation, cocos2d::Node*node)
-{
-
-	//location1.y = 900 - location1.y;
-	Vec2 locationInNode = node->convertToNodeSpace(mouselocation);
+	Vec2 locationInNode = node->convertToNodeSpace(location);
 	Size s = node->getContentSize();
 	Rect rect = Rect(0, 0, s.width, s.width);
 	if (rect.containsPoint(locationInNode))

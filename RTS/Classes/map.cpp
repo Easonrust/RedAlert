@@ -11,44 +11,28 @@ bool mymap::init()
 	}
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
-	SpriteFrameCache::getInstance()->addSpriteFramesWithFile("build.plist");
+	SpriteFrameCache::getInstance()->addSpriteFramesWithFile("animate.plist");
 	this->setAnchorPoint(Vec2(0, 0));
 	originmap = this->getPosition();
 	repair = Vec2(0, 0);//移动地图后，在地图上建造精灵时坐标的修正量
-
-						//导入地图
-
 	_tileMap = TMXTiledMap::create("map/MiddleMap.tmx");
 	addChild(_tileMap, 0, MAPTAG);
 	_collidable = _tileMap->getLayer("collidable");
 	_collidable->setVisible(false);
-	/*//根据地图文件中的对象层创建基地对象
-	TMXObjectGroup* group = _tileMap->getObjectGroup("objects");
-	ValueMap spawnPoint = group->getObject("base");
-	float x = spawnPoint["x"].asFloat();
-	float y = spawnPoint["y"].asFloat();*/
-	auto bing = Soldier::create("base.png");
-	bing->setPosition(720, 450);
-	Soldier::add_bloodbar(bing);
-	addChild(bing);
-	addChild(bing->blood);
-	addChild(bing->progress);
-	enemy_soldiers.pushBack(bing);
-	bing->blood->setVisible(true);
-	bing->progress->setVisible(true);
 	auto base = building::createWithBuildingType(Base);
 	buildingnum += 1;//将地图上目前的建筑总数加一
 	base->setPosition(Vec2(300, 300));
 	building::add_blood_bar(base);
-	buildings.pushBack(base);//将基地添加到建筑物容器中
 	addChild(base);
-	addChild(base->bloodbar);
+	addChild(base->blood);
 	addChild(base->progress);
+	enemy_buildings.pushBack(base);//将基地添加到建筑物容器中
 
 	schedule(schedule_selector(mymap::moveBlood), 0.1f);  //刷新函数，每隔0.1秒
 	schedule(schedule_selector(mymap::protectmap), 0);
 	schedule(schedule_selector(mymap::iscollide), 0);
-    schedule(schedule_selector(mymap::scheduleBlood_enemy), 0.1f);
+	schedule(schedule_selector(mymap::scheduleBlood_enemy), 0.1f);
+	//schedule(schedule_selector(mymap::soldierattack), 0);
 	return true;
 }
 //血量刷新函数
@@ -57,39 +41,89 @@ void mymap::moveBlood(float delta) {
 	{
 		if (soldiers.at(i)->selected == 1)
 		{
-			soldiers.at(i)->blood->setPosition(soldiers.at(i)->getPositionX(), soldiers.at(i)->getPositionY() + 16);
-			soldiers.at(i)->progress->setPosition(soldiers.at(i)->getPositionX(), soldiers.at(i)->getPositionY() + 16);
+			soldiers.at(i)->blood->setPosition(soldiers.at(i)->getPositionX(), soldiers.at(i)->getPositionY() + 30);
+			soldiers.at(i)->progress->setPosition(soldiers.at(i)->getPositionX(), soldiers.at(i)->getPositionY() + 30);
 		}
 	}
-}
-/*void mymap::scheduleBlood_enemy(float delta){
-int target = 0;
-for(int i = 0;i<enemy_soldiers.size();i++){
-if(enemy_soldiers.at(i)->attacker.size()){
-target = i;
-}
-}
-auto enemy_p = enemy_soldiers.at(target)->getPosition();
 
-for(int i = 0;i<enemy_soldiers.at(target)->attacker.size();i++){
-auto p =enemy_soldiers.at(target)->attacker.at(i)->getPosition();
-if(p.getDistance(enemy_p)<=200){
-enemy_soldiers.at(target)->attacker.at(i)->stopAllActions();
-enemy_soldiers.at(target)->attacker.at(i)->isrun = 0;
-enemy_soldiers.at(i)->progress->setPercentage(enemy_soldiers.at(i)->progress->getPercentage()-2);
 }
-}
-}*/
 void mymap::scheduleBlood_enemy(float delta) {
 	for (int i = 0; i<soldiers.size(); i++) {
-		if (soldiers.at(i)->a_enemy!=nullptr) {
-            if(soldiers.at(i)->getPosition().getDistance(soldiers.at(i)->a_enemy->getPosition())<=200){
-                soldiers.at(i)->stopAllActions();
-                soldiers.at(i)->a_enemy->progress->setPercentage(soldiers.at(i)->a_enemy->progress->getPercentage()-2);
-            }
-            else{
-                Soldier::run(soldiers, soldiers.at(i)->a_enemy->getPosition());
-            }
+		//敌方士兵
+		if (soldiers.at(i)->s_enemy != nullptr) {
+			if (soldiers.at(i)->getPosition().getDistance(soldiers.at(i)->s_enemy->getPosition()) <= 100) {
+				soldiers.at(i)->stopAllActions();
+				if (soldiers.at(i)->getPosition().x < soldiers.at(i)->s_enemy->getPosition().x)
+				{
+					soldiers.at(i)->runAction(FlipX::create(true));
+				}
+				else if (!(soldiers.at(i)->getPosition().x < soldiers.at(i)->s_enemy->getPosition().x))
+				{
+					soldiers.at(i)->runAction(FlipX::create(false));
+				}
+				if (soldiers.at(i)->s_enemy->progress->getPercentage() > 0)
+				{
+					int prehealth = soldiers.at(i)->s_enemy->health;
+					int nowhealth = prehealth - soldiers.at(i)->atk;
+					soldiers.at(i)->s_enemy->progress->setPercentage((nowhealth/ soldiers.at(i)->s_enemy->originhealth)*100);
+				if(soldiers.at(i)->s_enemy->progress->getPercentage() == 0)
+				{
+					this->removeChild(soldiers.at(i)->s_enemy->progress);
+					this->removeChild(soldiers.at(i)->s_enemy->blood);
+					this->removeChild(soldiers.at(i)->s_enemy);
+					soldiers.at(i)->s_enemy = nullptr;
+					soldiers.at(i)->isattack = 0;
+				}
+				}
+				else
+				{
+					soldiers.at(i)->s_enemy = nullptr;
+					soldiers.at(i)->isattack = 0;
+				}
+			}
+			else {
+				Soldier::run(soldiers, soldiers.at(i)->s_enemy->getPosition());
+			}
+		}
+
+		//地方建筑
+		if (soldiers.at(i)->b_enemy != nullptr) {
+			if (soldiers.at(i)->getPosition().getDistance(soldiers.at(i)->b_enemy->getPosition()) <= 100) {
+				soldiers.at(i)->stopAllActions();
+				if (soldiers.at(i)->getPosition().x < soldiers.at(i)->b_enemy->getPosition().x)
+				{
+					soldiers.at(i)->runAction(FlipX::create(true));
+				}
+				if (!(soldiers.at(i)->getPosition().x < soldiers.at(i)->b_enemy->getPosition().x))
+				{
+					soldiers.at(i)->runAction(FlipX::create(false));
+				}
+				if (soldiers.at(i)->b_enemy->progress->getPercentage() > 0)
+				{
+					int prehealth = soldiers.at(i)->b_enemy->building_health;
+					int nowhealth = prehealth - soldiers.at(i)->atk;
+					soldiers.at(i)->b_enemy->building_health = nowhealth;
+					soldiers.at(i)->b_enemy->progress->setPercentage(nowhealth/ soldiers.at(i)->b_enemy->originhealth*100);
+			
+					if (soldiers.at(i)->b_enemy->progress->getPercentage()==0)
+					{
+						this->removeChild(soldiers.at(i)->b_enemy->progress);
+						this->removeChild(soldiers.at(i)->b_enemy->blood);
+						this->removeChild(soldiers.at(i)->b_enemy);
+						soldiers.at(i)->b_enemy = nullptr;
+						soldiers.at(i)->isattack = 0;
+					}
+				}
+				else
+				{
+					soldiers.at(i)->b_enemy = nullptr;
+					soldiers.at(i)->isattack = 0;
+				}
+			}
+			else {
+				Soldier::run(soldiers, soldiers.at(i)->b_enemy->getPosition());
+
+			}
 		}
 	}
 }
@@ -168,15 +202,19 @@ void mymap::onEnter() {
 																  //基本创建建筑的事件
 		mouse_up = location + repair;
 		Soldier::judge_selected(soldiers, mouse_down, mouse_up);
-
 		if (mouse_up == mouse_down && !buttonlayer->buildornot && !(buttonlayer->isTap(em, buttonlayer->getChildByTag(SOLDIERBUTTONTAG))) && !(buttonlayer->isTap(em, buttonlayer->getChildByTag(CARINCBUTTONTAG))) && !(buttonlayer->isTap(em, buttonlayer->getChildByTag(MINEBUTTONTAG))) && !(buttonlayer->isTap(em, buttonlayer->getChildByTag(EPOWERBUTTONTAG))) && !(buttonlayer->isTap(em, buttonlayer->getChildByTag(BARRACKBUTTONTAG))))
 		{
 
 			Soldier::run(soldiers, mouse_up);
 		}
-		for (int i = 0; i<enemy_soldiers.size(); i++) {
+		for (int i = 0; i < enemy_soldiers.size(); i++) {
 			if (Soldier::isTap(location, enemy_soldiers.at(i))) {
-				Soldier::attack(soldiers, enemy_soldiers, location);
+				Soldier::attacksoldier(soldiers, enemy_soldiers, location);
+			}
+		}
+			for (int i = 0; i<enemy_buildings.size(); i++){
+			if (Soldier::isTap(location, enemy_buildings.at(i))) {
+				Soldier::attackbuilding(soldiers, enemy_buildings, location);
 			}
 		}
 		if (buttonlayer->buildornot == 1 && !(buttonlayer->isTap(em, buttonlayer->getChildByTag(SOLDIERBUTTONTAG))) && !(buttonlayer->isTap(em, buttonlayer->getChildByTag(CARINCBUTTONTAG))) && !(buttonlayer->isTap(em, buttonlayer->getChildByTag(MINEBUTTONTAG))) && !(buttonlayer->isTap(em, buttonlayer->getChildByTag(EPOWERBUTTONTAG))) && !(buttonlayer->isTap(em, buttonlayer->getChildByTag(BARRACKBUTTONTAG))))
@@ -199,6 +237,7 @@ void mymap::onEnter() {
 			else if (buttonlayer->buildchoice == 4 && buttonlayer->money >= 700) {
 				Building = building::createWithBuildingType(Carinc);
 				moneyenough = true;
+				carincpos = position;
 			}
 			if (moneyenough == true)
 			{
@@ -207,7 +246,7 @@ void mymap::onEnter() {
 				building::add_blood_bar(Building);
 				buildings.pushBack(Building);
 				addChild(Building);
-				addChild(Building->bloodbar);
+				addChild(Building->blood);
 				addChild(Building->progress);
 				//将建筑物血条添加到容器中
 				buttonlayer->updatemoney(buttonlayer->buildchoice);//购买后更新钱数更新
@@ -242,29 +281,48 @@ void mymap::onEnter() {
 
 				Animate* action = Animate::create(animation);
 				Building->runAction(action);
-
 			}
 			buttonlayer->buildornot = false;//将要不要建建筑设为false
 			buttonlayer->buildchoice = 0;
 		}
-		else if (buttonlayer->buildornot == 2 && (buttonlayer->money) >= 100)
+		else if (buttonlayer->buildornot == 2)
 		{
-			if (barrackpos != Vec2(0, 0))
+			if (barrackpos != Vec2(0, 0)&&buttonlayer->buildchoice==5&& buttonlayer->money>=100)
 			{
-				auto location = barrackpos;
 				soldiernum += 1;
-				auto bing = Soldier::create("soldier.png");
-				bing->setPosition(location);
+				auto bing = Soldier::createwithsoldiertype(human);
+				bing->setPosition(barrackpos);
 				Soldier::add_bloodbar(bing);
 				addChild(bing);
 				addChild(bing->blood);
 				addChild(bing->progress);
 				soldiers.pushBack(bing);
 			}
+			if (carincpos != Vec2(0, 0) && buttonlayer->buildchoice == 6&& buttonlayer->money >= 500)
+			{
+				soldiernum += 1;
+				auto bing = Soldier::createwithsoldiertype(tank);
+				bing->setPosition(carincpos);
+				Soldier::add_bloodbar(bing);
+				addChild(bing);
+				addChild(bing->blood);
+				addChild(bing->progress);
+				soldiers.pushBack(bing);
+			}
+			if (carincpos != Vec2(0, 0) && buttonlayer->buildchoice == 7 && buttonlayer->money >= 200)
+			{
+				soldiernum += 1;
+				auto bing = Soldier::createwithsoldiertype(robot);
+				bing->setPosition(carincpos);
+				Soldier::add_bloodbar(bing);
+				addChild(bing);
+				addChild(bing->blood);
+				addChild(bing->progress);
+				soldiers.pushBack(bing);
+			}
+			
+			
 			buttonlayer->buildornot = false;
-		}
-		else if (buttonlayer->buildornot == 3 && (buttonlayer->money) >= 500)
-		{
 		}
 
 
@@ -279,6 +337,23 @@ void mymap::onExit() {
 	log("mouseTouchEvent onExit");
 	Director::getInstance()->getEventDispatcher()->removeAllEventListeners();
 }
+/*void mymap::soldierattack(float delta)
+{
+	
+	for (int i = 0; i < soldiers.size(); ++i)
+	{
+		if (soldiers.at(i)->isattack == 1)
+		{
+			int originhealth = soldiers.at(i)->health;
+			int originlocation = soldiers.at(i)->getPosition;
+			this->removeChild(soldiers.at(i)->s_enemy->progress);
+			this->removeChild(soldiers.at(i)->s_enemy->blood);
+			this->removeChild(soldiers.at(i)->s_enemy);
+			auto soldiers.at(i) = Soldier::create("a1.png");
+			soldiers.at(i)->health = originhealth;
+		}
+	}
+}*/
 void mymap::protectmap(float delta)
 {
 

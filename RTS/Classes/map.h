@@ -19,6 +19,7 @@ class mymap : public Layer
 	int buildingnum = 0;//½¨ÖþÊýÁ¿
 	int soldiernum = 0;
 	Vec2 barrackpos = Vec2(0, 0);
+	Vec2 carincpos = Vec2(0, 0);
 	Vec2 mouse_up;
 	Vec2 mouse_down;
 	Vec2 pos1;
@@ -37,6 +38,7 @@ public:
 	void scheduleBlood_enemy(float delta);
 	void protectmap(float delta);
 	void iscollide(float delta);
+	//void soldierattack(float delta);
 	CREATE_FUNC(mymap);
 };
 

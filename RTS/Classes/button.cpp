@@ -31,8 +31,12 @@ bool button::init()
 	soldierbutton->setPosition(Vec2(500, 27));
 	addChild(soldierbutton, 1, SOLDIERBUTTONTAG);
 	//soldierbutton->setScale(0.1, 0.11);
+	robotbutton = Sprite::create("robotbutton.png");//军犬按钮
+	robotbutton->setPosition(Vec2(600, 27));
+	addChild(robotbutton, 1,ROBOTBUTTONTAG);
+	robotbutton->setScale(0.5);
 	tankbutton = Sprite::create("tankbutton.png");//坦克按钮
-	tankbutton->setPosition(Vec2(600, 27));
+	tankbutton->setPosition(Vec2(700, 27));
 	addChild(tankbutton, 1, TANKBUTTONTAG);
 	tankbutton->setScale(0.3);
 	//显示钱与电力
@@ -162,8 +166,20 @@ void button::schedulebutton(float delta)
 		tankbutton = Sprite::create("tankbutton.png");
 	}
 	tankbutton->setScale(0.3);
-	tankbutton->setPosition(Vec2(600, 27));
+	tankbutton->setPosition(Vec2(700, 27));
 	addChild(tankbutton, 1, TANKBUTTONTAG);
+	this->removeChildByTag(ROBOTBUTTONTAG);
+	if (money <= 150)
+	{
+		robotbutton = Sprite::create("robotbuttoncannot.png");
+	}
+	else
+	{
+		robotbutton = Sprite::create("robotbutton.png");
+	}
+	robotbutton->setScale(0.5);
+	robotbutton->setPosition(Vec2(600, 27));
+	addChild(robotbutton, 1, ROBOTBUTTONTAG);
 }
 
 //购买建筑后更新金钱
@@ -192,6 +208,10 @@ void button::updatemoney(int buildchoice)
 	else if (buildchoice == 6 && money >= 500)
 	{
 		money -= 500;
+	}
+	else if (buildchoice == 7 && money >= 200)
+	{
+		money -= 200;
 	}
 	this->removeChildByTag(MONEYTAG);
 	smoney = String::createWithFormat("%d", money);
@@ -248,6 +268,7 @@ void button::onMouseUp(Event*e)
 	auto carincbuttontag = this->getChildByTag(CARINCBUTTONTAG);
 	auto soldierbuttontag = this->getChildByTag(SOLDIERBUTTONTAG);
 	auto tankbuttontag = this->getChildByTag(TANKBUTTONTAG);
+	auto robotbuttontag = this->getChildByTag(ROBOTBUTTONTAG);
 	if (this->isTap(em, minebuttontag))
 	{
 		buildornot = 1;
@@ -275,7 +296,12 @@ void button::onMouseUp(Event*e)
 	}
 	else if (this->isTap(em, tankbuttontag))
 	{
-		buildornot = 3;
+		buildornot = 2;
 		buildchoice = 6;
+	}
+	else if (this->isTap(em, robotbuttontag))
+	{
+		buildornot = 2;
+		buildchoice = 7;
 	}
 }
