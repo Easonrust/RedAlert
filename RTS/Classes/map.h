@@ -12,15 +12,16 @@ class mymap : public Layer
 	cocos2d::TMXTiledMap* _tileMap;//地图
 	cocos2d::TMXLayer* _collidable;
 	Vector<building*>buildings;//建筑容器
-    Vector<building*>enemy_buildings;
+	Vector<building*>enemy_buildings;
 	Vector<Soldier*>soldiers;
-    Vector<Soldier*>enemy_soldiers;
+	Vector<Soldier*>enemy_soldiers;
 	Vec2 repair; //坐标修正量
 	int buildingnum = 0;//建筑数量
 	int soldiernum = 0;
-               Vec2 barrackpos=Vec2(0,0);
+	Vec2 barrackpos = Vec2(0, 0);
 	Vec2 mouse_up;
 	Vec2 mouse_down;
+	Vec2 pos1;
 	int bloodnum = 100;//血量条的数量+100
 	bool moneyenough = false;
 public:
@@ -33,9 +34,9 @@ public:
 	virtual void onEnter();
 	virtual void onExit();
 	void moveBlood(float delta);//更新建筑血量的函数
-    void scheduleBlood_enemy(float delta);
+	void scheduleBlood_enemy(float delta);
 	void protectmap(float delta);
-                void iscollide(float delta);
+	void iscollide(float delta);
 	CREATE_FUNC(mymap);
 };
 
