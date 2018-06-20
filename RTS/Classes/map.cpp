@@ -11,6 +11,7 @@ bool mymap::init()
 	}
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
+                SpriteFrameCache::getInstance()->addSpriteFramesWithFile("build.plist");
 	this->setAnchorPoint(Vec2(0, 0));
 	originmap = this->getPosition();
 	repair = Vec2(0, 0);//移动地图后，在地图上建造精灵时坐标的修正量
@@ -195,7 +196,7 @@ void mymap::onEnter() {
 			}
 			if (moneyenough == true)
 			{
-				buildingnum += 1;//将地图上建筑总数加一
+			                buildingnum += 1;//将地图上建筑总数加一
 				Building->setPosition(position);
 				building::add_blood_bar(Building);
 				buildings.pushBack(Building);
@@ -204,6 +205,38 @@ void mymap::onEnter() {
 				addChild(Building->progress);
 				//将建筑物血条添加到容器中
 				buttonlayer->updatemoney(buttonlayer->buildchoice);//购买后更新钱数更新
+				char name = 0;
+				switch (buttonlayer->buildchoice)
+				{
+				case 1:
+					name = 'm';
+					break;
+				case 2:
+					name = 'b';
+					break;
+				case 3:
+					name = 'e';
+					break;
+				case 4:
+					name = 'c';
+					break;
+				default:
+					break;
+				}
+				Animation* animation = Animation::create();
+				for (int i = 1; i <= 4; i++)
+				{
+					__String *frameName = __String::createWithFormat("%c%d.png", name, i);
+					log("frameName = %s", frameName->getCString());
+					SpriteFrame *spriteFrame = SpriteFrameCache::getInstance()->getSpriteFrameByName(frameName->getCString());
+					animation->addSpriteFrame(spriteFrame);
+				}
+				animation->setDelayPerUnit(0.7f);           //设置两个帧播放时间
+				animation->setRestoreOriginalFrame(false);    //动画执行后还原初始状态
+
+				Animate* action = Animate::create(animation);
+				Building->runAction(action);
+			
 			}
 			buttonlayer->buildornot = false;//将要不要建建筑设为false
 			buttonlayer->buildchoice = 0;
