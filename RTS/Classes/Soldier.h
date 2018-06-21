@@ -15,6 +15,7 @@ typedef enum {
 class Soldier : public Sprite {
 
 public:
+	Sprite*sprite = nullptr;
 	float health = 0;
 	float originhealth = 0;
 	int atk = 0;
@@ -128,6 +129,8 @@ public:
 			{
 				vec.at(i)->stopAllActions();
 				vec.at(i)->isattack = 0;
+				//vec.at(i)->s_enemy = nullptr;
+				//vec.at(i)->b_enemy = nullptr;
 				vec.at(i)->runAction(MoveTo::create(distance / 30, target));
 				if (target.x > pos.x)
 				{
@@ -205,8 +208,10 @@ public:
 	static void attacksoldier(Vector<Soldier*> vec, Vector<Soldier*> enemy, Vec2 target) {
 		int a = 0;
 		for (int i = 0; i<enemy.size(); i++) {
-			if (isTap(target, enemy.at(i))) a = i;
-			break;
+			if (isTap(target, enemy.at(i))) {
+				a = i;
+				break;
+			}
 		}
 		for (int i = 0; i<vec.size(); i++) {
 			if (vec.at(i)->selected) {
@@ -219,11 +224,18 @@ public:
 	static void attackbuilding(Vector<Soldier*> vec, Vector<building*> enemy, Vec2 target) {
 		int a = 0;
 		for (int i = 0; i<enemy.size(); i++) {
-			if (isTap(target, enemy.at(i))) a = i;
-			break;
+			if (isTap(target, enemy.at(i)))
+			{
+				a = i;
+				break;
+			}
 		}
 		for (int i = 0; i<vec.size(); i++) {
 			if (vec.at(i)->selected) {
+				if (vec.at(i)->b_enemy)
+				{
+					vec.at(i)->b_enemy = nullptr;
+				}
 				vec.at(i)->b_enemy = enemy.at(a);
 				vec.at(i)->s_enemy = nullptr;
 				vec.at(i)->isattack = 1;

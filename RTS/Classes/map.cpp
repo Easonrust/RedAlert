@@ -32,8 +32,60 @@ bool mymap::init()
 	schedule(schedule_selector(mymap::protectmap), 0);
 	schedule(schedule_selector(mymap::iscollide), 0);
 	schedule(schedule_selector(mymap::scheduleBlood_enemy), 0.1f);
-	//schedule(schedule_selector(mymap::soldierattack), 0);
+	schedule(schedule_selector(mymap::soldierattack), 0.1f);
 	return true;
+}
+void mymap::ruins()
+{
+	for (int i = 0; i < enemy_buildings.size(); ++i)
+	{
+		if (enemy_buildings.at(i)->progress->getPercentage() <= 0)
+		{
+			this->removeChild(enemy_buildings.at(i));
+		}
+	}
+	for (int i = 0; i < enemy_soldiers.size(); ++i)
+	{
+		if (enemy_soldiers.at(i)->progress->getPercentage() <= 0)
+		{
+			this->removeChild(enemy_soldiers.at(i));
+		}
+	}
+}
+void mymap::soldierattack(float delta)
+{
+	for (int i = 0; i < soldiers.size(); ++i)
+	{
+		if (soldiers.at(i)->b_enemy&&soldiers.at(i)->getPosition().getDistance(soldiers.at(i)->b_enemy->getPosition()) <= 100)
+		{
+			Vec2 location = soldiers.at(i)->getPosition();
+			soldiers.at(i)->setVisible(false);
+			if (soldiers.at(i)->sprite == nullptr)
+			{
+				soldiers.at(i)->sprite = Sprite::create("a2.png");
+				soldiers.at(i)->sprite->setScale(0.7);
+				soldiers.at(i)->sprite->setPosition(location);
+				addChild(soldiers.at(i)->sprite);
+				if (soldiers.at(i)->getPosition().x < soldiers.at(i)->b_enemy->getPosition().x)
+				{
+					soldiers.at(i)->sprite->runAction(FlipX::create(true));
+				}
+				else if (!(soldiers.at(i)->getPosition().x < soldiers.at(i)->b_enemy->getPosition().x))
+				{
+					soldiers.at(i)->sprite->runAction(FlipX::create(false));
+				}
+			}
+		}
+		else
+		{
+			if (soldiers.at(i)->sprite)
+			{
+				this->removeChild(soldiers.at(i)->sprite);
+				soldiers.at(i)->sprite = nullptr;
+			}
+			soldiers.at(i)->setVisible(true);
+		}
+	}
 }
 //血量刷新函数
 void mymap::moveBlood(float delta) {
@@ -65,12 +117,39 @@ void mymap::scheduleBlood_enemy(float delta) {
 				{
 					int prehealth = soldiers.at(i)->s_enemy->health;
 					int nowhealth = prehealth - soldiers.at(i)->atk;
+					soldiers.at(i)->s_enemy->health = nowhealth;
 					soldiers.at(i)->s_enemy->progress->setPercentage((nowhealth/ soldiers.at(i)->s_enemy->originhealth)*100);
-				if(soldiers.at(i)->s_enemy->progress->getPercentage() == 0)
+				if(soldiers.at(i)->s_enemy->progress->getPercentage() <= 0)
 				{
 					this->removeChild(soldiers.at(i)->s_enemy->progress);
 					this->removeChild(soldiers.at(i)->s_enemy->blood);
-					this->removeChild(soldiers.at(i)->s_enemy);
+					if (soldiers.at(i)->s_enemy->atk == 100 || soldiers.at(i)->s_enemy->atk == 200)
+					{
+						Animation* animation = Animation::create();
+						for (int i = 1; i <= 11; i++)
+						{
+							__String *frameName = __String::createWithFormat("z%d.png", i);
+							log("frameName = %s", frameName->getCString());
+							SpriteFrame *spriteFrame = SpriteFrameCache::getInstance()->getSpriteFrameByName(frameName->getCString());
+							animation->addSpriteFrame(spriteFrame);
+						}
+						animation->setDelayPerUnit(0.1f);           //设置两个帧播放时间
+						animation->setRestoreOriginalFrame(false);    //动画执行后还原初始状态
+
+						FiniteTimeAction* action1 = Animate::create(animation);
+						FiniteTimeAction* action2 = CallFunc::create(CC_CALLBACK_0(mymap::ruins, this));
+						ActionInterval*seq = Sequence::create(action1, action2, NULL);
+						soldiers.at(i)->s_enemy->runAction(Sequence::create(seq, NULL));
+						soldiers.at(i)->s_enemy->setScale(1);
+					}
+					else
+					{
+						this->removeChild(soldiers.at(i)->s_enemy);
+					}
+					soldiers.at(i)->s_enemy = nullptr;
+					//soldiers.at(i)->isattack = 0;
+					soldiers.at(i)->stopAllActions();
+
 					soldiers.at(i)->s_enemy = nullptr;
 					soldiers.at(i)->isattack = 0;
 				}
@@ -100,28 +179,50 @@ void mymap::scheduleBlood_enemy(float delta) {
 				}
 				if (soldiers.at(i)->b_enemy->progress->getPercentage() > 0)
 				{
+					
 					int prehealth = soldiers.at(i)->b_enemy->building_health;
 					int nowhealth = prehealth - soldiers.at(i)->atk;
 					soldiers.at(i)->b_enemy->building_health = nowhealth;
 					soldiers.at(i)->b_enemy->progress->setPercentage(nowhealth/ soldiers.at(i)->b_enemy->originhealth*100);
 			
-					if (soldiers.at(i)->b_enemy->progress->getPercentage()==0)
+					if (soldiers.at(i)->b_enemy->progress->getPercentage()<=0)
 					{
+						
 						this->removeChild(soldiers.at(i)->b_enemy->progress);
 						this->removeChild(soldiers.at(i)->b_enemy->blood);
-						this->removeChild(soldiers.at(i)->b_enemy);
+						//this->removeChild(soldiers.at(i)->b_enemy);
+						Animation* animation = Animation::create();
+						for (int i = 1; i <= 11; i++)
+						{
+							__String *frameName = __String::createWithFormat("z%d.png", i);
+							log("frameName = %s", frameName->getCString());
+							SpriteFrame *spriteFrame = SpriteFrameCache::getInstance()->getSpriteFrameByName(frameName->getCString());
+							animation->addSpriteFrame(spriteFrame);
+						}
+						animation->setDelayPerUnit(0.1f);           //设置两个帧播放时间
+						animation->setRestoreOriginalFrame(false);    //动画执行后还原初始状态
+
+						FiniteTimeAction* action1 = Animate::create(animation);
+						FiniteTimeAction* action2 = CallFunc::create(CC_CALLBACK_0(mymap::ruins, this));
+						ActionInterval*seq = Sequence::create(action1, action2, NULL);
+						soldiers.at(i)->b_enemy->runAction(Sequence::create(seq,NULL));
+						soldiers.at(i)->b_enemy->setScale(1);
 						soldiers.at(i)->b_enemy = nullptr;
-						soldiers.at(i)->isattack = 0;
+						//soldiers.at(i)->isattack = 0;
+						soldiers.at(i)->stopAllActions();
 					}
 				}
 				else
 				{
+					
 					soldiers.at(i)->b_enemy = nullptr;
 					soldiers.at(i)->isattack = 0;
 				}
 			}
 			else {
+				auto enemy = soldiers.at(i)->b_enemy;
 				Soldier::run(soldiers, soldiers.at(i)->b_enemy->getPosition());
+				soldiers.at(i)->b_enemy = enemy;
 
 			}
 		}
@@ -204,8 +305,18 @@ void mymap::onEnter() {
 		Soldier::judge_selected(soldiers, mouse_down, mouse_up);
 		if (mouse_up == mouse_down && !buttonlayer->buildornot && !(buttonlayer->isTap(em, buttonlayer->getChildByTag(SOLDIERBUTTONTAG))) && !(buttonlayer->isTap(em, buttonlayer->getChildByTag(CARINCBUTTONTAG))) && !(buttonlayer->isTap(em, buttonlayer->getChildByTag(MINEBUTTONTAG))) && !(buttonlayer->isTap(em, buttonlayer->getChildByTag(EPOWERBUTTONTAG))) && !(buttonlayer->isTap(em, buttonlayer->getChildByTag(BARRACKBUTTONTAG))))
 		{
-
-			Soldier::run(soldiers, mouse_up);
+			if (tapenemy(mouse_up, enemy_buildings, enemy_soldiers) == 0)
+			{
+				for (int i = 0; i < soldiers.size(); ++i)
+				{
+					if (soldiers.at(i)->selected == 1)
+					{
+						soldiers.at(i)->s_enemy = nullptr;
+						soldiers.at(i)->b_enemy = nullptr;
+					}
+				}
+				Soldier::run(soldiers, mouse_up);
+			}
 		}
 		for (int i = 0; i < enemy_soldiers.size(); i++) {
 			if (Soldier::isTap(location, enemy_soldiers.at(i))) {
@@ -244,7 +355,7 @@ void mymap::onEnter() {
 				buildingnum += 1;//将地图上建筑总数加一
 				Building->setPosition(position);
 				building::add_blood_bar(Building);
-				buildings.pushBack(Building);
+				enemy_buildings.pushBack(Building);
 				addChild(Building);
 				addChild(Building->blood);
 				addChild(Building->progress);
@@ -337,23 +448,6 @@ void mymap::onExit() {
 	log("mouseTouchEvent onExit");
 	Director::getInstance()->getEventDispatcher()->removeAllEventListeners();
 }
-/*void mymap::soldierattack(float delta)
-{
-	
-	for (int i = 0; i < soldiers.size(); ++i)
-	{
-		if (soldiers.at(i)->isattack == 1)
-		{
-			int originhealth = soldiers.at(i)->health;
-			int originlocation = soldiers.at(i)->getPosition;
-			this->removeChild(soldiers.at(i)->s_enemy->progress);
-			this->removeChild(soldiers.at(i)->s_enemy->blood);
-			this->removeChild(soldiers.at(i)->s_enemy);
-			auto soldiers.at(i) = Soldier::create("a1.png");
-			soldiers.at(i)->health = originhealth;
-		}
-	}
-}*/
 void mymap::protectmap(float delta)
 {
 
@@ -464,4 +558,21 @@ void mymap::iscollide(float delta) {
 			soldiers.at(i)->setPosition(pos + Vec2(1, 0));
 		}
 	}
+}
+bool mymap::tapenemy(Vec2 location, Vector<building*>enemy_buildings, Vector<Soldier*>enemy_soldiers)
+{
+	bool tap = 0;
+	for (int i = 0; i < enemy_soldiers.size(); i++) {
+		if (Soldier::isTap(location, enemy_soldiers.at(i))) {
+			tap = 1;
+			break;
+		}
+	}
+	for (int i = 0; i<enemy_buildings.size(); i++) {
+		if (Soldier::isTap(location, enemy_buildings.at(i))) {
+			tap = 1;
+			break;
+		}
+	}
+	return tap;
 }

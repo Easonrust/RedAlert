@@ -19,12 +19,12 @@ building* building::createWithBuildingType(Building_type building_type)
 	building*sprite = new building();
 	switch (building_type) {
 	case Base:
-		sprite->building_r = 180;
+		sprite->building_r = 250;
 		sprite->building_health = 1000;
 		sprite->originhealth = 1000;
 		break;
 	case Mine:
-		sprite->building_r = 180;
+		sprite->building_r = 250;
 		sprite->building_health = 1000;
 		sprite->originhealth = 1000;
 		break;
@@ -58,7 +58,7 @@ building* building::createWithBuildingType(Building_type building_type)
 		sprite->setPhysicsBody(body);
 		return sprite;
 	}
-	if (sprite && building_type == Mine &&sprite->initWithFile("mine.png"))
+	if (sprite && building_type == Mine &&sprite->initWithFile("m1.png"))
 	{
 		sprite->autorelease();//将精灵放入内存自动池中
 		sprite->setScale(0.3);
@@ -70,7 +70,7 @@ building* building::createWithBuildingType(Building_type building_type)
 		sprite->setPhysicsBody(body);
 		return sprite;
 	}
-	if (sprite && building_type == Barrack &&sprite->initWithFile("barrack.png"))
+	if (sprite && building_type == Barrack &&sprite->initWithFile("b1.png"))
 	{
 		sprite->autorelease();//将精灵放入内存自动池中
 		sprite->setScale(0.15);
@@ -82,7 +82,7 @@ building* building::createWithBuildingType(Building_type building_type)
 		sprite->setPhysicsBody(body);
 		return sprite;
 	}
-	if (sprite && building_type == Epower &&sprite->initWithFile("epower.png"))
+	if (sprite && building_type == Epower &&sprite->initWithFile("e1.png"))
 	{
 		sprite->autorelease();//将精灵放入内存自动池中
 		sprite->setScale(0.15);
@@ -94,7 +94,7 @@ building* building::createWithBuildingType(Building_type building_type)
 		sprite->setPhysicsBody(body);
 		return sprite;
 	}
-	if (sprite && building_type == Carinc &&sprite->initWithFile("carinc.png"))
+	if (sprite && building_type == Carinc &&sprite->initWithFile("c1.png"))
 	{
 		sprite->autorelease();//将精灵放入内存自动池中
 		sprite->setScale(0.15);

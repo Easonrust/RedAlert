@@ -30,6 +30,7 @@ public:
 					   //士兵容器
 	bool canbuild(Vec2 location);//能否建造不与其他建筑碰撞的函数
 	bool collide(Vec2 pos);//检测碰撞的函数
+	bool tapenemy(Vec2 location, Vector<building*>enemy_building, Vector<Soldier*>enemy_soldiers);
 	cocos2d::Vec2 tileCoordFromPosition(cocos2d::Vec2 position);
 	virtual bool init();
 	virtual void onEnter();
@@ -38,7 +39,8 @@ public:
 	void scheduleBlood_enemy(float delta);
 	void protectmap(float delta);
 	void iscollide(float delta);
-	//void soldierattack(float delta);
+	void soldierattack(float delta);
+	void ruins();
 	CREATE_FUNC(mymap);
 };
 

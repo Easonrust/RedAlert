@@ -4,36 +4,6 @@
     <dict>
         <key>frames</key>
         <dict>
-            <key>a1.png</key>
-            <dict>
-                <key>aliases</key>
-                <array/>
-                <key>spriteOffset</key>
-                <string>{0,0}</string>
-                <key>spriteSize</key>
-                <string>{67,73}</string>
-                <key>spriteSourceSize</key>
-                <string>{67,73}</string>
-                <key>textureRect</key>
-                <string>{{1931,1341},{67,73}}</string>
-                <key>textureRotated</key>
-                <false/>
-            </dict>
-            <key>a2.png</key>
-            <dict>
-                <key>aliases</key>
-                <array/>
-                <key>spriteOffset</key>
-                <string>{0,0}</string>
-                <key>spriteSize</key>
-                <string>{47,74}</string>
-                <key>spriteSourceSize</key>
-                <string>{47,74}</string>
-                <key>textureRect</key>
-                <string>{{1797,679},{47,74}}</string>
-                <key>textureRotated</key>
-                <true/>
-            </dict>
             <key>b1.png</key>
             <dict>
                 <key>aliases</key>
@@ -304,6 +274,21 @@
                 <key>textureRotated</key>
                 <false/>
             </dict>
+            <key>z11.png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>spriteOffset</key>
+                <string>{-37,74}</string>
+                <key>spriteSize</key>
+                <string>{3,3}</string>
+                <key>spriteSourceSize</key>
+                <string>{77,151}</string>
+                <key>textureRect</key>
+                <string>{{1553,555},{3,3}}</string>
+                <key>textureRotated</key>
+                <false/>
+            </dict>
             <key>z2.png</key>
             <dict>
                 <key>aliases</key>
@@ -438,7 +423,7 @@
             <key>size</key>
             <string>{2000,2044}</string>
             <key>smartupdate</key>
-            <string>$TexturePacker:SmartUpdate:e6675727cf7e8e756dbe023cc2bff3f7:ecaaa334c462ec7bea92895a239482cd:71360160189ada85a06ccd7c1eeb6fda$</string>
+            <string>$TexturePacker:SmartUpdate:4fa3280c50b85fbb719f2abad8364c97:760a6783e8b465f6dc74a71dc1e29455:71360160189ada85a06ccd7c1eeb6fda$</string>
             <key>textureFileName</key>
             <string>animate.png</string>
         </dict>
