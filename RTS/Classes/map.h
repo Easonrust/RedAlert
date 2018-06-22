@@ -37,10 +37,13 @@ public:
 	virtual void onExit();
 	void moveBlood(float delta);//更新建筑血量的函数
 	void scheduleBlood_enemy(float delta);
+	void scheduleBlood_mine(float delta);
 	void protectmap(float delta);
 	void iscollide(float delta);
 	void soldierattack(float delta);
 	void ruins();
+	static bool isTap(cocos2d::Vec2 location, cocos2d::Node*node);
+	
 	CREATE_FUNC(mymap);
 };
 

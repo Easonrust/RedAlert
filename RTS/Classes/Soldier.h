@@ -26,6 +26,7 @@ public:
 	Soldier* s_enemy = nullptr;
 	building* b_enemy = nullptr;
 	Sprite* blood;
+	Sprite*animate;
 	ProgressTimer* progress;
 	static bool isTap(cocos2d::Vec2 location, cocos2d::Node*node)//判断是否点中精灵的函数
 	{
@@ -64,9 +65,9 @@ public:
 		if (sprite && type == human &&sprite->initWithFile("soldier.png"))
 		{
 			sprite->autorelease();//将精灵放入内存自动池中
-			sprite->setScale(0.7);
 			auto body = PhysicsBody::create();
-			body->addShape(PhysicsShapeCircle::create(16));
+			Size s = sprite->getContentSize();
+			body->addShape(PhysicsShapeCircle::create(s.width / 2));
 
 			body->setRotationEnable(true);
 			body->setDynamic(true);
@@ -76,9 +77,9 @@ public:
 		if (sprite && type == robot &&sprite->initWithFile("robot.png"))
 		{
 			sprite->autorelease();//将精灵放入内存自动池中
-			sprite->setScale(0.6);
 			auto body = PhysicsBody::create();
-			body->addShape(PhysicsShapeCircle::create(30));
+			Size s = sprite->getContentSize();
+			body->addShape(PhysicsShapeCircle::create(s.width / 2));
 
 			body->setRotationEnable(true);
 			body->setDynamic(true);
@@ -88,9 +89,9 @@ public:
 		if (sprite && type == tank &&sprite->initWithFile("tank.png"))
 		{
 			sprite->autorelease();//将精灵放入内存自动池中
-			sprite->setScale(0.3);
 			auto body = PhysicsBody::create();
-			body->addShape(PhysicsShapeCircle::create(100));
+			Size s = sprite->getContentSize();
+			body->addShape(PhysicsShapeCircle::create(s.width / 2));
 
 			body->setRotationEnable(true);
 			body->setDynamic(true);
@@ -100,24 +101,6 @@ public:
 		CC_SAFE_DELETE(sprite);
 		return nullptr;
 	}
-	/*static Soldier* create(char*filename)
-	{
-		Soldier* sprite = new Soldier();
-		if (sprite&&sprite->initWithFile(filename))
-		{
-			sprite->autorelease();//将精灵放入内存自动池中
-			sprite->setScale(0.7);
-			auto body = PhysicsBody::create();
-			body->addShape(PhysicsShapeCircle::create(16));
-
-			body->setRotationEnable(true);
-			body->setDynamic(true);
-			sprite->setPhysicsBody(body);
-			return sprite;
-		}
-		CC_SAFE_DELETE(sprite);
-		return nullptr;
-	}*/
 	static void run(Vector<Soldier*> vec, Vec2 target) {
 		for (int i = 0; i<vec.size(); i++) {
 			if (vec.at(i)->selected) {
@@ -129,16 +112,18 @@ public:
 			{
 				vec.at(i)->stopAllActions();
 				vec.at(i)->isattack = 0;
-				//vec.at(i)->s_enemy = nullptr;
-				//vec.at(i)->b_enemy = nullptr;
 				vec.at(i)->runAction(MoveTo::create(distance / 30, target));
+				vec.at(i)->isrun = 0;
+				char a = 0;
 				if (target.x > pos.x)
 				{
 					vec.at(i)->runAction(FlipX::create(true));
+					a = 'r';
 				}
 				else
 				{
 					vec.at(i)->runAction(FlipX::create(false));
+					a = 'l';
 				}
 			}
 		}
@@ -146,10 +131,7 @@ public:
 	static void judge_selected(Vector<Soldier*> vec, Vec2 down, Vec2 up) {
 		if (up == down) {
 			for (int i = 0; i<vec.size(); i++) {
-				auto p = vec.at(i)->getPosition();  //GL
 				if (isTap(down, vec.at(i))) {
-					//vec.erase(vec.begin()+i);
-					//vec[i]->removeFromParentAndCleanup(true);
 					vec.at(i)->selected = 1;
 					vec.at(i)->blood->setVisible(true);
 					vec.at(i)->progress->setVisible(true);
@@ -179,25 +161,14 @@ public:
 			vec.at(i)->progress->setVisible(false);
 		}
 	}
-
-	void shelduleAttack(Vector<Soldier*> vec, Vector<Soldier*> enemy, Vec2 target) {
-		for (int i = 0; i<enemy.size(); i++) {
-			auto p = enemy.at(i)->getPosition();  //GL
-			if (p.x - 8 <= target.x && p.x + 8 >= target.x && p.y - 8 <= target.y && p.y + 8 >= target.y) {
-				enemy.at(i)->selected = 1;
-				enemy.at(i)->blood->setVisible(true);
-				enemy.at(i)->progress->setVisible(true);
-			}
-		}
-	}
-	static void add_bloodbar(Soldier* spr) {
+	static void add_bloodbar(Soldier* spr,Vec2 repair) {
 		spr->blood = Sprite::create("bar.png");   //¥¥Ω®Ω¯∂»øÚ
-		spr->blood->setPosition(Vec2(spr->getPositionX(), spr->getPositionY() + 30)); //…Ë÷√øÚµƒŒª÷√
+		spr->blood->setPosition(Vec2(spr->getPositionX()+repair.x, spr->getPositionY()+repair.y + 30)); //…Ë÷√øÚµƒŒª÷√
 		spr->blood->setScale(0.05);
 		spr->blood->setVisible(false);
 		spr->progress = ProgressTimer::create(Sprite::create("blood.png")); //¥¥Ω®progress∂‘œÛ
 		spr->progress->setType(ProgressTimer::Type::BAR);        //¿‡–Õ£∫Ãı◊¥
-		spr->progress->setPosition(Vec2(spr->getPositionX(), spr->getPositionY() + 30));
+		spr->progress->setPosition(Vec2(spr->getPositionX()+repair.x, spr->getPositionY() + 30+repair.y));
 		spr->progress->setScale(0.05);
 		//¥””“µΩ◊Ûºı…Ÿ—™¡ø
 		spr->progress->setMidpoint(Vec2(0, 0.5));     //»Áπ˚ «¥”◊ÛµΩ”“µƒª∞£¨∏ƒ≥…(1,0.5)º¥ø…
@@ -205,6 +176,11 @@ public:
 		spr->progress->setPercentage(100);
 		spr->progress->setVisible(false);
 	}
+	/*static void add_animate(Soldier* spr)
+	{
+		spr->animate = Sprite::create("soldier.png");
+		spr->animate->setPosition(spr->getPosition)
+	}*/
 	static void attacksoldier(Vector<Soldier*> vec, Vector<Soldier*> enemy, Vec2 target) {
 		int a = 0;
 		for (int i = 0; i<enemy.size(); i++) {

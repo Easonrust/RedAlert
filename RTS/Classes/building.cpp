@@ -24,7 +24,7 @@ building* building::createWithBuildingType(Building_type building_type)
 		sprite->originhealth = 1000;
 		break;
 	case Mine:
-		sprite->building_r = 250;
+		sprite->building_r = 100;
 		sprite->building_health = 1000;
 		sprite->originhealth = 1000;
 		break;
@@ -49,9 +49,9 @@ building* building::createWithBuildingType(Building_type building_type)
 	if (sprite && building_type == Base &&sprite->initWithFile("base.png"))
 	{
 		sprite->autorelease();//将精灵放入内存自动池中
-		sprite->setScale(0.10);
 		auto body = PhysicsBody::create();
-		body->addShape(PhysicsShapeCircle::create(sprite->building_r));
+		Size s = sprite->getContentSize();
+		body->addShape(PhysicsShapeCircle::create(s.width / 2));
 
 		body->setRotationEnable(false);
 		body->setDynamic(false);
@@ -61,9 +61,9 @@ building* building::createWithBuildingType(Building_type building_type)
 	if (sprite && building_type == Mine &&sprite->initWithFile("m1.png"))
 	{
 		sprite->autorelease();//将精灵放入内存自动池中
-		sprite->setScale(0.3);
 		auto body = PhysicsBody::create();
-		body->addShape(PhysicsShapeCircle::create(sprite->building_r));
+		Size s = sprite->getContentSize();
+		body->addShape(PhysicsShapeCircle::create(s.width / 2));
 
 		body->setRotationEnable(false);
 		body->setDynamic(false);
@@ -73,9 +73,9 @@ building* building::createWithBuildingType(Building_type building_type)
 	if (sprite && building_type == Barrack &&sprite->initWithFile("b1.png"))
 	{
 		sprite->autorelease();//将精灵放入内存自动池中
-		sprite->setScale(0.15);
 		auto body = PhysicsBody::create();
-		body->addShape(PhysicsShapeCircle::create(sprite->building_r));
+		Size s = sprite->getContentSize();
+		body->addShape(PhysicsShapeCircle::create(s.width/2));
 
 		body->setRotationEnable(false);
 		body->setDynamic(false);
@@ -85,9 +85,9 @@ building* building::createWithBuildingType(Building_type building_type)
 	if (sprite && building_type == Epower &&sprite->initWithFile("e1.png"))
 	{
 		sprite->autorelease();//将精灵放入内存自动池中
-		sprite->setScale(0.15);
 		auto body = PhysicsBody::create();
-		body->addShape(PhysicsShapeCircle::create(sprite->building_r));
+		Size s = sprite->getContentSize();
+		body->addShape(PhysicsShapeCircle::create(s.width / 2));
 
 		body->setRotationEnable(false);
 		body->setDynamic(false);
@@ -97,9 +97,9 @@ building* building::createWithBuildingType(Building_type building_type)
 	if (sprite && building_type == Carinc &&sprite->initWithFile("c1.png"))
 	{
 		sprite->autorelease();//将精灵放入内存自动池中
-		sprite->setScale(0.15);
 		auto body = PhysicsBody::create();
-		body->addShape(PhysicsShapeCircle::create(sprite->building_r));
+		Size s = sprite->getContentSize();
+		body->addShape(PhysicsShapeCircle::create(s.width / 2));
 
 		body->setRotationEnable(false);
 		body->setDynamic(false);
