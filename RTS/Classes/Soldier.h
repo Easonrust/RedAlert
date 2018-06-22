@@ -62,7 +62,7 @@ public:
 		default:
 			break;
 		}
-		if (sprite && type == human &&sprite->initWithFile("soldier.png"))
+		if (sprite && type == human &&sprite->initWithFile("a1.png"))
 		{
 			sprite->autorelease();//将精灵放入内存自动池中
 			auto body = PhysicsBody::create();
@@ -179,7 +179,7 @@ public:
 	/*static void add_animate(Soldier* spr)
 	{
 		spr->animate = Sprite::create("soldier.png");
-		spr->animate->setPosition(spr->getPosition)
+		spr->animate->setPosition(spr->getPosition);
 	}*/
 	static void attacksoldier(Vector<Soldier*> vec, Vector<Soldier*> enemy, Vec2 target) {
 		int a = 0;
