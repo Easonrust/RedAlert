@@ -126,13 +126,12 @@ void mymap::moveBlood(float delta) {
 			soldiers.at(i)->progress->setPosition(soldiers.at(i)->getPositionX(), soldiers.at(i)->getPositionY() + 30);
 		}
 	}
-
 }
 void mymap::scheduleBlood_enemy(float delta) {
 	for (int i = 0; i<soldiers.size(); i++) {
 		//敌方士兵
 		if (soldiers.at(i)->s_enemy != nullptr) {
-			if (soldiers.at(i)->getPosition().getDistance(soldiers.at(i)->s_enemy->getPosition()) <= 100) {
+			if (soldiers.at(i)->getPosition().getDistance(soldiers.at(i)->s_enemy->getPosition()) <= 150) {
 				soldiers.at(i)->stopAllActions();
 				if (soldiers.at(i)->getPosition().x < soldiers.at(i)->s_enemy->getPosition().x)
 				{
@@ -152,10 +151,10 @@ void mymap::scheduleBlood_enemy(float delta) {
 					{
 						this->removeChild(soldiers.at(i)->s_enemy->progress);
 						this->removeChild(soldiers.at(i)->s_enemy->blood);
-						if (soldiers.at(i)->s_enemy->atk == 100 || soldiers.at(i)->s_enemy->atk == 200)
+						if (soldiers.at(i)->s_enemy->atk == 10 || soldiers.at(i)->s_enemy->atk == 10)
 						{
 							Animation* animation = Animation::create();
-							for (int i = 1; i <= 11; i++)
+							for (int i = 1; i <= 9; i++)
 							{
 								__String *frameName = __String::createWithFormat("z%d.png", i);
 								log("frameName = %s", frameName->getCString());
@@ -164,7 +163,7 @@ void mymap::scheduleBlood_enemy(float delta) {
 							}
 							animation->setDelayPerUnit(0.1f);           //设置两个帧播放时间
 							animation->setRestoreOriginalFrame(false);    //动画执行后还原初始状态
-
+							soldiers.at(i)->s_enemy->getPhysicsBody()->setDynamic(false);
 							FiniteTimeAction* action1 = Animate::create(animation);
 							FiniteTimeAction* action2 = CallFunc::create(CC_CALLBACK_0(mymap::ruins, this));
 							ActionInterval*seq = Sequence::create(action1, action2, NULL);
@@ -173,7 +172,31 @@ void mymap::scheduleBlood_enemy(float delta) {
 						}
 						else
 						{
-							this->removeChild(soldiers.at(i)->s_enemy);
+							Animation* animation = Animation::create();
+							char a = 0;
+							if (soldiers.at(i)->getPosition().x > soldiers.at(i)->s_enemy->getPosition().x)
+							{
+								a = 'r';
+							}
+							else
+							{
+								a = 'l';
+							}
+							for (int i = 1; i <= 2; i++)
+							{
+								__String *frameName = __String::createWithFormat("die%c%d.png",a, i);
+								log("frameName = %s", frameName->getCString());
+								SpriteFrame *spriteFrame = SpriteFrameCache::getInstance()->getSpriteFrameByName(frameName->getCString());
+								animation->addSpriteFrame(spriteFrame);
+							}
+							animation->setDelayPerUnit(0.5f);           //设置两个帧播放时间
+							animation->setRestoreOriginalFrame(false);    //动画执行后还原初始状态
+
+							FiniteTimeAction* action1 = Animate::create(animation);
+							FiniteTimeAction* action2 = CallFunc::create(CC_CALLBACK_0(mymap::ruins, this));
+							ActionInterval*seq = Sequence::create(action1, action2, NULL);
+							soldiers.at(i)->s_enemy->runAction(Sequence::create(seq, NULL));
+							soldiers.at(i)->stopAllActions();
 						}
 						soldiers.at(i)->s_enemy = nullptr;
 						//soldiers.at(i)->isattack = 0;
@@ -279,7 +302,7 @@ void mymap::scheduleBlood_mine(float delta) {
 					{
 						this->removeChild(enemy_soldiers.at(i)->s_enemy->progress);
 						this->removeChild(enemy_soldiers.at(i)->s_enemy->blood);
-						if (enemy_soldiers.at(i)->s_enemy->atk == 100 || enemy_soldiers.at(i)->s_enemy->atk == 200)
+						if (enemy_soldiers.at(i)->s_enemy->atk == 10 || enemy_soldiers.at(i)->s_enemy->atk == 10)
 						{
 							Animation* animation = Animation::create();
 							for (int i = 1; i <= 10; i++)
@@ -561,7 +584,7 @@ void mymap::onEnter() {
 				addChild(bing);
 				addChild(bing->blood);
 				addChild(bing->progress);
-				soldiers.pushBack(bing);
+				enemy_soldiers.pushBack(bing);
 			}
 			if (carincpos != Vec2(0, 0) && buttonlayer->buildchoice == 6 && buttonlayer->money >= 500)
 			{
@@ -569,10 +592,11 @@ void mymap::onEnter() {
 				auto bing = Soldier::createwithsoldiertype(tank);
 				bing->setPosition(carincpos);
 				Soldier::add_bloodbar(bing,repair);
+				
 				addChild(bing);
 				addChild(bing->blood);
 				addChild(bing->progress);
-				soldiers.pushBack(bing);
+				enemy_soldiers.pushBack(bing);
 			}
 			if (carincpos != Vec2(0, 0) && buttonlayer->buildchoice == 7 && buttonlayer->money >= 200)
 			{
@@ -580,6 +604,7 @@ void mymap::onEnter() {
 				auto bing = Soldier::createwithsoldiertype(robot);
 				bing->setPosition(carincpos);
 				Soldier::add_bloodbar(bing,repair);
+				
 				addChild(bing);
 				addChild(bing->blood);
 				addChild(bing->progress);

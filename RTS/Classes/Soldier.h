@@ -26,7 +26,6 @@ public:
 	Soldier* s_enemy = nullptr;
 	building* b_enemy = nullptr;
 	Sprite* blood;
-	Sprite*animate;
 	ProgressTimer* progress;
 	static bool isTap(cocos2d::Vec2 location, cocos2d::Node*node)//判断是否点中精灵的函数
 	{
@@ -62,7 +61,7 @@ public:
 		default:
 			break;
 		}
-		if (sprite && type == human &&sprite->initWithFile("a1.png"))
+		if (sprite && type == human &&sprite->initWithFile("soldier.png"))
 		{
 			sprite->autorelease();//将精灵放入内存自动池中
 			auto body = PhysicsBody::create();
@@ -176,11 +175,6 @@ public:
 		spr->progress->setPercentage(100);
 		spr->progress->setVisible(false);
 	}
-	/*static void add_animate(Soldier* spr)
-	{
-		spr->animate = Sprite::create("soldier.png");
-		spr->animate->setPosition(spr->getPosition);
-	}*/
 	static void attacksoldier(Vector<Soldier*> vec, Vector<Soldier*> enemy, Vec2 target) {
 		int a = 0;
 		for (int i = 0; i<enemy.size(); i++) {
