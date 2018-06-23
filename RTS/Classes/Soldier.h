@@ -127,7 +127,7 @@ public:
 			}
 		}
 	}
-	static void judge_selected(Vector<Soldier*> vec, Vec2 down, Vec2 up) {
+	static void judge_selected(Vector<Soldier*> vec, Vec2 down, Vec2 up,Vec2 repair) {
 		if (up == down) {
 			for (int i = 0; i<vec.size(); i++) {
 				if (isTap(down, vec.at(i))) {
@@ -138,10 +138,10 @@ public:
 			}
 		}
 		if (up != down) {
-			float x_min = fmin(up.x, down.x);
-			float x_max = fmax(up.x, down.x);
-			float y_min = fmin(up.y, down.y);
-			float y_max = fmax(up.y, down.y);
+			float x_min = fmin((up+repair).x, (down+repair).x);
+			float x_max = fmax((up+repair).x, (down+repair).x);
+			float y_min = fmin((up+repair).y, (down+repair).y);
+			float y_max = fmax((up+repair).y, (down+repair).y);
 			for (int i = 0; i<vec.size(); i++) {
 				auto p = vec.at(i)->getPosition();
 				if (p.x >= x_min&& p.x <= x_max&&p.y >= y_min&& p.y <= y_max) {
