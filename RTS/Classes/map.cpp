@@ -49,38 +49,47 @@ bool mymap::isTap(cocos2d::Vec2 location, cocos2d::Node*node)//ÅÐ¶ÏÊÇ·ñµãÖÐ¾«Áéµ
 }
 void mymap::ruins()
 {
-	for (int i = 0; i < enemy_buildings.size(); ++i)
+for (int i = 0; i < enemy_buildings.size(); ++i)
+{
+	if (enemy_buildings.at(i)->progress->getPercentage() <= 0)
 	{
-		if (enemy_buildings.at(i)->progress->getPercentage() <= 0)
-		{
-			enemy_buildings.at(i)->stopAllActions();
-			this->removeChild(enemy_buildings.at(i));
-		}
+		enemy_buildings.at(i)->stopAllActions();
+		this->removeChild(enemy_buildings.at(i));
+		enemy_buildings.eraseObject(enemy_buildings.at(i));
 	}
-	for (int i = 0; i < enemy_soldiers.size(); ++i)
+}
+for (int i = 0; i < enemy_soldiers.size(); ++i)
+{
+	if (enemy_soldiers.at(i)->progress->getPercentage() <= 0)
 	{
-		if (enemy_soldiers.at(i)->progress->getPercentage() <= 0)
-		{
-			enemy_soldiers.at(i)->stopAllActions();
-			this->removeChild(enemy_soldiers.at(i));
-		}
+		enemy_soldiers.at(i)->stopAllActions();
+		this->removeChild(enemy_soldiers.at(i));
+		this->removeChild(enemy_soldiers.at(i)->progress);
+		this->removeChild(enemy_soldiers.at(i)->blood);
+		enemy_soldiers.eraseObject(enemy_soldiers.at(i));
 	}
-	for (int i = 0; i < soldiers.size(); ++i)
+}
+for (int i = 0; i < soldiers.size(); ++i)
+{
+	if (soldiers.at(i)->progress->getPercentage() <= 0)
 	{
-		if (soldiers.at(i)->progress->getPercentage() <= 0)
-		{
-			soldiers.at(i)->stopAllActions();
-			this->removeChild(soldiers.at(i));
-		}
+		soldiers.at(i)->stopAllActions();
+		this->removeChild(soldiers.at(i));
+		this->removeChild(soldiers.at(i)->progress);
+		this->removeChild(soldiers.at(i)->blood);
+		soldiers.eraseObject(soldiers.at(i));
 	}
-	for (int i = 0; i < buildings.size(); ++i)
+}
+for (int i = 0; i < buildings.size(); ++i)
+{
+	if (buildings.at(i)->progress->getPercentage() <= 0)
 	{
-		if (buildings.at(i)->progress->getPercentage() <= 0)
-		{
-			buildings.at(i)->stopAllActions();
-			this->removeChild(buildings.at(i));
-		}
+		buildings.at(i)->stopAllActions();
+		this->removeChild(buildings.at(i));
+		buildings.eraseObject(buildings.at(i));
+
 	}
+}
 }
 void mymap::soldierattack(float delta)
 {
@@ -115,15 +124,54 @@ void mymap::soldierattack(float delta)
 			soldiers.at(i)->setVisible(true);
 		}
 	}
+	for (int i = 0; i < enemy_soldiers.size(); ++i)
+	{
+		if (enemy_soldiers.at(i)->atk == 1 && enemy_soldiers.at(i)->b_enemy&&enemy_soldiers.at(i)->getPosition().getDistance(enemy_soldiers.at(i)->b_enemy->getPosition()) <= 100)
+		{
+			Vec2 location = enemy_soldiers.at(i)->getPosition();
+			enemy_soldiers.at(i)->setVisible(false);
+			if (enemy_soldiers.at(i)->sprite == nullptr)
+			{
+				enemy_soldiers.at(i)->sprite = Sprite::create("a2.png");
+				enemy_soldiers.at(i)->sprite->setPosition(location);
+				addChild(enemy_soldiers.at(i)->sprite);
+				if (enemy_soldiers.at(i)->getPosition().x < enemy_soldiers.at(i)->b_enemy->getPosition().x)
+				{
+					enemy_soldiers.at(i)->sprite->runAction(FlipX::create(true));
+				}
+				else if (!(enemy_soldiers.at(i)->getPosition().x < enemy_soldiers.at(i)->b_enemy->getPosition().x))
+				{
+					enemy_soldiers.at(i)->sprite->runAction(FlipX::create(false));
+				}
+			}
+		}
+		else
+		{
+			if (enemy_soldiers.at(i)->sprite)
+			{
+				this->removeChild(enemy_soldiers.at(i)->sprite);
+				enemy_soldiers.at(i)->sprite = nullptr;
+			}
+			enemy_soldiers.at(i)->setVisible(true);
+		}
+	}
 }
 //ÑªÁ¿Ë¢ÐÂº¯Êý
 void mymap::moveBlood(float delta) {
 	for (int i = 0; i < soldiers.size(); ++i)
 	{
-		if (soldiers.at(i)->selected == 1)
+		if (soldiers.at(i)->progress->getPercentage() > 0)
 		{
 			soldiers.at(i)->blood->setPosition(soldiers.at(i)->getPositionX(), soldiers.at(i)->getPositionY() + 30);
 			soldiers.at(i)->progress->setPosition(soldiers.at(i)->getPositionX(), soldiers.at(i)->getPositionY() + 30);
+		}
+	}
+	for (int i = 0; i < enemy_soldiers.size(); ++i)
+	{
+		if (enemy_soldiers.at(i)->progress->getPercentage() > 0)
+		{
+			enemy_soldiers.at(i)->blood->setPosition(enemy_soldiers.at(i)->getPositionX(), enemy_soldiers.at(i)->getPositionY() + 30);
+			enemy_soldiers.at(i)->progress->setPosition(enemy_soldiers.at(i)->getPositionX(), enemy_soldiers.at(i)->getPositionY() + 30);
 		}
 	}
 }
@@ -131,6 +179,8 @@ void mymap::scheduleBlood_enemy(float delta) {
 	for (int i = 0; i<soldiers.size(); i++) {
 		//µÐ·½Ê¿±ø
 		if (soldiers.at(i)->s_enemy != nullptr) {
+			soldiers.at(i)->s_enemy->blood->setVisible(true);
+			soldiers.at(i)->s_enemy->progress->setVisible(true);
 			if (soldiers.at(i)->getPosition().getDistance(soldiers.at(i)->s_enemy->getPosition()) <= 150) {
 				soldiers.at(i)->stopAllActions();
 				if (soldiers.at(i)->getPosition().x < soldiers.at(i)->s_enemy->getPosition().x)
@@ -149,8 +199,8 @@ void mymap::scheduleBlood_enemy(float delta) {
 					soldiers.at(i)->s_enemy->progress->setPercentage((nowhealth / soldiers.at(i)->s_enemy->originhealth) * 100);
 					if (soldiers.at(i)->s_enemy->progress->getPercentage() <= 0)
 					{
-						this->removeChild(soldiers.at(i)->s_enemy->progress);
-						this->removeChild(soldiers.at(i)->s_enemy->blood);
+						soldiers.at(i)->s_enemy->blood->setVisible(false);
+						soldiers.at(i)->s_enemy->progress->setVisible(false);
 						if (soldiers.at(i)->s_enemy->atk == 10 || soldiers.at(i)->s_enemy->atk == 10)
 						{
 							Animation* animation = Animation::create();
@@ -184,14 +234,14 @@ void mymap::scheduleBlood_enemy(float delta) {
 							}
 							for (int i = 1; i <= 2; i++)
 							{
-								__String *frameName = __String::createWithFormat("die%c%d.png", a, i);
+								__String *frameName = __String::createWithFormat("die%c%d.png",a, i);
 								log("frameName = %s", frameName->getCString());
 								SpriteFrame *spriteFrame = SpriteFrameCache::getInstance()->getSpriteFrameByName(frameName->getCString());
 								animation->addSpriteFrame(spriteFrame);
 							}
 							animation->setDelayPerUnit(0.5f);           //ÉèÖÃÁ½¸öÖ¡²¥·ÅÊ±¼ä
 							animation->setRestoreOriginalFrame(false);    //¶¯»­Ö´ÐÐºó»¹Ô­³õÊ¼×´Ì¬
-
+							soldiers.at(i)->s_enemy->getPhysicsBody()->setDynamic(false);
 							FiniteTimeAction* action1 = Animate::create(animation);
 							FiniteTimeAction* action2 = CallFunc::create(CC_CALLBACK_0(mymap::ruins, this));
 							ActionInterval*seq = Sequence::create(action1, action2, NULL);
@@ -219,6 +269,8 @@ void mymap::scheduleBlood_enemy(float delta) {
 
 		//µØ·½½¨Öþ
 		if (soldiers.at(i)->b_enemy != nullptr) {
+			soldiers.at(i)->b_enemy->blood->setVisible(true);
+			soldiers.at(i)->b_enemy->progress->setVisible(true);
 			if (soldiers.at(i)->getPosition().getDistance(soldiers.at(i)->b_enemy->getPosition()) <= 100) {
 				soldiers.at(i)->stopAllActions();
 				if (soldiers.at(i)->getPosition().x < soldiers.at(i)->b_enemy->getPosition().x)
@@ -254,7 +306,7 @@ void mymap::scheduleBlood_enemy(float delta) {
 						}
 						animation->setDelayPerUnit(0.1f);           //ÉèÖÃÁ½¸öÖ¡²¥·ÅÊ±¼ä
 						animation->setRestoreOriginalFrame(false);    //¶¯»­Ö´ÐÐºó»¹Ô­³õÊ¼×´Ì¬
-
+						soldiers.at(i)->b_enemy->getPhysicsBody()->setDynamic(false);
 						FiniteTimeAction* action1 = Animate::create(animation);
 						FiniteTimeAction* action2 = CallFunc::create(CC_CALLBACK_0(mymap::ruins, this));
 						ActionInterval*seq = Sequence::create(action1, action2, NULL);
@@ -282,6 +334,8 @@ void mymap::scheduleBlood_mine(float delta) {
 	for (int i = 0; i<enemy_soldiers.size(); i++) {
 		//µÐ·½Ê¿±ø
 		if (enemy_soldiers.at(i)->s_enemy != nullptr) {
+			enemy_soldiers.at(i)->s_enemy->blood->setVisible(true);
+			enemy_soldiers.at(i)->s_enemy->progress->setVisible(true);
 			if (enemy_soldiers.at(i)->getPosition().getDistance(enemy_soldiers.at(i)->s_enemy->getPosition()) <= 100) {
 				enemy_soldiers.at(i)->stopAllActions();
 				if (enemy_soldiers.at(i)->getPosition().x < enemy_soldiers.at(i)->s_enemy->getPosition().x)
@@ -300,10 +354,11 @@ void mymap::scheduleBlood_mine(float delta) {
 					enemy_soldiers.at(i)->s_enemy->progress->setPercentage((nowhealth / enemy_soldiers.at(i)->s_enemy->originhealth) * 100);
 					if (enemy_soldiers.at(i)->s_enemy->progress->getPercentage() <= 0)
 					{
-						this->removeChild(enemy_soldiers.at(i)->s_enemy->progress);
-						this->removeChild(enemy_soldiers.at(i)->s_enemy->blood);
+						enemy_soldiers.at(i)->s_enemy->blood->setVisible(false);
+						enemy_soldiers.at(i)->s_enemy->progress->setVisible(false);
 						if (enemy_soldiers.at(i)->s_enemy->atk == 10 || enemy_soldiers.at(i)->s_enemy->atk == 10)
 						{
+							
 							Animation* animation = Animation::create();
 							for (int i = 1; i <= 10; i++)
 							{
@@ -314,7 +369,7 @@ void mymap::scheduleBlood_mine(float delta) {
 							}
 							animation->setDelayPerUnit(0.1f);           //ÉèÖÃÁ½¸öÖ¡²¥·ÅÊ±¼ä
 							animation->setRestoreOriginalFrame(false);    //¶¯»­Ö´ÐÐºó»¹Ô­³õÊ¼×´Ì¬
-
+							soldiers.at(i)->s_enemy->getPhysicsBody()->setDynamic(false);
 							FiniteTimeAction* action1 = Animate::create(animation);
 							FiniteTimeAction* action2 = CallFunc::create(CC_CALLBACK_0(mymap::ruins, this));
 							ActionInterval*seq = Sequence::create(action1, action2, NULL);
@@ -323,10 +378,33 @@ void mymap::scheduleBlood_mine(float delta) {
 						}
 						else
 						{
-							this->removeChild(enemy_soldiers.at(i)->s_enemy);
+							Animation* animation = Animation::create();
+							char a = 0;
+							if (soldiers.at(i)->getPosition().x > soldiers.at(i)->s_enemy->getPosition().x)
+							{
+								a = 'r';
+							}
+							else
+							{
+								a = 'l';
+							}
+							for (int i = 1; i <= 2; i++)
+							{
+								__String *frameName = __String::createWithFormat("die%c%d.png", a, i);
+								log("frameName = %s", frameName->getCString());
+								SpriteFrame *spriteFrame = SpriteFrameCache::getInstance()->getSpriteFrameByName(frameName->getCString());
+								animation->addSpriteFrame(spriteFrame);
+							}
+							animation->setDelayPerUnit(0.5f);           //ÉèÖÃÁ½¸öÖ¡²¥·ÅÊ±¼ä
+							animation->setRestoreOriginalFrame(false);    //¶¯»­Ö´ÐÐºó»¹Ô­³õÊ¼×´Ì¬
+							soldiers.at(i)->s_enemy->getPhysicsBody()->setDynamic(false);
+							FiniteTimeAction* action1 = Animate::create(animation);
+							FiniteTimeAction* action2 = CallFunc::create(CC_CALLBACK_0(mymap::ruins, this));
+							ActionInterval*seq = Sequence::create(action1, action2, NULL);
+							soldiers.at(i)->s_enemy->runAction(Sequence::create(seq, NULL));
+							soldiers.at(i)->stopAllActions();
 						}
 						enemy_soldiers.at(i)->s_enemy = nullptr;
-						//soldiers.at(i)->isattack = 0;
 						enemy_soldiers.at(i)->stopAllActions();
 
 						enemy_soldiers.at(i)->s_enemy = nullptr;
@@ -380,7 +458,7 @@ void mymap::scheduleBlood_mine(float delta) {
 						}
 						animation->setDelayPerUnit(0.1f);           //ÉèÖÃÁ½¸öÖ¡²¥·ÅÊ±¼ä
 						animation->setRestoreOriginalFrame(false);    //¶¯»­Ö´ÐÐºó»¹Ô­³õÊ¼×´Ì¬
-
+						soldiers.at(i)->b_enemy->getPhysicsBody()->setDynamic(false);
 						FiniteTimeAction* action1 = Animate::create(animation);
 						FiniteTimeAction* action2 = CallFunc::create(CC_CALLBACK_0(mymap::ruins, this));
 						ActionInterval*seq = Sequence::create(action1, action2, NULL);
@@ -413,12 +491,12 @@ void mymap::onEnter() {
 		EventMouse* em = (EventMouse*)e;
 		mouse_down = em->getLocation();
 		mouse_down = Director::getInstance()->convertToGL(mouse_down);
-		//mouse_down = location + repair;
+		//mouse_down = location+repair;
 	};
 	listener->onMouseMove = [this](Event *e) {
 		EventMouse* em = (EventMouse*)e;
 		auto location = em->getLocation();
-		location = Director::getInstance()->convertToGL(location);
+		location.y = 900 - location.y;
 		pos1 = this->getPosition();
 		auto tilesize = _tileMap->getTileSize();
 		auto visize = Director::getInstance()->getVisibleSize();
@@ -477,7 +555,7 @@ void mymap::onEnter() {
 		mouse_up = em->getLocation();
 		mouse_up = Director::getInstance()->convertToGL(mouse_up);//½«Êó±êµÄ×ø±ê×ª»»ÎªÊÀ½ç×ø±ê
 																  //»ù±¾´´½¨½¨ÖþµÄÊÂ¼þ
-		//mouse_up = location + repair;
+		//mouse_up = location+repair;
 		Soldier::judge_selected(soldiers, mouse_down, mouse_up,repair);
 		if (mouse_up == mouse_down && !buttonlayer->buildornot && !(buttonlayer->isTap(em, buttonlayer->getChildByTag(SOLDIERBUTTONTAG))) && !(buttonlayer->isTap(em, buttonlayer->getChildByTag(CARINCBUTTONTAG))) && !(buttonlayer->isTap(em, buttonlayer->getChildByTag(MINEBUTTONTAG))) && !(buttonlayer->isTap(em, buttonlayer->getChildByTag(EPOWERBUTTONTAG))) && !(buttonlayer->isTap(em, buttonlayer->getChildByTag(BARRACKBUTTONTAG))))
 		{
@@ -495,19 +573,19 @@ void mymap::onEnter() {
 			}
 		}
 		for (int i = 0; i < enemy_soldiers.size(); i++) {
-			if (isTap(mouse_up , enemy_soldiers.at(i))) {
+			if (isTap(mouse_up, enemy_soldiers.at(i))) {
 				Soldier::attacksoldier(soldiers, enemy_soldiers, mouse_up);
 			}
 		}
 		for (int i = 0; i<enemy_buildings.size(); i++) {
-			if (isTap(mouse_up , enemy_buildings.at(i))) {
-				Soldier::attackbuilding(soldiers, enemy_buildings, mouse_up);
+			if (isTap(mouse_up, enemy_buildings.at(i))) {
+				Soldier::attackbuilding(soldiers, enemy_buildings,mouse_up);
 				break;
 			}
 		}
 		if (buttonlayer->buildornot == 1 && !(buttonlayer->isTap(em, buttonlayer->getChildByTag(SOLDIERBUTTONTAG))) && !(buttonlayer->isTap(em, buttonlayer->getChildByTag(CARINCBUTTONTAG))) && !(buttonlayer->isTap(em, buttonlayer->getChildByTag(MINEBUTTONTAG))) && !(buttonlayer->isTap(em, buttonlayer->getChildByTag(EPOWERBUTTONTAG))) && !(buttonlayer->isTap(em, buttonlayer->getChildByTag(BARRACKBUTTONTAG))))
 		{
-			Vec2 position = mouse_up + repair;//ÐÞÕýÁ¿Æð×÷ÓÃÁË
+			Vec2 position = mouse_up+ repair;//ÐÞÕýÁ¿Æð×÷ÓÃÁË
 			building* Building = NULL;
 			if (buttonlayer->buildchoice == 1 && buttonlayer->money >= 900) {
 				Building = building::createWithBuildingType(Mine);
@@ -580,7 +658,7 @@ void mymap::onEnter() {
 				soldiernum += 1;
 				auto bing = Soldier::createwithsoldiertype(human);
 				bing->setPosition(barrackpos);
-				Soldier::add_bloodbar(bing, repair);
+				Soldier::add_bloodbar(bing,repair);
 				addChild(bing);
 				addChild(bing->blood);
 				addChild(bing->progress);
@@ -591,8 +669,8 @@ void mymap::onEnter() {
 				soldiernum += 1;
 				auto bing = Soldier::createwithsoldiertype(tank);
 				bing->setPosition(carincpos);
-				Soldier::add_bloodbar(bing, repair);
-
+				Soldier::add_bloodbar(bing,repair);
+				
 				addChild(bing);
 				addChild(bing->blood);
 				addChild(bing->progress);
@@ -603,8 +681,8 @@ void mymap::onEnter() {
 				soldiernum += 1;
 				auto bing = Soldier::createwithsoldiertype(robot);
 				bing->setPosition(carincpos);
-				Soldier::add_bloodbar(bing, repair);
-
+				Soldier::add_bloodbar(bing,repair);
+				
 				addChild(bing);
 				addChild(bing->blood);
 				addChild(bing->progress);
@@ -755,3 +833,6 @@ bool mymap::tapenemy(Vec2 location, Vector<building*>enemy_buildings, Vector<Sol
 	}
 	return tap;
 }
+/*
+   
+*/
