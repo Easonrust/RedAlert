@@ -575,6 +575,7 @@ void mymap::onEnter() {
 		}
 		else if (buttonlayer->buildornot == 2)
 		{
+			Sleep(2000);
 			if (barrackpos != Vec2(0, 0) && buttonlayer->buildchoice == 5 && buttonlayer->money >= 100)
 			{
 				soldiernum += 1;

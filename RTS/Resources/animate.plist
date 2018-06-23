@@ -4,6 +4,21 @@
     <dict>
         <key>frames</key>
         <dict>
+            <key>a1.png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>spriteOffset</key>
+                <string>{-32,35}</string>
+                <key>spriteSize</key>
+                <string>{3,3}</string>
+                <key>spriteSourceSize</key>
+                <string>{67,73}</string>
+                <key>textureRect</key>
+                <string>{{382,252},{3,3}}</string>
+                <key>textureRotated</key>
+                <false/>
+            </dict>
             <key>al1.png</key>
             <dict>
                 <key>aliases</key>
@@ -708,7 +723,7 @@
             <key>size</key>
             <string>{1643,256}</string>
             <key>smartupdate</key>
-            <string>$TexturePacker:SmartUpdate:c5a73ce36f5f30211783980d9b022490:259334383546486429f20691e6ef69ec:71360160189ada85a06ccd7c1eeb6fda$</string>
+            <string>$TexturePacker:SmartUpdate:cbce1e483f9ce625f7ba3af6154f4794:da2bb56573eb111faf79b8a6a82213b3:71360160189ada85a06ccd7c1eeb6fda$</string>
             <key>textureFileName</key>
             <string>animate.png</string>
         </dict>
