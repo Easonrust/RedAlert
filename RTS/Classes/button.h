@@ -39,12 +39,16 @@ class button : public Layer
 public:
 	int money = 1000;
 	int power = 1000;
+	int enemy_money = 1000;
+	int enemy_power = 1000;
 	virtual bool init();
 	virtual void onEnter();
 	virtual void onExit();
 	bool isTap(cocos2d::EventMouse*em, cocos2d::Node*node);
 	int buildornot = 0;//按钮是否提供了建造允许
 	int buildchoice = 0;//修建哪个建筑
+	int enemy_buildornot = 0;//按钮是否提供了建造允许
+	int enemy_buildchoice = 0;//修建哪个建筑
 	virtual bool onMouseDown(Event*e);
 	virtual void onMouseUp(Event*e);
 	void scheduleMoneyPower(float delta);

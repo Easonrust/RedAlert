@@ -21,7 +21,7 @@ bool mymap::init()
 	_collidable->setVisible(false);
 	auto base = building::createWithBuildingType(Base);
 	buildingnum += 1;//将地图上目前的建筑总数加一
-	base->setPosition(Vec2(300, 300));
+	base->setPosition(Vec2(400, 300));
 	building::add_blood_bar(base);
 	addChild(base);
 	addChild(base->blood);
@@ -555,11 +555,11 @@ void mymap::onEnter() {
 		mouse_up = em->getLocation();
 		mouse_up = Director::getInstance()->convertToGL(mouse_up);//将鼠标的坐标转换为世界坐标
 																  //基本创建建筑的事件
-		//mouse_up = location+repair;
+		
 		Soldier::judge_selected(soldiers, mouse_down, mouse_up,repair);
 		if (mouse_up == mouse_down && !buttonlayer->buildornot && !(buttonlayer->isTap(em, buttonlayer->getChildByTag(SOLDIERBUTTONTAG))) && !(buttonlayer->isTap(em, buttonlayer->getChildByTag(CARINCBUTTONTAG))) && !(buttonlayer->isTap(em, buttonlayer->getChildByTag(MINEBUTTONTAG))) && !(buttonlayer->isTap(em, buttonlayer->getChildByTag(EPOWERBUTTONTAG))) && !(buttonlayer->isTap(em, buttonlayer->getChildByTag(BARRACKBUTTONTAG))))
 		{
-			if (tapenemy(mouse_up+repair, enemy_buildings, enemy_soldiers) == 0)
+			if (tapenemy(mouse_up, enemy_buildings, enemy_soldiers) == 0)
 			{
 				for (int i = 0; i < soldiers.size(); ++i)
 				{
@@ -663,6 +663,7 @@ void mymap::onEnter() {
 				addChild(bing->blood);
 				addChild(bing->progress);
 				enemy_soldiers.pushBack(bing);
+				buttonlayer->updatemoney(buttonlayer->buildchoice);//购买后更新钱数更新
 			}
 			if (carincpos != Vec2(0, 0) && buttonlayer->buildchoice == 6 && buttonlayer->money >= 500)
 			{
@@ -675,6 +676,7 @@ void mymap::onEnter() {
 				addChild(bing->blood);
 				addChild(bing->progress);
 				enemy_soldiers.pushBack(bing);
+				buttonlayer->updatemoney(buttonlayer->buildchoice);//购买后更新钱数更新
 			}
 			if (carincpos != Vec2(0, 0) && buttonlayer->buildchoice == 7 && buttonlayer->money >= 200)
 			{
@@ -687,9 +689,10 @@ void mymap::onEnter() {
 				addChild(bing->blood);
 				addChild(bing->progress);
 				soldiers.pushBack(bing);
+				buttonlayer->updatemoney(buttonlayer->buildchoice);//购买后更新钱数更新
 			}
 
-
+			buttonlayer->buildchoice = 0;
 			buttonlayer->buildornot = false;
 		}
 
@@ -827,6 +830,23 @@ bool mymap::tapenemy(Vec2 location, Vector<building*>enemy_buildings, Vector<Sol
 	}
 	for (int i = 0; i<enemy_buildings.size(); i++) {
 		if (Soldier::isTap(location, enemy_buildings.at(i))) {
+			tap = 1;
+			break;
+		}
+	}
+	return tap;
+}
+bool mymap::taparmy(Vec2 location, Vector<building*>buildings, Vector<Soldier*>soldiers)
+{
+	bool tap = 0;
+	for (int i = 0; i < soldiers.size(); i++) {
+		if (Soldier::isTap(location, soldiers.at(i))) {
+			tap = 1;
+			break;
+		}
+	}
+	for (int i = 0; i<buildings.size(); i++) {
+		if (Soldier::isTap(location, buildings.at(i))) {
 			tap = 1;
 			break;
 		}

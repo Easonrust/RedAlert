@@ -20,17 +20,21 @@ class mymap : public Layer
 	int soldiernum = 0;
 	Vec2 barrackpos = Vec2(0, 0);
 	Vec2 carincpos = Vec2(0, 0);
+	Vec2 enemy_barrackpos = Vec2(0, 0);
+	Vec2 enemy_carincpos = Vec2(0, 0);
 	Vec2 mouse_up;
 	Vec2 mouse_down;
 	Vec2 pos1;
 	int bloodnum = 100;//血量条的数量+100
 	bool moneyenough = false;
+	bool enemy_moneyenough = false;
 public:
 	button*buttonlayer;//按钮层指针（用于信息交互）
 					   //士兵容器
 	bool canbuild(Vec2 location);//能否建造不与其他建筑碰撞的函数
 	bool collide(Vec2 pos);//检测碰撞的函数
 	bool tapenemy(Vec2 location, Vector<building*>enemy_building, Vector<Soldier*>enemy_soldiers);
+	bool taparmy(Vec2 location, Vector<building*>buildings, Vector<Soldier*>soldiers);
 	cocos2d::Vec2 tileCoordFromPosition(cocos2d::Vec2 position);
 	virtual bool init();
 	virtual void onEnter();
