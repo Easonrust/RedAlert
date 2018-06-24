@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" tiledversion="1.1.5" orientation="orthogonal" renderorder="right-down" width="128" height="64" tilewidth="32" tileheight="32" infinite="0" nextobjectid="2">
+ <tileset firstgid="1" name="dg_grounds32" tilewidth="32" tileheight="32" tilecount="171" columns="9">
+  <image source="dg_grounds32.jpg" width="288" height="608"/>
+ </tileset>
+ <tileset firstgid="172" name="collidable_tiles" tilewidth="32" tileheight="32" tilecount="1" columns="1">
+  <image source="collidable_tiles.jpg" width="32" height="32"/>
+  <tile id="0">
+   <properties>
+    <property name="Collidable" value="true"/>
+   </properties>
+  </tile>
+ </tileset>
+ <layer name="background" width="128" height="64">
+  <data encoding="base64" compression="zlib">
+   eJzt3M0JwjAYgOGePYgzOISCAziDMziLXpzBi1tqoaKEqoltvr+8hxe8VAJPIpimPXRddwjYKjPtcVpoEbBcf8kx7R8tDYU//vjjr22Ff3z/21v426im/y35jH97/t/CX7+o/rsC/x3+4fzXBUnZt+T/y967/2ao5JrLkLa5Bf/a66ym/yYp97rjkLa51O+/Zvjjjz/+Ev65cwB/uWr//2P928/a/g/++OOPv7Y5/vh78D8l4d+Of2ofwb+l/V/8x2vl/k+NOYB/m/7/Xo+/b/+p4Y8//vjjjz/+8/n353euX5I6343/fP7bgnL8S77vU/jL+WuPIw1//KP6p/V7wkel8Jf1Hwv/tv01w1/fAH/88ccf/1dzPCcm5T/lHqV2Vv2fe0n44+/Bv+9swBN/XX9vcwD/eezxx//c+ZsDUf2l3v+TnlHF34Z/yfPfU94BNHZOHf+2/aeeW8bfj7/3OYB/vfXvYQ7gX3f94x/f33NR/a2+/9VaUf0XBf7aBvjjjz/++OOPP/74448//vjjjz/++OOPP/41/SOW6689Tu3u1CmNyA==
+  </data>
+ </layer>
+ <layer name="collidable" width="128" height="64" opacity="0.45">
+  <data encoding="base64" compression="zlib">
+   eJztmVuuwjAMBbv/tXSR6P5eUZy2iXOOPSNF4gOofYagPM7jOM6iI2J3fSqjIqP+M1HLGv+5qGWN/1zUssZ/LmpZZ/rPXm/gP2alj/Pfa/z3879zz4H/mKr+7+z/M8E/81+JVS4UzpxW+n/aA/7913+Vzk4r9HAF/mMq9HAF/mMq9HBFln/n/Nzr/0XG+s89uwo9XKG4/1MD/73Bf2/w3xtl/2/X2PiPUfU/Y4+l6F8ta/znopa1qv8/8L8eB/9vPj/jPTNRy1rZ/1vwH4P/XNSyxn8ualnjPxe1rPGfi1rW3/bZI2PFd86+U8d/jOr8x38O+M9l1X/d23rUqOpfDfz3Bv+9wX9v8N8b/Oc8RxVV/zPAfwz+5zzHNUfXukfY4d8tS8eaR8nwr3SW9wTHmkfZ5d8pT7d6Rxnt623/+NeF+R/jVu8ddvp3ydSp1rvsWv87/QZc6nzC7vnvkK1DjU9RmP/q2TrU+BTuf2Kq+s/a/7lTuX/mfwz+e4P/3uC/N/jvDf57g//e4L83+O8N/nuD/96M3F8yao8P/7zj0A==
+  </data>
+ </layer>
+ <objectgroup name="objects"/>
+</map>

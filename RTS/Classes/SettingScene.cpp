@@ -1,76 +1,94 @@
 #include "SettingScene.h"
-
+#include "SystemHeader.h"
 USING_NS_CC;
 using namespace CocosDenshion;
 
 Scene* Setting::createScene()
 {
-	// 'scene' is an autorelease object
-	auto scene = Scene::create();
+    // 'scene' is an autorelease object
+    auto scene = Scene::create();
+    
+    // 'layer' is an autorelease object
+    auto layer = Setting::create();
 
-	// 'layer' is an autorelease object
-	auto layer = Setting::create();
+    // add layer as a child to scene
+    scene->addChild(layer);
 
-	// add layer as a child to scene
-	scene->addChild(layer);
-
-	// return the scene
-	return scene;
+    // return the scene
+    return scene;
 }
 
 // on "init" you need to initialize your instance
 bool Setting::init()
 {
-	//////////////////////////////
-	// 1. super init first
-	if (!Layer::init())
-	{
-		return false;
-	}
+    //////////////////////////////
+    // 1. super init first
+    if ( !Layer::init() )
+    {
+        return false;
+    }
+    
+    Size visibleSize = Director::getInstance()->getVisibleSize();
+    Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
-	Size visibleSize = Director::getInstance()->getVisibleSize();
-	Vec2 origin = Director::getInstance()->getVisibleOrigin();
-
-	Sprite *bg = Sprite::create("background2.png");
-
-	// position the label on the center of the screen
+	//ÉèÖÃ±³¾°
+	Sprite *bg = Sprite::create("setbackground2.png");
 	bg->setPosition(Vec2(origin.x + visibleSize.width / 2,
 		origin.y + visibleSize.height / 2));
 	this->addChild(bg);
 
 	MenuItemFont::setFontName("Times New Roman");
-	MenuItemFont::setFontSize(50);
+	MenuItemFont::setFontSize(40);
 
 	//ÒôÐ§
-	auto soundToggleMenuItem = MenuItemToggle::createWithCallback(CC_CALLBACK_1(Setting::menuSoundToggleCallback, this),
-		MenuItemFont::create("On"),
-		MenuItemFont::create("Off"),
-		NULL);
-	soundToggleMenuItem->setPosition(Director::getInstance()->convertToGL(Vec2(550, 300)));
+	
+    auto soundToggleMenuItem = MenuItemToggle::createWithCallback(CC_CALLBACK_1(Setting::menuSoundToggleCallback, this), 
+												MenuItemImage::create("onbutton.png","onbutton.png"),
+												MenuItemImage::create("offbutton.png", "offbutton.png"),
+												NULL);
 
-	//ÒôÀÖ
-	auto musicToggleMenuItem = MenuItemToggle::createWithCallback(CC_CALLBACK_1(Setting::menuMusicToggleCallback, this),
-		MenuItemFont::create("On"),
-		MenuItemFont::create("Off"),
-		NULL);
-	musicToggleMenuItem->setPosition(Director::getInstance()->convertToGL(Vec2(550, 180)));
+	soundToggleMenuItem->setPosition(Director::getInstance()->convertToGL(Vec2(710,279 )));
 
-	//Ok°´Å¥
-	MenuItemFont*okMenuItem = MenuItemFont::create("OK", CC_CALLBACK_1(Setting::menuOkCallback, this));
+    //ÒôÀÖ
+    auto musicToggleMenuItem = MenuItemToggle::createWithCallback(CC_CALLBACK_1(Setting::menuMusicToggleCallback, this), 
+												MenuItemImage::create("onbutton.png", "onbutton.png"),
+												MenuItemImage::create("offbutton.png", "offbutton.png"),
+												NULL);
+	musicToggleMenuItem->setPosition(Director::getInstance()->convertToGL(Vec2(710, 190)));
+
+	MenuItemFont::setFontName("Times New Roman");
+	MenuItemFont::setFontSize(80);
+    //Ok°´Å¥
+	MenuItemImage*okMenuItem = MenuItemImage::create("okbutton.png", "okbutton2.png", CC_CALLBACK_1(Setting::menuOkCallback, this));
 	okMenuItem->setPosition(Director::getInstance()->convertToGL(Vec2(580, 410)));
 
-	Menu* mu = Menu::create(soundToggleMenuItem, musicToggleMenuItem, okMenuItem, NULL);
+	Menu* mu = Menu::create(soundToggleMenuItem, musicToggleMenuItem,okMenuItem, NULL);
 	mu->setPosition(Vec2::ZERO);
 	this->addChild(mu);
 
-	return true;
+	UserDefault *defaults = UserDefault::getInstance();
+
+	if (defaults->getBoolForKey(MUSIC_KEY)) {
+		musicToggleMenuItem->setSelectedIndex(0);//off
+	}
+	else {
+		musicToggleMenuItem->setSelectedIndex(1);//on
+	}
+
+	if (defaults->getBoolForKey(SOUND_KEY)) {
+		soundToggleMenuItem->setSelectedIndex(0);//off
+	}
+	else {
+		soundToggleMenuItem->setSelectedIndex(1);//on
+	}
+    return true;
 }
 
 void Setting::menuOkCallback(Ref* pSender)
 {
 	Director::getInstance()->popScene();
-	if (isEffect) {
-		SimpleAudioEngine::getInstance()->playEffect("sound/Blip.wav");
+	if (UserDefault::getInstance()->getBoolForKey(SOUND_KEY)) {
+		SimpleAudioEngine::getInstance()->playEffect("sound/button.wav");
 	}
 }
 
@@ -79,16 +97,13 @@ void Setting::menuSoundToggleCallback(Ref* pSender)
 	auto soundToggleMenuItem = (MenuItemToggle*)pSender;
 	log("soundToggleMenuItem %d", soundToggleMenuItem->getSelectedIndex());
 
-	if (isEffect) {
-		SimpleAudioEngine::getInstance()->playEffect("sound/Blip.wav");
-	}
-
-	if (soundToggleMenuItem->getSelectedIndex() == 1) {//Ñ¡ÖÐ×´Ì¬Off -> On
-		isEffect = false;
+	UserDefault*defaults = UserDefault::getInstance();
+	if (defaults->getBoolForKey(SOUND_KEY)) {
+		defaults->setBoolForKey(SOUND_KEY, false);
 	}
 	else {
-		isEffect = true;
-		SimpleAudioEngine::getInstance()->playEffect("sound/Blip.wav");
+		defaults->setBoolForKey(SOUND_KEY, true);
+		SimpleAudioEngine::getInstance()->playEffect("sound/button.wav");
 	}
 }
 
@@ -98,14 +113,18 @@ void Setting::menuMusicToggleCallback(Ref* pSender)
 	auto musicToggleMenuItem = (MenuItemToggle*)pSender;
 	log("musicToggleMenuItem %d", musicToggleMenuItem->getSelectedIndex());
 
-	if (musicToggleMenuItem->getSelectedIndex() == 1) {//Ñ¡ÖÐ×´Ì¬Off -> On
-		SimpleAudioEngine::getInstance()->stopBackgroundMusic("sound/Synth.mp3");
+	if (UserDefault::getInstance()->getBoolForKey(SOUND_KEY)) {
+		SimpleAudioEngine::getInstance()->playEffect("sound/button.wav");
+	}
+
+	UserDefault*defaults = UserDefault::getInstance();
+	if (defaults->getBoolForKey(MUSIC_KEY)) {
+		defaults->setBoolForKey(MUSIC_KEY, false);
+		SimpleAudioEngine::getInstance()->stopBackgroundMusic();
 	}
 	else {
-		SimpleAudioEngine::getInstance()->playBackgroundMusic("sound/Synth.mp3");
-	}
-	if (isEffect) {
-		SimpleAudioEngine::getInstance()->playEffect("sound/Blip.wav");
+		defaults->setBoolForKey(MUSIC_KEY, true);
+		SimpleAudioEngine::getInstance()->playBackgroundMusic("sound/Lose1.mp3");
 	}
 }
 
@@ -122,7 +141,7 @@ void Setting::onEnterTransitionDidFinish()
 	log("Setting onEnterTransitionDidFinish");
 	isEffect = true;
 	//²¥·Å
-	SimpleAudioEngine::getInstance()->playBackgroundMusic("sound/Synth.mp3", true);
+	//SimpleAudioEngine::getInstance()->playBackgroundMusic("sound/Synth.mp3", true);
 }
 
 void Setting::onExit()
@@ -142,5 +161,5 @@ void Setting::cleanup()
 	Layer::cleanup();
 	log("Setting cleanup");
 	//Í£Ö¹
-	SimpleAudioEngine::getInstance()->stopBackgroundMusic("sound/Synth.mp3");
+	//SimpleAudioEngine::getInstance()->stopBackgroundMusic("sound/Synth.mp3");
 }

@@ -8,9 +8,11 @@
 USING_NS_CC;
 class mymap : public Layer
 {
-	Vec2 originmap;
+	
+public:
 	cocos2d::TMXTiledMap* _tileMap;//地图
 	cocos2d::TMXLayer* _collidable;
+	Vec2 originmap;
 	Vector<building*>buildings;//建筑容器
 	Vector<building*>enemy_buildings;
 	Vector<Soldier*>soldiers;
@@ -31,7 +33,8 @@ class mymap : public Layer
 	int bloodnum = 100;//血量条的数量+100
 	bool moneyenough = false;
 	bool enemy_moneyenough = false;
-public:
+
+
 	button*buttonlayer;//按钮层指针（用于信息交互）
 					   //士兵容器
 	bool canbuild(Vec2 location);//能否建造不与其他建筑碰撞的函数
@@ -50,7 +53,7 @@ public:
 	void soldierattack(float delta);
 	void ruins();
 	static bool isTap(cocos2d::Vec2 location, cocos2d::Node*node);
-	
+
 	CREATE_FUNC(mymap);
 };
 

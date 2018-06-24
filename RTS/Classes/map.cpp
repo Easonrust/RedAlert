@@ -3,6 +3,7 @@
 #include "building.h"
 #include <string>
 #include <iostream>
+#include "InPutIPsence.h"
 bool mymap::init()
 {
 	if (!Layer::init())
@@ -239,7 +240,7 @@ void mymap::scheduleBlood_enemy(float delta) {
 							}
 							for (int i = 1; i <= 2; i++)
 							{
-								__String *frameName = __String::createWithFormat("die%c%d.png",a, i);
+								__String *frameName = __String::createWithFormat("die%c%d.png", a, i);
 								log("frameName = %s", frameName->getCString());
 								SpriteFrame *spriteFrame = SpriteFrameCache::getInstance()->getSpriteFrameByName(frameName->getCString());
 								animation->addSpriteFrame(spriteFrame);
@@ -296,6 +297,8 @@ void mymap::scheduleBlood_enemy(float delta) {
 
 					if (soldiers.at(i)->b_enemy->progress->getPercentage() <= 0)
 					{
+						soldiers.at(i)->b_enemy->blood->setVisible(false);
+						soldiers.at(i)->b_enemy->progress->setVisible(false);
 						//Vec2 loc = soldiers.at(i)->b_enemy->getPosition();
 						if (soldiers.at(i)->b_enemy->originhealth == 3000)
 						{
@@ -303,7 +306,7 @@ void mymap::scheduleBlood_enemy(float delta) {
 						}
 						else if (soldiers.at(i)->b_enemy->originhealth == 2000)
 						{
-							buttonlayer->enemy_mine_num -=1;
+							buttonlayer->enemy_mine_num -= 1;
 						}
 						else if (soldiers.at(i)->b_enemy->originhealth == 1200)
 						{
@@ -317,8 +320,6 @@ void mymap::scheduleBlood_enemy(float delta) {
 						{
 							buttonlayer->enemy_carinc_num -= 1;
 						}
-						this->removeChild(soldiers.at(i)->b_enemy->progress);
-						this->removeChild(soldiers.at(i)->b_enemy->blood);
 						//this->removeChild(soldiers.at(i)->b_enemy);
 						//soldiers.at(i)->b_enemy = nullptr;
 						Animation* animation = Animation::create();
@@ -383,7 +384,7 @@ void mymap::scheduleBlood_mine(float delta) {
 						enemy_soldiers.at(i)->s_enemy->progress->setVisible(false);
 						if (enemy_soldiers.at(i)->s_enemy->atk == 10 || enemy_soldiers.at(i)->s_enemy->atk == 10)
 						{
-							
+
 							Animation* animation = Animation::create();
 							for (int i = 1; i <= 10; i++)
 							{
@@ -489,8 +490,8 @@ void mymap::scheduleBlood_mine(float delta) {
 						{
 							buttonlayer->carinc_num -= 1;
 						}
-						this->removeChild(enemy_soldiers.at(i)->b_enemy->progress);
-						this->removeChild(enemy_soldiers.at(i)->b_enemy->blood);
+						enemy_soldiers.at(i)->b_enemy->blood->setVisible(false);
+						enemy_soldiers.at(i)->b_enemy->progress->setVisible(false);
 						Animation* animation = Animation::create();
 						for (int i = 1; i <= 10; i++)
 						{
@@ -541,14 +542,14 @@ void mymap::onEnter() {
 		EventMouse* em = (EventMouse*)e;
 		mouse_move = em->getLocation();
 		mouse_move = Director::getInstance()->convertToGL(mouse_move);
-		
+
 		drawNode->clear();
 		if (ismousedown) {
 			Vec2 point[4];
-			point[0] = Vec2(mouse_down.x+repair.x, mouse_down.y+repair.y);
-			point[1] = Vec2(mouse_down.x+repair.x, mouse_move.y+repair.y);
-			point[2] = Vec2(mouse_move.x+repair.x, mouse_move.y+repair.y);
-			point[3] = Vec2(mouse_move.x+repair.x, mouse_down.y+repair.y);
+			point[0] = Vec2(mouse_down.x + repair.x, mouse_down.y + repair.y);
+			point[1] = Vec2(mouse_down.x + repair.x, mouse_move.y + repair.y);
+			point[2] = Vec2(mouse_move.x + repair.x, mouse_move.y + repair.y);
+			point[3] = Vec2(mouse_move.x + repair.x, mouse_down.y + repair.y);
 			drawNode->drawPolygon(point, 4, Color4F(1, 0, 0, 0), 1, Color4F(144, 144, 144, 1));
 		}
 		pos1 = this->getPosition();
@@ -611,8 +612,8 @@ void mymap::onEnter() {
 		mouse_up = em->getLocation();
 		mouse_up = Director::getInstance()->convertToGL(mouse_up);//将鼠标的坐标转换为世界坐标
 																  //基本创建建筑的事件
-		
-		Soldier::judge_selected(soldiers, mouse_down, mouse_up,repair);
+
+		Soldier::judge_selected(soldiers, mouse_down, mouse_up, repair);
 		if (mouse_up == mouse_down && !buttonlayer->buildornot && !(buttonlayer->isTap(em, buttonlayer->getChildByTag(SOLDIERBUTTONTAG))) && !(buttonlayer->isTap(em, buttonlayer->getChildByTag(CARINCBUTTONTAG))) && !(buttonlayer->isTap(em, buttonlayer->getChildByTag(MINEBUTTONTAG))) && !(buttonlayer->isTap(em, buttonlayer->getChildByTag(EPOWERBUTTONTAG))) && !(buttonlayer->isTap(em, buttonlayer->getChildByTag(BARRACKBUTTONTAG))))
 		{
 			if (tapenemy(mouse_up, enemy_buildings, enemy_soldiers) == 0)
@@ -625,7 +626,7 @@ void mymap::onEnter() {
 						soldiers.at(i)->b_enemy = nullptr;
 					}
 				}
-				Soldier::run(soldiers, mouse_up+repair);
+				Soldier::run(soldiers, mouse_up + repair);
 			}
 		}
 		for (int i = 0; i < enemy_soldiers.size(); i++) {
@@ -635,19 +636,19 @@ void mymap::onEnter() {
 		}
 		for (int i = 0; i<enemy_buildings.size(); i++) {
 			if (isTap(mouse_up, enemy_buildings.at(i))) {
-				Soldier::attackbuilding(soldiers, enemy_buildings,mouse_up);
+				Soldier::attackbuilding(soldiers, enemy_buildings, mouse_up);
 				break;
 			}
 		}
 		if (buttonlayer->buildornot == 1 && !(buttonlayer->isTap(em, buttonlayer->getChildByTag(SOLDIERBUTTONTAG))) && !(buttonlayer->isTap(em, buttonlayer->getChildByTag(CARINCBUTTONTAG))) && !(buttonlayer->isTap(em, buttonlayer->getChildByTag(MINEBUTTONTAG))) && !(buttonlayer->isTap(em, buttonlayer->getChildByTag(EPOWERBUTTONTAG))) && !(buttonlayer->isTap(em, buttonlayer->getChildByTag(BARRACKBUTTONTAG))))
 		{
-			Vec2 position = mouse_up+ repair;//修正量起作用了
+			Vec2 position = mouse_up + repair;//修正量起作用了
 			building* Building = NULL;
-			if (buttonlayer->buildchoice == 1 && buttonlayer->money >= 2500 && buttonlayer->base_num && buttonlayer->epower_num) {
+			if (buttonlayer->buildchoice == 1 && buttonlayer->money >= 2500 && buttonlayer->power >= 150 && buttonlayer->base_num && buttonlayer->epower_num) {
 				Building = building::createWithBuildingType(Mine);
 				moneyenough = true;
 			}
-			else if (buttonlayer->buildchoice == 2 && buttonlayer->money >= 1000 && buttonlayer->base_num && buttonlayer->epower_num) {
+			else if (buttonlayer->buildchoice == 2 && buttonlayer->money >= 1000 && buttonlayer->power >= 100 && buttonlayer->base_num && buttonlayer->epower_num) {
 				Building = building::createWithBuildingType(Barrack);
 				moneyenough = true;
 				barrackpos = position;
@@ -656,7 +657,7 @@ void mymap::onEnter() {
 				Building = building::createWithBuildingType(Epower);
 				moneyenough = true;
 			}
-			else if (buttonlayer->buildchoice == 4 && buttonlayer->money >= 2000 && buttonlayer->base_num && buttonlayer->epower_num && buttonlayer->barrack_num && buttonlayer->mine_num) {
+			else if (buttonlayer->buildchoice == 4 && buttonlayer->money >= 2000 && buttonlayer->power >= 120 && buttonlayer->base_num && buttonlayer->epower_num && buttonlayer->barrack_num && buttonlayer->mine_num) {
 				Building = building::createWithBuildingType(Carinc);
 				moneyenough = true;
 				carincpos = position;
@@ -667,9 +668,9 @@ void mymap::onEnter() {
 				Building->setPosition(position);
 				building::add_blood_bar(Building);
 				enemy_buildings.pushBack(Building);
-				addChild(Building);
-				addChild(Building->blood);
-				addChild(Building->progress);
+				addChild(Building, 1);
+				addChild(Building->blood, 2);
+				addChild(Building->progress, 3);
 				//将建筑物血条添加到容器中
 				buttonlayer->updatemoney(buttonlayer->buildchoice);//购买后更新钱数更新
 				char name = 0;
@@ -715,10 +716,10 @@ void mymap::onEnter() {
 				soldiernum += 1;
 				auto bing = Soldier::createwithsoldiertype(human);
 				bing->setPosition(barrackpos);
-				Soldier::add_bloodbar(bing,repair);
-				addChild(bing);
-				addChild(bing->blood);
-				addChild(bing->progress);
+				Soldier::add_bloodbar(bing, repair);
+				addChild(bing, 1);
+				addChild(bing->blood, 2);
+				addChild(bing->progress, 3);
 				soldiers.pushBack(bing);
 				buttonlayer->updatemoney(buttonlayer->buildchoice);//购买后更新钱数更新
 			}
@@ -727,11 +728,11 @@ void mymap::onEnter() {
 				soldiernum += 1;
 				auto bing = Soldier::createwithsoldiertype(tank);
 				bing->setPosition(carincpos);
-				Soldier::add_bloodbar(bing,repair);
-				
-				addChild(bing);
-				addChild(bing->blood);
-				addChild(bing->progress);
+				Soldier::add_bloodbar(bing, repair);
+
+				addChild(bing, 1);
+				addChild(bing->blood, 2);
+				addChild(bing->progress, 3);
 				enemy_soldiers.pushBack(bing);
 				buttonlayer->updatemoney(buttonlayer->buildchoice);//购买后更新钱数更新
 			}
@@ -740,11 +741,11 @@ void mymap::onEnter() {
 				soldiernum += 1;
 				auto bing = Soldier::createwithsoldiertype(robot);
 				bing->setPosition(carincpos);
-				Soldier::add_bloodbar(bing,repair);
-				
-				addChild(bing);
-				addChild(bing->blood);
-				addChild(bing->progress);
+				Soldier::add_bloodbar(bing, repair);
+
+				addChild(bing, 1);
+				addChild(bing->blood, 2);
+				addChild(bing->progress, 3);
 				soldiers.pushBack(bing);
 				buttonlayer->updatemoney(buttonlayer->buildchoice);//购买后更新钱数更新
 			}
@@ -910,5 +911,5 @@ bool mymap::taparmy(Vec2 location, Vector<building*>buildings, Vector<Soldier*>s
 	return tap;
 }
 /*
-   
+
 */
