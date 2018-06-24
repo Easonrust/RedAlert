@@ -509,20 +509,20 @@ void mymap::onEnter() {
 		{
 			Vec2 position = location + repair;//修正量起作用了
 			building* Building = NULL;
-			if (buttonlayer->buildchoice == 1 && buttonlayer->money >= 900) {
+			if (buttonlayer->buildchoice == 1 && buttonlayer->money >= 2500 && buttonlayer->base_num && buttonlayer->epower_num) {
 				Building = building::createWithBuildingType(Mine);
 				moneyenough = true;
 			}
-			else if (buttonlayer->buildchoice == 2 && buttonlayer->money >= 1000) {
+			else if (buttonlayer->buildchoice == 2 && buttonlayer->money >= 1000 && buttonlayer->base_num && buttonlayer->epower_num) {
 				Building = building::createWithBuildingType(Barrack);
 				moneyenough = true;
 				barrackpos = position;
 			}
-			else if (buttonlayer->buildchoice == 3 && buttonlayer->money >= 800) {
+			else if (buttonlayer->buildchoice == 3 && buttonlayer->money >= 800 && buttonlayer->base_num) {
 				Building = building::createWithBuildingType(Epower);
 				moneyenough = true;
 			}
-			else if (buttonlayer->buildchoice == 4 && buttonlayer->money >= 700) {
+			else if (buttonlayer->buildchoice == 4 && buttonlayer->money >= 2000 && buttonlayer->base_num && buttonlayer->epower_num && buttonlayer->barrack_num && buttonlayer->mine_num) {
 				Building = building::createWithBuildingType(Carinc);
 				moneyenough = true;
 				carincpos = position;
@@ -564,7 +564,7 @@ void mymap::onEnter() {
 					SpriteFrame *spriteFrame = SpriteFrameCache::getInstance()->getSpriteFrameByName(frameName->getCString());
 					animation->addSpriteFrame(spriteFrame);
 				}
-				animation->setDelayPerUnit(0.3f);           //设置两个帧播放时间
+				animation->setDelayPerUnit(0.08f);           //设置两个帧播放时间
 				animation->setRestoreOriginalFrame(false);    //动画执行后还原初始状态
 
 				Animate* action = Animate::create(animation);
@@ -575,7 +575,7 @@ void mymap::onEnter() {
 		}
 		else if (buttonlayer->buildornot == 2)
 		{
-			Sleep(2000);
+			//Sleep(2000);
 			if (barrackpos != Vec2(0, 0) && buttonlayer->buildchoice == 5 && buttonlayer->money >= 100)
 			{
 				soldiernum += 1;
@@ -587,7 +587,7 @@ void mymap::onEnter() {
 				addChild(bing->progress);
 				enemy_soldiers.pushBack(bing);
 			}
-			if (carincpos != Vec2(0, 0) && buttonlayer->buildchoice == 6 && buttonlayer->money >= 500)
+			if (carincpos != Vec2(0, 0) && buttonlayer->buildchoice == 6 && buttonlayer->money >= 800)
 			{
 				soldiernum += 1;
 				auto bing = Soldier::createwithsoldiertype(tank);
@@ -599,7 +599,7 @@ void mymap::onEnter() {
 				addChild(bing->progress);
 				enemy_soldiers.pushBack(bing);
 			}
-			if (carincpos != Vec2(0, 0) && buttonlayer->buildchoice == 7 && buttonlayer->money >= 200)
+			if (carincpos != Vec2(0, 0) && buttonlayer->buildchoice == 7 && buttonlayer->money >= 300)
 			{
 				soldiernum += 1;
 				auto bing = Soldier::createwithsoldiertype(robot);
@@ -611,12 +611,8 @@ void mymap::onEnter() {
 				addChild(bing->progress);
 				soldiers.pushBack(bing);
 			}
-
-
 			buttonlayer->buildornot = false;
 		}
-
-
 	};
 
 	EventDispatcher* eventDispatcher = Director::getInstance()->getEventDispatcher();

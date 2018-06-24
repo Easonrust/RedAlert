@@ -20,28 +20,33 @@ building* building::createWithBuildingType(Building_type building_type)
 	switch (building_type) {
 	case Base:
 		sprite->building_r = 250;
-		sprite->building_health = 1000;
+		sprite->building_health = 3000;
 		sprite->originhealth = 1000;
+        
 		break;
 	case Mine:
 		sprite->building_r = 100;
-		sprite->building_health = 1000;
+		sprite->building_health = 2000;
 		sprite->originhealth = 1000;
+        
 		break;
 	case Epower:
 		sprite->building_r = 250;
-		sprite->building_health = 1000;
+		sprite->building_health = 1200;
 		sprite->originhealth = 1000;
+        
 		break;
 	case Barrack:
 		sprite->building_r = 250;
-		sprite->building_health = 1000;
+		sprite->building_health = 1400;
 		sprite->originhealth = 1000;
+        
 		break;
 	case Carinc:
 		sprite->building_r = 250;
-		sprite->building_health = 1000;
+		sprite->building_health = 1900;
 		sprite->originhealth = 1000;
+        
 		break;
 	default:
 		break;

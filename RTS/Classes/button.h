@@ -36,9 +36,15 @@ class button : public Layer
 	String*spower;
 	Sprite*powerpng;
 	Label*lblpower;
+    
 public:
-	int money = 1000;
-	int power = 1000;
+    int base_num = 1;
+    int mine_num = 0;
+    int epower_num = 0 ;
+    int barrack_num = 0;
+    int carinc_num  = 0;
+	int money = 4000;
+	int power = 0;
 	virtual bool init();
 	virtual void onEnter();
 	virtual void onExit();
