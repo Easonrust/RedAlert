@@ -39,7 +39,6 @@ bool button::init()
 	moneypowerlist->setPosition(Vec2(1450, 875));
 	moneypowerlist->setScale(5, 2.5);
 	addChild(moneypowerlist, 0, MONEYPOWERLISTTAG);
-	money = 0;
 	smoney = String::createWithFormat("%d", money);
 	lblmoney = Label::createWithTTF(smoney->getCString(), "fonts/Marker Felt.ttf", 24);
 	lblmoney->setColor(Color3B::YELLOW);
@@ -59,7 +58,6 @@ bool button::init()
 	powerpng->setScale(0.8, 0.8);
 	powerpng->setPosition(1483, 875);
 	this->addChild(powerpng, 1, POWERPNG);
-    money = 5000;
 	schedule(schedule_selector(button::scheduleMoneyPower), 0.1f);//调整金钱的函数
 	schedule(schedule_selector(button::schedulebutton), 0.1f);//调整建筑能否建造（钱和电力够不够）
 	return true;

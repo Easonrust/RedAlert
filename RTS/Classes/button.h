@@ -43,9 +43,15 @@ public:
     int epower_num = 0 ;
     int barrack_num = 0;
     int carinc_num  = 0;
+	int enemy_base_num = 1;
+	int enemy_mine_num = 0;
+	int enemy_epower_num = 0;
+	int enemy_barrack_num = 0;
+	int enemy_carinc_num = 0;
+	int enemy_money = 4000;
+	int enemy_power = 0;
 	int money = 4000;
 	int power = 0;
-
 	virtual bool init();
 	virtual void onEnter();
 	virtual void onExit();

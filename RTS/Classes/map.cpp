@@ -27,9 +27,8 @@ bool mymap::init()
 	addChild(base->blood);
 	addChild(base->progress);
 	enemy_buildings.pushBack(base);//½«»ùµØÌí¼Óµ½½¨ÖþÎïÈÝÆ÷ÖÐ
-
-    drawNode = DrawNode::create();
-    this->addChild(drawNode);
+	drawNode = DrawNode::create();
+	this->addChild(drawNode);
 	schedule(schedule_selector(mymap::moveBlood), 0.1f);  //Ë¢ÐÂº¯Êý£¬Ã¿¸ô0.1Ãë
 	schedule(schedule_selector(mymap::protectmap), 0);
 	schedule(schedule_selector(mymap::iscollide), 0);
@@ -51,47 +50,51 @@ bool mymap::isTap(cocos2d::Vec2 location, cocos2d::Node*node)//ÅÐ¶ÏÊÇ·ñµãÖÐ¾«Áéµ
 }
 void mymap::ruins()
 {
-for (int i = 0; i < enemy_buildings.size(); ++i)
-{
-	if (enemy_buildings.at(i)->progress->getPercentage() <= 0)
+	for (int i = 0; i < enemy_buildings.size(); ++i)
 	{
-		enemy_buildings.at(i)->stopAllActions();
-		this->removeChild(enemy_buildings.at(i));
-		enemy_buildings.eraseObject(enemy_buildings.at(i));
+		if (enemy_buildings.at(i)->progress->getPercentage() <= 0)
+		{
+			enemy_buildings.at(i)->stopAllActions();
+			this->removeChild(enemy_buildings.at(i));
+			this->removeChild(enemy_buildings.at(i)->progress);
+			this->removeChild(enemy_buildings.at(i)->blood);
+			enemy_buildings.eraseObject(enemy_buildings.at(i));
+		}
 	}
-}
-for (int i = 0; i < enemy_soldiers.size(); ++i)
-{
-	if (enemy_soldiers.at(i)->progress->getPercentage() <= 0)
+	for (int i = 0; i < enemy_soldiers.size(); ++i)
 	{
-		enemy_soldiers.at(i)->stopAllActions();
-		this->removeChild(enemy_soldiers.at(i));
-		this->removeChild(enemy_soldiers.at(i)->progress);
-		this->removeChild(enemy_soldiers.at(i)->blood);
-		enemy_soldiers.eraseObject(enemy_soldiers.at(i));
+		if (enemy_soldiers.at(i)->progress->getPercentage() <= 0)
+		{
+			enemy_soldiers.at(i)->stopAllActions();
+			this->removeChild(enemy_soldiers.at(i));
+			this->removeChild(enemy_soldiers.at(i)->progress);
+			this->removeChild(enemy_soldiers.at(i)->blood);
+			enemy_soldiers.eraseObject(enemy_soldiers.at(i));
+		}
 	}
-}
-for (int i = 0; i < soldiers.size(); ++i)
-{
-	if (soldiers.at(i)->progress->getPercentage() <= 0)
+	for (int i = 0; i < soldiers.size(); ++i)
 	{
-		soldiers.at(i)->stopAllActions();
-		this->removeChild(soldiers.at(i));
-		this->removeChild(soldiers.at(i)->progress);
-		this->removeChild(soldiers.at(i)->blood);
-		soldiers.eraseObject(soldiers.at(i));
+		if (soldiers.at(i)->progress->getPercentage() <= 0)
+		{
+			soldiers.at(i)->stopAllActions();
+			this->removeChild(soldiers.at(i));
+			this->removeChild(soldiers.at(i)->progress);
+			this->removeChild(soldiers.at(i)->blood);
+			soldiers.eraseObject(soldiers.at(i));
+		}
 	}
-}
-for (int i = 0; i < buildings.size(); ++i)
-{
-	if (buildings.at(i)->progress->getPercentage() <= 0)
+	for (int i = 0; i < buildings.size(); ++i)
 	{
-		buildings.at(i)->stopAllActions();
-		this->removeChild(buildings.at(i));
-		buildings.eraseObject(buildings.at(i));
+		if (buildings.at(i)->progress->getPercentage() <= 0)
+		{
+			buildings.at(i)->stopAllActions();
+			this->removeChild(buildings.at(i));
+			this->removeChild(buildings.at(i)->progress);
+			this->removeChild(buildings.at(i)->blood);
+			buildings.eraseObject(buildings.at(i));
 
+		}
 	}
-}
 }
 void mymap::soldierattack(float delta)
 {
@@ -294,6 +297,26 @@ void mymap::scheduleBlood_enemy(float delta) {
 					if (soldiers.at(i)->b_enemy->progress->getPercentage() <= 0)
 					{
 						//Vec2 loc = soldiers.at(i)->b_enemy->getPosition();
+						if (soldiers.at(i)->b_enemy->originhealth == 3000)
+						{
+							buttonlayer->enemy_base_num -= 1;
+						}
+						else if (soldiers.at(i)->b_enemy->originhealth == 2000)
+						{
+							buttonlayer->enemy_mine_num -=1;
+						}
+						else if (soldiers.at(i)->b_enemy->originhealth == 1200)
+						{
+							buttonlayer->enemy_epower_num -= 1;
+						}
+						else if (soldiers.at(i)->b_enemy->originhealth == 1400)
+						{
+							buttonlayer->enemy_barrack_num -= 1;
+						}
+						else if (soldiers.at(i)->b_enemy->originhealth == 1900)
+						{
+							buttonlayer->enemy_carinc_num -= 1;
+						}
 						this->removeChild(soldiers.at(i)->b_enemy->progress);
 						this->removeChild(soldiers.at(i)->b_enemy->blood);
 						//this->removeChild(soldiers.at(i)->b_enemy);
@@ -446,10 +469,28 @@ void mymap::scheduleBlood_mine(float delta) {
 
 					if (enemy_soldiers.at(i)->b_enemy->progress->getPercentage() <= 0)
 					{
-
+						if (soldiers.at(i)->b_enemy->originhealth == 3000)
+						{
+							buttonlayer->base_num -= 1;
+						}
+						else if (soldiers.at(i)->b_enemy->originhealth == 2000)
+						{
+							buttonlayer->mine_num -= 1;
+						}
+						else if (soldiers.at(i)->b_enemy->originhealth == 1200)
+						{
+							buttonlayer->epower_num -= 1;
+						}
+						else if (soldiers.at(i)->b_enemy->originhealth == 1400)
+						{
+							buttonlayer->barrack_num -= 1;
+						}
+						else if (soldiers.at(i)->b_enemy->originhealth == 1900)
+						{
+							buttonlayer->carinc_num -= 1;
+						}
 						this->removeChild(enemy_soldiers.at(i)->b_enemy->progress);
 						this->removeChild(enemy_soldiers.at(i)->b_enemy->blood);
-						this->removeChild(soldiers.at(i)->b_enemy);
 						Animation* animation = Animation::create();
 						for (int i = 1; i <= 10; i++)
 						{
@@ -493,73 +534,73 @@ void mymap::onEnter() {
 		EventMouse* em = (EventMouse*)e;
 		mouse_down = em->getLocation();
 		mouse_down = Director::getInstance()->convertToGL(mouse_down);
-        ismousedown = 1;
+		ismousedown = 1;
 		//mouse_down = location+repair;
 	};
 	listener->onMouseMove = [this](Event *e) {
 		EventMouse* em = (EventMouse*)e;
-		auto location = em->getLocation();
-		location.y = 900 - location.y;
-        mouse_move = location;
-        drawNode->clear();
-        if(ismousedown){
-            Vec2 point[4];
-            point[0] = Vec2(mouse_down.x, mouse_down.y);
-            point[1] = Vec2(mouse_down.x, mouse_move.y);
-            point[2] = Vec2(mouse_move.x, mouse_move.y);
-            point[3] = Vec2(mouse_move.x, mouse_down.y);
-            drawNode->drawPolygon(point, 4, Color4F(1, 0, 0, 0), 1, Color4F(144, 144, 144, 1));
-        }
+		mouse_move = em->getLocation();
+		mouse_move = Director::getInstance()->convertToGL(mouse_move);
+		
+		drawNode->clear();
+		if (ismousedown) {
+			Vec2 point[4];
+			point[0] = Vec2(mouse_down.x+repair.x, mouse_down.y+repair.y);
+			point[1] = Vec2(mouse_down.x+repair.x, mouse_move.y+repair.y);
+			point[2] = Vec2(mouse_move.x+repair.x, mouse_move.y+repair.y);
+			point[3] = Vec2(mouse_move.x+repair.x, mouse_down.y+repair.y);
+			drawNode->drawPolygon(point, 4, Color4F(1, 0, 0, 0), 1, Color4F(144, 144, 144, 1));
+		}
 		pos1 = this->getPosition();
 		auto tilesize = _tileMap->getTileSize();
 		auto visize = Director::getInstance()->getVisibleSize();
-		if (location.y >= 880 && pos1.y > -700)
+		if (mouse_move.y >= 880 && pos1.y > -700)
 		{
 			Action*actionup = this->runAction(MoveTo::create((pos1.y + 700) / 10, Vec2(pos1.x, -700)));
 			actionup->setTag(1);
 		}
-		if (location.y <= 20 && pos1.y < 0)
+		if (mouse_move.y <= 20 && pos1.y < 0)
 		{
 			//this->stopAllActions();
 			Action*actiondown = this->runAction(MoveTo::create(-pos1.y / 10, Vec2(pos1.x, 0)));
 			actiondown->setTag(2);
 		}
-		else if (location.x <= 20 && pos1.x < 0)
+		else if (mouse_move.x <= 20 && pos1.x < 0)
 		{
 			Action*actionleft = this->runAction(MoveTo::create(-pos1.x / 10, Vec2(0, pos1.y)));
 			actionleft->setTag(3);
 		}
-		else if (location.x >= 1580 && pos1.x > -1600)
+		else if (mouse_move.x >= 1580 && pos1.x > -1600)
 		{
 			Action*actionright = this->runAction(MoveTo::create((pos1.x + 1600) / 10, Vec2(-1600, pos1.y)));
 			actionright->setTag(4);
 		}
 		pos1 = this->getPosition();
-		if (location.y < 850)
+		if (mouse_move.y < 850)
 		{
 			this->stopActionByTag(1);
 			repair = originmap - pos1;
 		}
-		if (location.y > 20)
+		if (mouse_move.y > 20)
 		{
 			this->stopActionByTag(2);
 			repair = originmap - pos1;
 		}
-		if (location.x > 50)
+		if (mouse_move.x > 50)
 		{
 			this->stopActionByTag(3);
 			repair = originmap - pos1;
 		}
-		if (location.x < 1550)
+		if (mouse_move.x < 1550)
 		{
 			this->stopActionByTag(4);
 			repair = originmap - pos1;
 		}
 	};
 	listener->onMouseUp = [this](Event *e) {
-        ismousedown = 0;
-        drawNode->clear();
-        this->drawNode->clear();
+		ismousedown = 0;
+		drawNode->clear();
+		this->drawNode->clear();
 		EventMouse* em = (EventMouse*)e;
 		std::string str = " ";
 		str += to_string(static_cast<int>(em->getMouseButton()
@@ -678,7 +719,7 @@ void mymap::onEnter() {
 				addChild(bing);
 				addChild(bing->blood);
 				addChild(bing->progress);
-				enemy_soldiers.pushBack(bing);
+				soldiers.pushBack(bing);
 				buttonlayer->updatemoney(buttonlayer->buildchoice);//¹ºÂòºó¸üÐÂÇ®Êý¸üÐÂ
 			}
 			if (carincpos != Vec2(0, 0) && buttonlayer->buildchoice == 6 && buttonlayer->money >= 800)
