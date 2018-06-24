@@ -653,10 +653,7 @@ void mymap::onEnter() {
 		}
 		else if (buttonlayer->buildornot == 2)
 		{
-<<<<<<< HEAD
-			//Sleep(2000);
-=======
->>>>>>> 8bde7771321322a1b649c50e0dbe5bd83bd048c0
+
 			if (barrackpos != Vec2(0, 0) && buttonlayer->buildchoice == 5 && buttonlayer->money >= 100)
 			{
 				soldiernum += 1;
@@ -695,11 +692,9 @@ void mymap::onEnter() {
 				soldiers.pushBack(bing);
 				buttonlayer->updatemoney(buttonlayer->buildchoice);//购买后更新钱数更新
 			}
-<<<<<<< HEAD
-=======
 
 			buttonlayer->buildchoice = 0;
->>>>>>> 8bde7771321322a1b649c50e0dbe5bd83bd048c0
+
 			buttonlayer->buildornot = false;
 		}
 	};

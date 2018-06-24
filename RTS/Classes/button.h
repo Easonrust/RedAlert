@@ -38,7 +38,6 @@ class button : public Layer
 	Label*lblpower;
     
 public:
-<<<<<<< HEAD
     int base_num = 1;
     int mine_num = 0;
     int epower_num = 0 ;
@@ -46,12 +45,7 @@ public:
     int carinc_num  = 0;
 	int money = 4000;
 	int power = 0;
-=======
-	int money = 1000;
-	int power = 1000;
-	int enemy_money = 1000;
-	int enemy_power = 1000;
->>>>>>> 8bde7771321322a1b649c50e0dbe5bd83bd048c0
+
 	virtual bool init();
 	virtual void onEnter();
 	virtual void onExit();
