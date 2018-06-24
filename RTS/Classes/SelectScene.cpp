@@ -79,6 +79,7 @@ bool Select::init()
 	//创建接收数据线程
 	_beginthreadex(NULL, 0, clientreceiveThread, &sClient, 0, NULL); //启动接收消息线程
 
+
 	return true;
 }
 

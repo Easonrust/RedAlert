@@ -4,17 +4,21 @@
 USING_NS_CC;
 
 float coordinate[7];
-auto a = mymap::create();//创建地图层
-auto b = button::create();//创建按钮层
 
+mymap*a1;
+button*b1;
 Scene* HelloWorld::createScene()
 
 {
+	auto a = mymap::create();//创建地图层
+    auto b = button::create();//创建按钮层
 	auto scene = Scene::createWithPhysics();//创造物理场景
 	scene->getPhysicsWorld()->setGravity(Vec2(0, 0));//重力为零
 	a->buttonlayer = b;//将地图层中按钮层指针指向按钮层（用于信息交互）注意两个类不能互相指
 	scene->addChild(a);
 	scene->addChild(b);
+	a1 = a;
+	b1 = b;
 	return scene;
 }
 
@@ -25,6 +29,7 @@ void judgecamp(char*revcamp)
 
 void revmessage(char*revmsg,mymap*a,button*b)
 {
+	cout << "receive message:" << revmsg;
 	Json::Reader reader;
 	Json::Value root;
 	if (reader.parse(revmsg, root))
@@ -263,3 +268,7 @@ else if (a->isTap(emouse_up, robotbuttontag))
 		}
 	}
 }
+/*void revmessage(char*revmsg)
+{
+	cout << "receive message：" << revmsg<<endl;
+}*/

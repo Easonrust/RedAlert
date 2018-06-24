@@ -600,6 +600,7 @@ void mymap::onEnter() {
 	};
 	listener->onMouseUp = [this](Event *e) {
 		ismousedown = 0;
+		int right = 0;
 		drawNode->clear();
 		this->drawNode->clear();
 		EventMouse* em = (EventMouse*)e;
@@ -608,10 +609,13 @@ void mymap::onEnter() {
 			));
 		if (str == " 1") {
 			Soldier::clear(soldiers);
+			right = 1;
 		}
 		mouse_up = em->getLocation();
 		mouse_up = Director::getInstance()->convertToGL(mouse_up);//将鼠标的坐标转换为世界坐标
 																  //基本创建建筑的事件
+		clientsend(right, mouse_up, mouse_down, repair);
+		right = 0;
 
 		Soldier::judge_selected(soldiers, mouse_down, mouse_up, repair);
 		if (mouse_up == mouse_down && !buttonlayer->buildornot && !(buttonlayer->isTap(em, buttonlayer->getChildByTag(SOLDIERBUTTONTAG))) && !(buttonlayer->isTap(em, buttonlayer->getChildByTag(CARINCBUTTONTAG))) && !(buttonlayer->isTap(em, buttonlayer->getChildByTag(MINEBUTTONTAG))) && !(buttonlayer->isTap(em, buttonlayer->getChildByTag(EPOWERBUTTONTAG))) && !(buttonlayer->isTap(em, buttonlayer->getChildByTag(BARRACKBUTTONTAG))))

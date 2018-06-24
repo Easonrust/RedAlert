@@ -5,8 +5,8 @@
  bool	bConnecting;						//与服务器的连接状态
  CRITICAL_SECTION cs;					    //临界区对象，锁定bufSend
  extern string IP;
- extern mymap*a;
- extern button*b;
+ extern mymap*a1;
+ extern button*b1;
 //变量
 	/**
 		*	初始化
@@ -66,7 +66,8 @@ bool ConnectServer(void)
 	}
 	else if (reVal == 0)//连接成功
 	{
-		return FALSE;
+		bConnecting = TRUE;
+		return TRUE;
 	}
 	else
 	{
@@ -86,8 +87,9 @@ void clientsend(int right,Vec2&mouse_up,Vec2&mouse_down,Vec2&fit)
 	v_root["upy"] = mouse_up.y * 1000000;
 	v_root["fitx"] = fit.x * 1000000;
 	v_root["fity"] = fit.y * 1000000;
-	//cout << "toStyledString()" << endl;
-	//cout << v_root.toStyledString() << endl; 
+	cout << "已发送：";
+	cout << "toStyledString()" << endl;
+	cout << v_root.toStyledString() << endl; 
 	std::string SendBuf = v_root.toStyledString();
 	//向服务器发送数据  
 	send(sClient, SendBuf.c_str(), SendBuf.size(), 0);
@@ -96,6 +98,7 @@ void clientsend(int right,Vec2&mouse_up,Vec2&mouse_down,Vec2&fit)
 //接收数据线程
 unsigned __stdcall clientreceiveThread(void* param)
 {
+	cout << "接收线程创建成功！" << endl;
 	char recData[MAX_NUM_BUF];
 	int number = 0;
 	while (true)
@@ -116,7 +119,8 @@ unsigned __stdcall clientreceiveThread(void* param)
 			}
 			else
 			{
-				revmessage(recData,a,b);
+				revmessage(recData,a1,b1);
+				//revmessage(recData);
 			}
 			memset(recData, 0, ret);
 		}
