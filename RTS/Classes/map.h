@@ -24,6 +24,9 @@ class mymap : public Layer
 	Vec2 enemy_carincpos = Vec2(0, 0);
 	Vec2 mouse_up;
 	Vec2 mouse_down;
+    Vec2 mouse_move;
+    bool ismousedown;
+    DrawNode* drawNode;
 	Vec2 pos1;
 	int bloodnum = 100;//血量条的数量+100
 	bool moneyenough = false;

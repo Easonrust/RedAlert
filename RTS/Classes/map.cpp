@@ -28,6 +28,8 @@ bool mymap::init()
 	addChild(base->progress);
 	enemy_buildings.pushBack(base);//将基地添加到建筑物容器中
 
+    drawNode = DrawNode::create();
+    this->addChild(drawNode);
 	schedule(schedule_selector(mymap::moveBlood), 0.1f);  //刷新函数，每隔0.1秒
 	schedule(schedule_selector(mymap::protectmap), 0);
 	schedule(schedule_selector(mymap::iscollide), 0);
@@ -491,12 +493,23 @@ void mymap::onEnter() {
 		EventMouse* em = (EventMouse*)e;
 		mouse_down = em->getLocation();
 		mouse_down = Director::getInstance()->convertToGL(mouse_down);
+        ismousedown = 1;
 		//mouse_down = location+repair;
 	};
 	listener->onMouseMove = [this](Event *e) {
 		EventMouse* em = (EventMouse*)e;
 		auto location = em->getLocation();
 		location.y = 900 - location.y;
+        mouse_move = location;
+        drawNode->clear();
+        if(ismousedown){
+            Vec2 point[4];
+            point[0] = Vec2(mouse_down.x, mouse_down.y);
+            point[1] = Vec2(mouse_down.x, mouse_move.y);
+            point[2] = Vec2(mouse_move.x, mouse_move.y);
+            point[3] = Vec2(mouse_move.x, mouse_down.y);
+            drawNode->drawPolygon(point, 4, Color4F(1, 0, 0, 0), 1, Color4F(144, 144, 144, 1));
+        }
 		pos1 = this->getPosition();
 		auto tilesize = _tileMap->getTileSize();
 		auto visize = Director::getInstance()->getVisibleSize();
@@ -544,7 +557,9 @@ void mymap::onEnter() {
 		}
 	};
 	listener->onMouseUp = [this](Event *e) {
-
+        ismousedown = 0;
+        drawNode->clear();
+        this->drawNode->clear();
 		EventMouse* em = (EventMouse*)e;
 		std::string str = " ";
 		str += to_string(static_cast<int>(em->getMouseButton()
