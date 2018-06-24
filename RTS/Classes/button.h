@@ -38,6 +38,7 @@ class button : public Layer
 	Label*lblpower;
     
 public:
+<<<<<<< HEAD
     int base_num = 1;
     int mine_num = 0;
     int epower_num = 0 ;
@@ -45,12 +46,20 @@ public:
     int carinc_num  = 0;
 	int money = 4000;
 	int power = 0;
+=======
+	int money = 1000;
+	int power = 1000;
+	int enemy_money = 1000;
+	int enemy_power = 1000;
+>>>>>>> 8bde7771321322a1b649c50e0dbe5bd83bd048c0
 	virtual bool init();
 	virtual void onEnter();
 	virtual void onExit();
 	bool isTap(cocos2d::EventMouse*em, cocos2d::Node*node);
 	int buildornot = 0;//按钮是否提供了建造允许
 	int buildchoice = 0;//修建哪个建筑
+	int enemy_buildornot = 0;//按钮是否提供了建造允许
+	int enemy_buildchoice = 0;//修建哪个建筑
 	virtual bool onMouseDown(Event*e);
 	virtual void onMouseUp(Event*e);
 	void scheduleMoneyPower(float delta);

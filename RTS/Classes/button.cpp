@@ -30,7 +30,7 @@ bool button::init()
 	addChild(soldierbutton, 1, SOLDIERBUTTONTAG);
 	robotbutton = Sprite::create("robotbutton.png");//军犬按钮
 	robotbutton->setPosition(Vec2(600, 27));
-	addChild(robotbutton, 1,ROBOTBUTTONTAG);
+	addChild(robotbutton, 1, ROBOTBUTTONTAG);
 	tankbutton = Sprite::create("tankbutton.png");//坦克按钮
 	tankbutton->setPosition(Vec2(700, 27));
 	addChild(tankbutton, 1, TANKBUTTONTAG);
