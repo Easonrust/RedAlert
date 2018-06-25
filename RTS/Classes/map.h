@@ -26,6 +26,8 @@ public:
 	Vec2 enemy_carincpos = Vec2(0, 0);
 	Vec2 mouse_up;
 	Vec2 mouse_down;
+	Vec2 emouse_up;
+	Vec2 emouse_down;
 	Vec2 mouse_move;
 	bool ismousedown;
 	DrawNode* drawNode;
@@ -33,7 +35,7 @@ public:
 	int bloodnum = 100;//血量条的数量+100
 	bool moneyenough = false;
 	bool enemy_moneyenough = false;
-
+	
 
 	button*buttonlayer;//按钮层指针（用于信息交互）
 					   //士兵容器
@@ -51,6 +53,8 @@ public:
 	void protectmap(float delta);
 	void iscollide(float delta);
 	void soldierattack(float delta);
+	void net(float delta);
+	void winlose(float delta);
 	void ruins();
 	static bool isTap(cocos2d::Vec2 location, cocos2d::Node*node);
 

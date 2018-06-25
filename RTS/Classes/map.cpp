@@ -4,6 +4,9 @@
 #include <string>
 #include <iostream>
 #include "InPutIPsence.h"
+float ourcopy[7] = { 0 };
+extern float coordinate[7];
+extern bool connectornot;
 bool mymap::init()
 {
 	if (!Layer::init())
@@ -16,27 +19,60 @@ bool mymap::init()
 	this->setAnchorPoint(Vec2(0, 0));
 	originmap = this->getPosition();
 	repair = Vec2(0, 0);//移动地图后，在地图上建造精灵时坐标的修正量
-	_tileMap = TMXTiledMap::create("map/MiddleMap.tmx");
+	_tileMap = TMXTiledMap::create("map/Map.tmx");
 	addChild(_tileMap, 0, MAPTAG);
 	_collidable = _tileMap->getLayer("collidable");
 	_collidable->setVisible(false);
-	auto base = building::createWithBuildingType(Base);
+	auto base1 = building::createWithBuildingType(Base);
 	buildingnum += 1;//将地图上目前的建筑总数加一
-	base->setPosition(Vec2(400, 300));
-	building::add_blood_bar(base);
-	addChild(base);
-	addChild(base->blood);
-	addChild(base->progress);
-	enemy_buildings.pushBack(base);//将基地添加到建筑物容器中
+	base1->setPosition(Vec2(400, 300));
+	building::add_blood_bar(base1);
+	addChild(base1);
+	addChild(base1->blood);
+	addChild(base1->progress);
+	buildings.pushBack(base1);//将基地添加到建筑物容器中*/
+	auto base2 = building::createWithBuildingType(Base);
+	buildingnum += 1;//将地图上目前的建筑总数加一
+	base2->setPosition(Vec2(2700,1300 ));
+	building::add_blood_bar(base2);
+	addChild(base2);
+	addChild(base2->blood);
+	addChild(base2->progress);
+	enemy_buildings.pushBack(base2);//将基地添加到建筑物容器中
 	drawNode = DrawNode::create();
 	this->addChild(drawNode);
 	schedule(schedule_selector(mymap::moveBlood), 0.1f);  //刷新函数，每隔0.1秒
 	schedule(schedule_selector(mymap::protectmap), 0);
-	schedule(schedule_selector(mymap::iscollide), 0);
+	//schedule(schedule_selector(mymap::iscollide), 0);
 	schedule(schedule_selector(mymap::scheduleBlood_enemy), 0.1f);
 	schedule(schedule_selector(mymap::scheduleBlood_mine), 0.1f);
 	schedule(schedule_selector(mymap::soldierattack), 0.1f);
+	schedule(schedule_selector(mymap::net), 0.1f);
+	schedule(schedule_selector(mymap::winlose), 0.1f);
 	return true;
+}
+void mymap::winlose(float delta)
+{
+	int mynumber = 0;
+	int enemy_number = 0;
+	mynumber = soldiers.size() + buildings.size();
+	enemy_number = enemy_soldiers.size() + enemy_buildings.size();
+	if (mynumber == 0)
+	{
+		String*swin = String::createWithFormat("youwin");
+		Label*lwin = Label::createWithTTF(swin->getCString(), "fonts/Marker Felt.ttf", 60);
+		lwin->setColor(Color3B::YELLOW);
+		lwin->setPosition(800 + repair.x, 450 + repair.y);
+		addChild(lwin, 5);
+	}
+	if (enemy_number == 0)
+	{
+		String*slose = String::createWithFormat("youwin");
+		Label*llose = Label::createWithTTF(slose->getCString(), "fonts/Marker Felt.ttf", 60);
+		llose->setColor(Color3B::YELLOW);
+		llose->setPosition(800 + repair.x, 450 + repair.y);
+		addChild(llose, 5);
+	}
 }
 bool mymap::isTap(cocos2d::Vec2 location, cocos2d::Node*node)//判断是否点中精灵的函数,辅助
 {
@@ -96,6 +132,254 @@ void mymap::ruins()
 
 		}
 	}
+}
+void mymap::net(float delta)
+{
+	if (connectornot == 1)
+	{
+		float x = coordinate[5] - repair.x;
+	float y = coordinate[6] - repair.y;
+	Vec2 dev = Vec2(x, y);
+	Vec2 emouse_down = Vec2(coordinate[1], coordinate[2]);
+	Vec2 emouse_up = Vec2(coordinate[3], coordinate[4]);
+	Vec2 erepair = Vec2(coordinate[5], coordinate[6]);
+
+
+	for (int j = 0; j < 7; j++)
+	{
+		ourcopy[j] = coordinate[j];
+	}
+	//右键
+	if (coordinate[0] == 1)
+	{
+		Soldier::clear(enemy_soldiers);
+		coordinate[0] == 0;
+	}
+	//button层
+	if (isTap(emouse_up, buttonlayer->getChildByTag(ROBOTBUTTONTAG)) || isTap(emouse_up, buttonlayer->getChildByTag(TANKBUTTONTAG)) || isTap(emouse_up, buttonlayer->getChildByTag(SOLDIERBUTTONTAG)) || isTap(emouse_up, buttonlayer->getChildByTag(CARINCBUTTONTAG)) || isTap(emouse_up, buttonlayer->getChildByTag(MINEBUTTONTAG)) || isTap(emouse_up, buttonlayer->getChildByTag(EPOWERBUTTONTAG)) || isTap(emouse_up, buttonlayer->getChildByTag(BARRACKBUTTONTAG)))
+	{
+		auto minebuttontag = buttonlayer->getChildByTag(MINEBUTTONTAG);
+		auto barrackbuttontag = buttonlayer->getChildByTag(BARRACKBUTTONTAG);
+		auto epowerbuttontag = buttonlayer->getChildByTag(EPOWERBUTTONTAG);
+		auto carincbuttontag = buttonlayer->getChildByTag(CARINCBUTTONTAG);
+		auto soldierbuttontag = buttonlayer->getChildByTag(SOLDIERBUTTONTAG);
+		auto tankbuttontag = buttonlayer->getChildByTag(TANKBUTTONTAG);
+		auto robotbuttontag = buttonlayer->getChildByTag(ROBOTBUTTONTAG);
+		if (isTap(emouse_up, minebuttontag))
+		{
+			buttonlayer->enemy_buildornot = 1;
+			buttonlayer->enemy_buildchoice = 1;
+		}
+		else if (isTap(emouse_up, barrackbuttontag))
+		{
+			buttonlayer->enemy_buildornot = 1;
+			buttonlayer->enemy_buildchoice = 2;
+		}
+		else if (isTap(emouse_up, epowerbuttontag))
+		{
+			buttonlayer->enemy_buildornot = 1;
+			buttonlayer->enemy_buildchoice = 3;
+		}
+		else if (isTap(emouse_up, carincbuttontag))
+		{
+			buttonlayer->enemy_buildornot = 1;
+			buttonlayer->enemy_buildchoice = 4;
+		}
+		else if (isTap(emouse_up, soldierbuttontag))
+		{
+			buttonlayer->enemy_buildornot = 2;
+			buttonlayer->enemy_buildchoice = 5;
+		}
+		else if (isTap(emouse_up, tankbuttontag))
+		{
+			buttonlayer->enemy_buildornot = 2;
+			buttonlayer->enemy_buildchoice = 6;
+		}
+		else if (isTap(emouse_up, robotbuttontag))
+		{
+			buttonlayer->enemy_buildornot = 2;
+			buttonlayer->enemy_buildchoice = 7;
+		}
+
+		//兵种
+		if (buttonlayer->enemy_buildornot == 2)
+		{
+			if (buttonlayer->enemy_buildchoice == 5 && buttonlayer->enemy_money >= 100)
+			{
+				buttonlayer->enemy_money -= 100;
+			}
+			else if (buttonlayer->enemy_buildchoice == 6 && buttonlayer->enemy_money >= 500)
+			{
+				buttonlayer->enemy_money -= 500;
+			}
+			else if (buttonlayer->enemy_buildchoice == 7 && buttonlayer->enemy_money >= 200)
+			{
+				buttonlayer->enemy_money -= 200;
+			}
+			if (enemy_barrackpos != Vec2(0, 0) && buttonlayer->enemy_buildchoice == 5 && buttonlayer->enemy_money >= 100)
+			{
+				auto bing = Soldier::createwithsoldiertype(human);
+				bing->setPosition(enemy_barrackpos);
+				Soldier::add_bloodbar(bing, repair);
+				addChild(bing);
+				addChild(bing->blood);
+				addChild(bing->progress);
+				bing->progress->setColor(Color3B::BLUE);
+				enemy_soldiers.pushBack(bing);
+			}
+			if (enemy_carincpos != Vec2(0, 0) && buttonlayer->enemy_buildchoice == 6 && buttonlayer->enemy_money >= 500)
+			{
+				auto bing = Soldier::createwithsoldiertype(tank);
+				bing->setPosition(enemy_carincpos);
+				Soldier::add_bloodbar(bing, repair);
+
+				addChild(bing);
+				addChild(bing->blood);
+				addChild(bing->progress);
+				bing->progress->setColor(Color3B::BLUE);
+				enemy_soldiers.pushBack(bing);
+			}
+			if (enemy_carincpos != Vec2(0, 0) && buttonlayer->enemy_buildchoice == 7 && buttonlayer->enemy_money >= 200)
+			{
+				auto bing = Soldier::createwithsoldiertype(robot);
+				bing->setPosition(enemy_carincpos);
+				Soldier::add_bloodbar(bing, repair);
+
+				addChild(bing);
+				addChild(bing->blood);
+				addChild(bing->progress);
+				bing->progress->setColor(Color3B::BLUE);
+				enemy_soldiers.pushBack(bing);
+			}
+
+			buttonlayer->enemy_buildchoice = 0;
+			buttonlayer->enemy_buildornot = false;
+		}
+	}
+
+	//map层
+	else
+	{
+		//建筑
+		if (buttonlayer->enemy_buildornot == 1)
+		{
+			building*Building = nullptr;
+			Vec2 position = emouse_up +dev+repair;//修正量起作用了
+			if (buttonlayer->enemy_buildchoice == 1 && buttonlayer->enemy_money >= 900) {
+				Building = building::createWithBuildingType(Mine);
+				enemy_moneyenough = true;
+			}
+			else if (buttonlayer->enemy_buildchoice == 2 && buttonlayer->enemy_money >= 1000) {
+				Building = building::createWithBuildingType(Barrack);
+				enemy_moneyenough = true;
+				enemy_barrackpos = position;
+			}
+			else if (buttonlayer->enemy_buildchoice == 3 && buttonlayer->enemy_money >= 800) {
+				Building = building::createWithBuildingType(Epower);
+				enemy_moneyenough = true;
+			}
+			else if (buttonlayer->enemy_buildchoice == 4 && buttonlayer->enemy_money >= 700) {
+				Building = building::createWithBuildingType(Carinc);
+				enemy_moneyenough = true;
+				enemy_carincpos = position;
+			}
+			if (enemy_moneyenough == true)
+			{
+				Building->setPosition(position);
+				building::add_blood_bar(Building);
+				enemy_buildings.pushBack(Building);
+				addChild(Building);
+				addChild(Building->blood);
+				addChild(Building->progress);
+				Building->progress->setColor(Color3B::BLUE);
+				char name = 0;
+				switch (buttonlayer->buildchoice)
+				{
+				case 1:
+					name = 'm';
+					break;
+				case 2:
+					name = 'b';
+					break;
+				case 3:
+					name = 'e';
+					break;
+				case 4:
+					name = 'c';
+					break;
+				default:
+					break;
+				}
+				/*Animation* animation = Animation::create();
+				for (int i = 1; i <= 4; i++)
+				{
+					__String *frameName = __String::createWithFormat("%c%d.png", name, i);
+					log("frameName = %s", frameName->getCString());
+					SpriteFrame *spriteFrame = SpriteFrameCache::getInstance()->getSpriteFrameByName(frameName->getCString());
+					animation->addSpriteFrame(spriteFrame);
+				}
+				animation->setDelayPerUnit(0.08f);           //设置两个帧播放时间
+				animation->setRestoreOriginalFrame(false);    //动画执行后还原初始状态
+
+				Animate* action = Animate::create(animation);
+				enemy_buildings.at(0)->runAction(action);*/
+				if (buttonlayer->enemy_buildchoice == 1 && buttonlayer->enemy_money >= 900)
+				{
+					buttonlayer->enemy_money -= 900;
+				}
+				else if (buttonlayer->enemy_buildchoice == 2 && buttonlayer->enemy_money >= 1000)
+				{
+					buttonlayer->enemy_money -= 1000;
+				}
+				else if (buttonlayer->enemy_buildchoice == 3 && buttonlayer->enemy_money >= 800)
+				{
+					buttonlayer->enemy_money -= 800;
+				}
+				else if (buttonlayer->enemy_buildchoice == 4 && buttonlayer->enemy_money >= 700)
+				{
+					buttonlayer->enemy_money -= 700;
+				}
+			}
+			buttonlayer->enemy_buildornot = false;//将要不要建建筑设为false
+			buttonlayer->enemy_buildchoice = 0;
+			moneyenough = false;
+		}
+
+
+		//士兵移动及攻击
+		Soldier::judge_selected(enemy_soldiers, emouse_down + dev, emouse_up + dev, repair);
+		if (emouse_up == emouse_down)
+		{
+			if (tapenemy(emouse_up, buildings, soldiers) == 0)
+			{
+				for (int i = 0; i < enemy_soldiers.size(); ++i)
+				{
+					if (enemy_soldiers.at(i)->selected == 1)
+					{
+						enemy_soldiers.at(i)->s_enemy = nullptr;
+						enemy_soldiers.at(i)->b_enemy = nullptr;
+					}
+				}
+				Soldier::run(enemy_soldiers, emouse_up + dev + repair);
+			}
+		}
+		for (int i = 0; i < soldiers.size(); i++) {
+			if (isTap(emouse_up , soldiers.at(i))) {
+				Soldier::attacksoldier(enemy_soldiers, soldiers, emouse_up+dev+repair );
+			}
+		}
+		for (int i = 0; i < buildings.size(); i++) {
+			if (isTap(emouse_up , buildings.at(i))) {
+				Soldier::attackbuilding(enemy_soldiers, buildings, emouse_up+dev+repair );
+				break;
+			}
+		}
+	}
+	mouse_up = Vec2(0, 0);
+	mouse_down = Vec2(0, 0);
+	connectornot = 0;
+}
+	
 }
 void mymap::soldierattack(float delta)
 {
@@ -162,7 +446,6 @@ void mymap::soldierattack(float delta)
 		}
 	}
 }
-//血量刷新函数
 void mymap::moveBlood(float delta) {
 	for (int i = 0; i < soldiers.size(); ++i)
 	{
@@ -362,7 +645,7 @@ void mymap::scheduleBlood_mine(float delta) {
 		if (enemy_soldiers.at(i)->s_enemy != nullptr) {
 			enemy_soldiers.at(i)->s_enemy->blood->setVisible(true);
 			enemy_soldiers.at(i)->s_enemy->progress->setVisible(true);
-			if (enemy_soldiers.at(i)->getPosition().getDistance(enemy_soldiers.at(i)->s_enemy->getPosition()) <= 100) {
+			if (enemy_soldiers.at(i)->getPosition().getDistance(enemy_soldiers.at(i)->s_enemy->getPosition()) <= 150) {
 				enemy_soldiers.at(i)->stopAllActions();
 				if (enemy_soldiers.at(i)->getPosition().x < enemy_soldiers.at(i)->s_enemy->getPosition().x)
 				{
@@ -384,9 +667,8 @@ void mymap::scheduleBlood_mine(float delta) {
 						enemy_soldiers.at(i)->s_enemy->progress->setVisible(false);
 						if (enemy_soldiers.at(i)->s_enemy->atk == 10 || enemy_soldiers.at(i)->s_enemy->atk == 10)
 						{
-
 							Animation* animation = Animation::create();
-							for (int i = 1; i <= 10; i++)
+							for (int i = 1; i <= 9; i++)
 							{
 								__String *frameName = __String::createWithFormat("z%d.png", i);
 								log("frameName = %s", frameName->getCString());
@@ -395,7 +677,7 @@ void mymap::scheduleBlood_mine(float delta) {
 							}
 							animation->setDelayPerUnit(0.1f);           //设置两个帧播放时间
 							animation->setRestoreOriginalFrame(false);    //动画执行后还原初始状态
-							soldiers.at(i)->s_enemy->getPhysicsBody()->setDynamic(false);
+							enemy_soldiers.at(i)->s_enemy->getPhysicsBody()->setDynamic(false);
 							FiniteTimeAction* action1 = Animate::create(animation);
 							FiniteTimeAction* action2 = CallFunc::create(CC_CALLBACK_0(mymap::ruins, this));
 							ActionInterval*seq = Sequence::create(action1, action2, NULL);
@@ -406,7 +688,7 @@ void mymap::scheduleBlood_mine(float delta) {
 						{
 							Animation* animation = Animation::create();
 							char a = 0;
-							if (soldiers.at(i)->getPosition().x > soldiers.at(i)->s_enemy->getPosition().x)
+							if (enemy_soldiers.at(i)->getPosition().x > enemy_soldiers.at(i)->s_enemy->getPosition().x)
 							{
 								a = 'r';
 							}
@@ -423,14 +705,15 @@ void mymap::scheduleBlood_mine(float delta) {
 							}
 							animation->setDelayPerUnit(0.5f);           //设置两个帧播放时间
 							animation->setRestoreOriginalFrame(false);    //动画执行后还原初始状态
-							soldiers.at(i)->s_enemy->getPhysicsBody()->setDynamic(false);
+							enemy_soldiers.at(i)->s_enemy->getPhysicsBody()->setDynamic(false);
 							FiniteTimeAction* action1 = Animate::create(animation);
 							FiniteTimeAction* action2 = CallFunc::create(CC_CALLBACK_0(mymap::ruins, this));
 							ActionInterval*seq = Sequence::create(action1, action2, NULL);
-							soldiers.at(i)->s_enemy->runAction(Sequence::create(seq, NULL));
-							soldiers.at(i)->stopAllActions();
+							enemy_soldiers.at(i)->s_enemy->runAction(Sequence::create(seq, NULL));
+							enemy_soldiers.at(i)->stopAllActions();
 						}
 						enemy_soldiers.at(i)->s_enemy = nullptr;
+						//soldiers.at(i)->isattack = 0;
 						enemy_soldiers.at(i)->stopAllActions();
 
 						enemy_soldiers.at(i)->s_enemy = nullptr;
@@ -444,12 +727,14 @@ void mymap::scheduleBlood_mine(float delta) {
 				}
 			}
 			else {
-				Soldier::run(soldiers, enemy_soldiers.at(i)->s_enemy->getPosition());
+				Soldier::run(enemy_soldiers, enemy_soldiers.at(i)->s_enemy->getPosition());
 			}
 		}
 
 		//地方建筑
 		if (enemy_soldiers.at(i)->b_enemy != nullptr) {
+			enemy_soldiers.at(i)->b_enemy->blood->setVisible(true);
+			enemy_soldiers.at(i)->b_enemy->progress->setVisible(true);
 			if (enemy_soldiers.at(i)->getPosition().getDistance(enemy_soldiers.at(i)->b_enemy->getPosition()) <= 100) {
 				enemy_soldiers.at(i)->stopAllActions();
 				if (enemy_soldiers.at(i)->getPosition().x < enemy_soldiers.at(i)->b_enemy->getPosition().x)
@@ -463,35 +748,38 @@ void mymap::scheduleBlood_mine(float delta) {
 				if (enemy_soldiers.at(i)->b_enemy->progress->getPercentage() > 0)
 				{
 
-					int prehealth = soldiers.at(i)->b_enemy->building_health;
-					int nowhealth = prehealth - soldiers.at(i)->atk;
+					int prehealth = enemy_soldiers.at(i)->b_enemy->building_health;
+					int nowhealth = prehealth - enemy_soldiers.at(i)->atk;
 					enemy_soldiers.at(i)->b_enemy->building_health = nowhealth;
 					enemy_soldiers.at(i)->b_enemy->progress->setPercentage(nowhealth / enemy_soldiers.at(i)->b_enemy->originhealth * 100);
 
 					if (enemy_soldiers.at(i)->b_enemy->progress->getPercentage() <= 0)
 					{
-						if (soldiers.at(i)->b_enemy->originhealth == 3000)
-						{
-							buttonlayer->base_num -= 1;
-						}
-						else if (soldiers.at(i)->b_enemy->originhealth == 2000)
-						{
-							buttonlayer->mine_num -= 1;
-						}
-						else if (soldiers.at(i)->b_enemy->originhealth == 1200)
-						{
-							buttonlayer->epower_num -= 1;
-						}
-						else if (soldiers.at(i)->b_enemy->originhealth == 1400)
-						{
-							buttonlayer->barrack_num -= 1;
-						}
-						else if (soldiers.at(i)->b_enemy->originhealth == 1900)
-						{
-							buttonlayer->carinc_num -= 1;
-						}
 						enemy_soldiers.at(i)->b_enemy->blood->setVisible(false);
 						enemy_soldiers.at(i)->b_enemy->progress->setVisible(false);
+						//Vec2 loc = soldiers.at(i)->b_enemy->getPosition();
+						if (enemy_soldiers.at(i)->b_enemy->originhealth == 3000)
+						{
+							buttonlayer->enemy_base_num -= 1;
+						}
+						else if (enemy_soldiers.at(i)->b_enemy->originhealth == 2000)
+						{
+							buttonlayer->enemy_mine_num -= 1;
+						}
+						else if (enemy_soldiers.at(i)->b_enemy->originhealth == 1200)
+						{
+							buttonlayer->enemy_epower_num -= 1;
+						}
+						else if (enemy_soldiers.at(i)->b_enemy->originhealth == 1400)
+						{
+							buttonlayer->enemy_barrack_num -= 1;
+						}
+						else if (enemy_soldiers.at(i)->b_enemy->originhealth == 1900)
+						{
+							buttonlayer->enemy_carinc_num -= 1;
+						}
+						//this->removeChild(soldiers.at(i)->b_enemy);
+						//soldiers.at(i)->b_enemy = nullptr;
 						Animation* animation = Animation::create();
 						for (int i = 1; i <= 10; i++)
 						{
@@ -502,7 +790,7 @@ void mymap::scheduleBlood_mine(float delta) {
 						}
 						animation->setDelayPerUnit(0.1f);           //设置两个帧播放时间
 						animation->setRestoreOriginalFrame(false);    //动画执行后还原初始状态
-						soldiers.at(i)->b_enemy->getPhysicsBody()->setDynamic(false);
+						enemy_soldiers.at(i)->b_enemy->getPhysicsBody()->setDynamic(false);
 						FiniteTimeAction* action1 = Animate::create(animation);
 						FiniteTimeAction* action2 = CallFunc::create(CC_CALLBACK_0(mymap::ruins, this));
 						ActionInterval*seq = Sequence::create(action1, action2, NULL);
@@ -525,8 +813,7 @@ void mymap::scheduleBlood_mine(float delta) {
 			}
 		}
 	}
-}
-void mymap::onEnter() {
+}void mymap::onEnter() {
 	Layer::onEnter();
 	log("mouseTouchEvent onEnter");
 
@@ -640,7 +927,7 @@ void mymap::onEnter() {
 		}
 		for (int i = 0; i<enemy_buildings.size(); i++) {
 			if (isTap(mouse_up, enemy_buildings.at(i))) {
-				Soldier::attackbuilding(soldiers, enemy_buildings, mouse_up);
+				Soldier::attackbuilding(soldiers,enemy_buildings, mouse_up);
 				break;
 			}
 		}
@@ -671,7 +958,7 @@ void mymap::onEnter() {
 				buildingnum += 1;//将地图上建筑总数加一
 				Building->setPosition(position);
 				building::add_blood_bar(Building);
-				enemy_buildings.pushBack(Building);
+				buildings.pushBack(Building);
 				addChild(Building, 1);
 				addChild(Building->blood, 2);
 				addChild(Building->progress, 3);
@@ -708,6 +995,7 @@ void mymap::onEnter() {
 
 				Animate* action = Animate::create(animation);
 				Building->runAction(action);
+				moneyenough = false;
 			}
 			buttonlayer->buildornot = false;//将要不要建建筑设为false
 			buttonlayer->buildchoice = 0;
@@ -737,7 +1025,7 @@ void mymap::onEnter() {
 				addChild(bing, 1);
 				addChild(bing->blood, 2);
 				addChild(bing->progress, 3);
-				enemy_soldiers.pushBack(bing);
+				soldiers.pushBack(bing);
 				buttonlayer->updatemoney(buttonlayer->buildchoice);//购买后更新钱数更新
 			}
 			if (carincpos != Vec2(0, 0) && buttonlayer->buildchoice == 7 && buttonlayer->money >= 300)
@@ -853,33 +1141,33 @@ bool mymap::collide(Vec2 pos)
 	}
 	return false;
 }
-void mymap::iscollide(float delta) {
+/*void mymap::iscollide(float delta) {
 	for (int i = 0; i < soldiers.size(); ++i)
 	{
 		Vec2 pos = soldiers.at(i)->getPosition();
-		if (collide(pos + Vec2(0, 1)))
+		if (collide(pos + Vec2(0, 2)))
 		{
 			soldiers.at(i)->stopAllActions();
 			soldiers.at(i)->setPosition(pos - Vec2(0, 1));
 		}
-		else if (collide(pos + Vec2(1, 0)))
+		else if (collide(pos + Vec2(2, 0)))
 		{
 			soldiers.at(i)->stopAllActions();
 			soldiers.at(i)->setPosition(pos - Vec2(1, 0));
 		}
-		else if (collide(pos - Vec2(0, 1)))
+		else if (collide(pos - Vec2(0, 2)))
 		{
 			soldiers.at(i)->stopAllActions();
-			soldiers.at(i)->setPosition(pos + Vec2(0, 1));
+			soldiers.at(i)->setPosition(pos + Vec2(0, 2));
 
 		}
-		else if (collide(pos - Vec2(1, 0)))
+		else if (collide(pos - Vec2(2, 0)))
 		{
 			soldiers.at(i)->stopAllActions();
 			soldiers.at(i)->setPosition(pos + Vec2(1, 0));
 		}
 	}
-}
+}*/
 bool mymap::tapenemy(Vec2 location, Vector<building*>enemy_buildings, Vector<Soldier*>enemy_soldiers)
 {
 	bool tap = 0;
@@ -914,6 +1202,3 @@ bool mymap::taparmy(Vec2 location, Vector<building*>buildings, Vector<Soldier*>s
 	}
 	return tap;
 }
-/*
-
-*/

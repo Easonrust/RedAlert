@@ -7,6 +7,8 @@
  extern string IP;
  extern mymap*a1;
  extern button*b1;
+ float coordinate[7] = { 0 };
+ bool connectornot = 0;
 //变量
 	/**
 		*	初始化
@@ -80,13 +82,22 @@ bool ConnectServer(void)
 void clientsend(int right,Vec2&mouse_up,Vec2&mouse_down,Vec2&fit)
 {
 	Json::Value v_root;
-	v_root["right"] = right;
-	v_root["downx"] = mouse_down.x * 1000000;
-	v_root["downy"] = mouse_down.y * 1000000;
-	v_root["upx"] = mouse_up.x * 1000000;
-	v_root["upy"] = mouse_up.y * 1000000;
-	v_root["fitx"] = fit.x * 1000000;
-	v_root["fity"] = fit.y * 1000000;
+	long  coordinate[7];
+	coordinate[0] = right;
+	coordinate[1] = mouse_down.x * 1000000;
+	coordinate[2] = mouse_down.y * 1000000;
+	coordinate[3] = mouse_up.x * 1000000;
+	coordinate[4] = mouse_up.y * 1000000;
+	coordinate[5] = fit.x * 1000000;
+	coordinate[6] = fit.y * 1000000;
+	v_root["right"] = coordinate[0];
+	v_root["downx"] = coordinate[1];
+	v_root["downy"] = coordinate[2];
+	v_root["upx"] = coordinate[3];
+	v_root["upy"] = coordinate[4];
+	v_root["fitx"] = coordinate[5];
+	v_root["fity"] = coordinate[6];
+
 	cout << "已发送：";
 	cout << "toStyledString()" << endl;
 	cout << v_root.toStyledString() << endl; 
@@ -113,15 +124,25 @@ unsigned __stdcall clientreceiveThread(void* param)
 		if (ret > 0)
 		{
 			cout << "Recive message： " << recData << endl;
-			if (number == 1)
+			Json::Reader reader;
+			Json::Value root;
+			if (reader.parse(recData, root))
 			{
-				judgecamp(recData);
+				coordinate[0] = ((float)root["right"].asInt());
+				coordinate[1] = ((float)root["downx"].asInt()) / 1000000;
+				coordinate[2] = ((float)root["downy"].asInt()) / 1000000;
+				coordinate[3] = ((float)root["upx"].asInt()) / 1000000;
+				coordinate[4] = ((float)root["upy"].asInt()) / 1000000;
+				coordinate[5] = ((float)root["fitx"].asInt()) / 1000000;
+				coordinate[6] = ((float)root["fity"].asInt()) / 1000000;
+				connectornot = 1;
 			}
-			else
+			Sleep(10);
+			for (int i = 0; i < 7; i++)
 			{
-				revmessage(recData,a1,b1);
-				//revmessage(recData);
+				cout << "coordinate:  " << coordinate[i] << endl;
 			}
+
 			memset(recData, 0, ret);
 		}
 	}

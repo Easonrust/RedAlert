@@ -63,7 +63,7 @@ building* building::createWithBuildingType(Building_type building_type)
 		sprite->setPhysicsBody(body);
 		return sprite;
 	}
-	if (sprite && building_type == Mine &&sprite->initWithFile("m1.png"))
+	if (sprite && building_type == Mine &&sprite->initWithFile("m4.png"))
 	{
 		sprite->autorelease();//将精灵放入内存自动池中
 		auto body = PhysicsBody::create();
@@ -75,7 +75,7 @@ building* building::createWithBuildingType(Building_type building_type)
 		sprite->setPhysicsBody(body);
 		return sprite;
 	}
-	if (sprite && building_type == Barrack &&sprite->initWithFile("b1.png"))
+	if (sprite && building_type == Barrack &&sprite->initWithFile("b4.png"))
 	{
 		sprite->autorelease();//将精灵放入内存自动池中
 		auto body = PhysicsBody::create();
@@ -87,7 +87,7 @@ building* building::createWithBuildingType(Building_type building_type)
 		sprite->setPhysicsBody(body);
 		return sprite;
 	}
-	if (sprite && building_type == Epower &&sprite->initWithFile("e1.png"))
+	if (sprite && building_type == Epower &&sprite->initWithFile("e4.png"))
 	{
 		sprite->autorelease();//将精灵放入内存自动池中
 		auto body = PhysicsBody::create();
@@ -99,7 +99,7 @@ building* building::createWithBuildingType(Building_type building_type)
 		sprite->setPhysicsBody(body);
 		return sprite;
 	}
-	if (sprite && building_type == Carinc &&sprite->initWithFile("c1.png"))
+	if (sprite && building_type == Carinc &&sprite->initWithFile("c4.png"))
 	{
 		sprite->autorelease();//将精灵放入内存自动池中
 		auto body = PhysicsBody::create();

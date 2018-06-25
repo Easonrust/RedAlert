@@ -6,7 +6,7 @@
 #include <iostream>
 #include <winsock2.h>
 #include <process.h>
-#include "json/json.h"
+#include "json\json.h"
 #include "cocos2d.h"
 
 #pragma comment(lib, "WS2_32.lib")
@@ -14,7 +14,7 @@ USING_NS_CC;
 using namespace std;
 //宏定义
 #define	SERVERPORT			10001		//服务器TCP端口
-#define	MAX_NUM_BUF			1024			//缓冲区的最大长度
+#define	MAX_NUM_BUF			10240			//缓冲区的最大长度
 
 class InputIP : public cocos2d::Layer
 {

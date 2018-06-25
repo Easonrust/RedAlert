@@ -16,24 +16,87 @@ bool button::init()
 	minebutton = Sprite::create("minebutton.png");//矿厂按钮
 	minebutton->setPosition(Vec2(100, 23));
 	addChild(minebutton, 1, MINEBUTTONTAG);
+	auto msmoney = String::createWithFormat("2500");
+	auto mlblmoney = Label::createWithTTF(msmoney->getCString(), "fonts/Marker Felt.ttf", 24);
+	mlblmoney->setColor(Color3B::YELLOW);
+	mlblmoney->setPosition(180, 23);
+	this->addChild(mlblmoney, 1);
+	auto mmoneypng = Sprite::create("money.png");
+	mmoneypng->setScale(0.9, 0.9);
+	mmoneypng->setPosition(220, 23);
+	this->addChild(mmoneypng, 1);
 	epowerbutton = Sprite::create("epowerbutton.png");//电厂按钮
-	epowerbutton->setPosition(Vec2(200, 27));
+	epowerbutton->setPosition(Vec2(300, 27));
 	addChild(epowerbutton, 1, EPOWERBUTTONTAG);
+	auto esmoney = String::createWithFormat("800");
+	auto elblmoney = Label::createWithTTF(esmoney->getCString(), "fonts/Marker Felt.ttf", 24);
+	elblmoney->setColor(Color3B::YELLOW);
+	elblmoney->setPosition(380, 23);
+	this->addChild(elblmoney, 1);
+	auto emoneypng = Sprite::create("money.png");
+	emoneypng->setScale(0.9, 0.9);
+	emoneypng->setPosition(420, 23);
+	this->addChild(emoneypng, 1);
 	barrackbutton = Sprite::create("barrackbutton.png");//兵营按钮
-	barrackbutton->setPosition(Vec2(300, 27));
+	barrackbutton->setPosition(Vec2(500, 27));
 	addChild(barrackbutton, 1, BARRACKBUTTONTAG);
+	auto bsmoney = String::createWithFormat("1000");
+	auto blblmoney = Label::createWithTTF(bsmoney->getCString(), "fonts/Marker Felt.ttf", 24);
+	blblmoney->setColor(Color3B::YELLOW);
+	blblmoney->setPosition(580, 23);
+	this->addChild(blblmoney, 1);
+	auto bmoneypng = Sprite::create("money.png");
+	bmoneypng->setScale(0.9, 0.9);
+	bmoneypng->setPosition(620, 23);
+	this->addChild(bmoneypng, 1);
 	carincbutton = Sprite::create("carincbutton.png");//车厂按钮
-	carincbutton->setPosition(Vec2(400, 27));
+	carincbutton->setPosition(Vec2(700, 27));
 	addChild(carincbutton, 1, CARINCBUTTONTAG);
+	auto csmoney = String::createWithFormat("2000");
+	auto clblmoney = Label::createWithTTF(csmoney->getCString(), "fonts/Marker Felt.ttf", 24);
+	clblmoney->setColor(Color3B::YELLOW);
+	clblmoney->setPosition(780, 23);
+	this->addChild(clblmoney, 1);
+	auto cmoneypng = Sprite::create("money.png");
+	cmoneypng->setScale(0.9, 0.9);
+	cmoneypng->setPosition(820, 23);
+	this->addChild(cmoneypng, 1);
 	soldierbutton = Sprite::create("soldierbutton.png");//士兵按钮
-	soldierbutton->setPosition(Vec2(500, 27));
+	soldierbutton->setPosition(Vec2(900, 27));
 	addChild(soldierbutton, 1, SOLDIERBUTTONTAG);
+	auto ssmoney = String::createWithFormat("100");
+	auto slblmoney = Label::createWithTTF(ssmoney->getCString(), "fonts/Marker Felt.ttf", 24);
+	slblmoney->setColor(Color3B::YELLOW);
+	slblmoney->setPosition(980, 23);
+	this->addChild(slblmoney, 1);
+	auto smoneypng = Sprite::create("money.png");
+	smoneypng->setScale(0.9, 0.9);
+	smoneypng->setPosition(1020, 23);
+	this->addChild(smoneypng, 1);
 	robotbutton = Sprite::create("robotbutton.png");//军犬按钮
-	robotbutton->setPosition(Vec2(600, 27));
+	robotbutton->setPosition(Vec2(1100, 27));
 	addChild(robotbutton, 1, ROBOTBUTTONTAG);
+	auto rsmoney = String::createWithFormat("300");
+	auto rlblmoney = Label::createWithTTF(rsmoney->getCString(), "fonts/Marker Felt.ttf", 24);
+	rlblmoney->setColor(Color3B::YELLOW);
+	rlblmoney->setPosition(1180, 23);
+	this->addChild(rlblmoney, 1);
+	auto rmoneypng = Sprite::create("money.png");
+	rmoneypng->setScale(0.9, 0.9);
+	rmoneypng->setPosition(1220, 23);
+	this->addChild(rmoneypng, 1);
 	tankbutton = Sprite::create("tankbutton.png");//坦克按钮
-	tankbutton->setPosition(Vec2(700, 27));
+	tankbutton->setPosition(Vec2(1300, 27));
 	addChild(tankbutton, 1, TANKBUTTONTAG);
+	auto tsmoney = String::createWithFormat("800");
+	auto tlblmoney = Label::createWithTTF(tsmoney->getCString(), "fonts/Marker Felt.ttf", 24);
+	tlblmoney->setColor(Color3B::YELLOW);
+	tlblmoney->setPosition(1380, 23);
+	this->addChild(tlblmoney, 1);
+	auto tmoneypng = Sprite::create("money.png");
+	tmoneypng->setScale(0.9, 0.9);
+	tmoneypng->setPosition(1420, 23);
+	this->addChild(tmoneypng, 1);
 	//显示钱与电力
 	moneypowerlist = Sprite::create("moneypowerlist.png");//右上钱和电力状态栏
 	moneypowerlist->setPosition(Vec2(1450, 875));
@@ -110,7 +173,7 @@ void button::schedulebutton(float delta)
 	{
 		barrackbutton = Sprite::create("barrackbutton.png");
 	}
-	barrackbutton->setPosition(Vec2(300, 27));
+	barrackbutton->setPosition(Vec2(500, 27));
 	addChild(barrackbutton, 1, BARRACKBUTTONTAG);
 	//mine
 	this->removeChildByTag(MINEBUTTONTAG);
@@ -134,7 +197,7 @@ void button::schedulebutton(float delta)
 	{
 		epowerbutton = Sprite::create("epowerbutton.png");
 	}
-	epowerbutton->setPosition(Vec2(200, 27));
+	epowerbutton->setPosition(Vec2(300, 27));
 	addChild(epowerbutton, 1, EPOWERBUTTONTAG);
 	//carinc
 	this->removeChildByTag(CARINCBUTTONTAG);
@@ -146,7 +209,7 @@ void button::schedulebutton(float delta)
 	{
 		carincbutton = Sprite::create("carincbutton.png");
 	}
-	carincbutton->setPosition(Vec2(400, 27));
+	carincbutton->setPosition(Vec2(700, 27));
 	addChild(carincbutton, 1, CARINCBUTTONTAG);
 	//soldier
 	this->removeChildByTag(SOLDIERBUTTONTAG);
@@ -158,7 +221,7 @@ void button::schedulebutton(float delta)
 	{
 		soldierbutton = Sprite::create("soldierbutton.png");
 	}
-	soldierbutton->setPosition(Vec2(500, 27));
+	soldierbutton->setPosition(Vec2(900, 27));
 	addChild(soldierbutton, 1, SOLDIERBUTTONTAG);
 	//tank
 	this->removeChildByTag(TANKBUTTONTAG);
@@ -170,7 +233,7 @@ void button::schedulebutton(float delta)
 	{
 		tankbutton = Sprite::create("tankbutton.png");
 	}
-	tankbutton->setPosition(Vec2(700, 27));
+	tankbutton->setPosition(Vec2(1300, 27));
 	addChild(tankbutton, 1, TANKBUTTONTAG);
 	this->removeChildByTag(ROBOTBUTTONTAG);
 	if (money <= 300 || !carinc_num)
@@ -181,7 +244,7 @@ void button::schedulebutton(float delta)
 	{
 		robotbutton = Sprite::create("robotbutton.png");
 	}
-	robotbutton->setPosition(Vec2(600, 27));
+	robotbutton->setPosition(Vec2(1100, 27));
 	addChild(robotbutton, 1, ROBOTBUTTONTAG);
 }
 //
