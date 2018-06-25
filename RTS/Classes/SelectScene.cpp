@@ -46,15 +46,16 @@ bool Select::init()
 	MenuItemFont::setFontName("Times New Roman");
 	MenuItemFont::setFontSize(40);
 	
-	// 
+	// 创建返回菜单项
 	MenuItemImage*lastMenuItem = MenuItemImage::create("go backbutton.png", "go backbutton2.png", CC_CALLBACK_1(Select::menuLastToggleCallback, this));
 	lastMenuItem->setPosition(Director::getInstance()->convertToGL(Vec2(900, 490)));
-
+	//创建地图1菜单项
 	MenuItemImage*map1MenuItem = MenuItemImage::create("map1button.png", "map1button2.png", CC_CALLBACK_1(Select::menuMap1ToggleCallback, this));
 	map1MenuItem->setPosition(Director::getInstance()->convertToGL(Vec2(580, 230)));
-
+	//创建地图2菜单项
 	MenuItemImage*map2MenuItem = MenuItemImage::create("map2button.png", "map2button2.png", CC_CALLBACK_1(Select::menuMap2ToggleCallback, this));
 	map2MenuItem->setPosition(Director::getInstance()->convertToGL(Vec2(580, 330)));
+	//加入场景
 	Menu* mu = Menu::create(lastMenuItem,map2MenuItem, map1MenuItem, NULL);
 	mu->setPosition(Vec2::ZERO);
 	this->addChild(mu);
@@ -83,6 +84,7 @@ bool Select::init()
 	return true;
 }
 
+//返回菜单项回调函数
 void Select::menuLastToggleCallback(Ref* pSender)
 {
 	if (UserDefault::getInstance()->getBoolForKey(SOUND_KEY)) {
@@ -90,7 +92,7 @@ void Select::menuLastToggleCallback(Ref* pSender)
 	}
 	Director::getInstance()->popScene();
 }
-
+//地图1菜单项回调函数
 void Select::menuMap1ToggleCallback(Ref* pSender)
 {
 	if (UserDefault::getInstance()->getBoolForKey(SOUND_KEY)) {
@@ -100,7 +102,7 @@ void Select::menuMap1ToggleCallback(Ref* pSender)
 	//Director::getInstance()->replaceScene(sc);
 	Director::getInstance()->pushScene(sc);
 }
-
+//地图2菜单项回调函数
 void Select::menuMap2ToggleCallback(Ref* pSender)
 {
 	if (UserDefault::getInstance()->getBoolForKey(SOUND_KEY)) {

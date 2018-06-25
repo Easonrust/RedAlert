@@ -77,7 +77,7 @@ Scene* InputIP::createScene()
 		editbox1->setAnchorPoint(Point(0, 0));
 		editbox1->setPosition(Point(visibleSize.width *0.3, visibleSize.height*0.55));
 		editbox1->setPlaceHolder("IP:");//占位字符  
-		editbox1->setMaxLength(12);
+		editbox1->setMaxLength(30);
 		editbox1->setFontColor(Color3B::BLACK);//设置输入字体的颜色  
 		editbox1->setTag(1);
 		this->addChild(editbox1, 2);

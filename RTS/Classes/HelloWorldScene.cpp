@@ -3,10 +3,8 @@
 
 USING_NS_CC;
 
-float coordinate[7];
-
-mymap*a1;
-button*b1;
+//mymap*a1;
+//button*b1;
 Scene* HelloWorld::createScene()
 
 {
@@ -17,20 +15,27 @@ Scene* HelloWorld::createScene()
 	a->buttonlayer = b;//将地图层中按钮层指针指向按钮层（用于信息交互）注意两个类不能互相指
 	scene->addChild(a);
 	scene->addChild(b);
-	a1 = a;
-	b1 = b;
+	//a1 = a;
+	//b1 = b;
 	return scene;
 }
 
-void judgecamp(char*revcamp)
+/*void judgecamp(char*revcamp)
 {
 	int camp = (int)revcamp[0];
-}
+}*/
 
-void revmessage(char*revmsg,mymap*a,button*b)
+/*/*void revmessage(char*revmsg,mymap*a,button*b)
 {
-	cout << "receive message:" << revmsg;
-	Json::Reader reader;
+	float coordinate[7];
+	/*cout << "receive message1:" << revmsg << endl;
+	
+	for (int i = 0; i < 7; i++)
+	{
+		coordinate[i] = atof(revmsg + 16 * i);
+		cout << coordinate[i] << endl;
+	}*/
+/*	Json::Reader reader;
 	Json::Value root;
 	if (reader.parse(revmsg, root))
 	{
@@ -42,6 +47,12 @@ void revmessage(char*revmsg,mymap*a,button*b)
 		coordinate[5] = ((float)root["fitx"].asInt()) / 100000;
 		coordinate[6] = ((float)root["fity"].asInt()) / 100000;
 	}
+	Sleep(10);
+	for (int i = 0; i < 7; i++)
+	{
+		cout << "coor:  " << coordinate[i] << endl;
+	}
+	
 	float x = coordinate[5] - a->repair.x;
 	float y = coordinate[6] - a->repair.y;
 	Vec2 dev = Vec2(x, y);
@@ -55,7 +66,7 @@ void revmessage(char*revmsg,mymap*a,button*b)
 	}
 
 	//button层
-	if (a->isTap(emouse_up, a->buttonlayer->getChildByTag(SOLDIERBUTTONTAG)) && !a->isTap(emouse_up, a->buttonlayer->getChildByTag(CARINCBUTTONTAG)) && !a->isTap(emouse_up, a->buttonlayer->getChildByTag(MINEBUTTONTAG)) && !a->isTap(emouse_up, a->buttonlayer->getChildByTag(EPOWERBUTTONTAG)) && !a->isTap(emouse_up, a->buttonlayer->getChildByTag(BARRACKBUTTONTAG)))
+	if (a->isTap(emouse_up, a->buttonlayer->getChildByTag(SOLDIERBUTTONTAG))||a->isTap(emouse_up, a->buttonlayer->getChildByTag(CARINCBUTTONTAG))||a->isTap(emouse_up, a->buttonlayer->getChildByTag(MINEBUTTONTAG))||a->isTap(emouse_up, a->buttonlayer->getChildByTag(EPOWERBUTTONTAG)) ||a->isTap(emouse_up, a->buttonlayer->getChildByTag(BARRACKBUTTONTAG)))
 {
 auto minebuttontag = a->buttonlayer->getChildByTag(MINEBUTTONTAG);
 auto barrackbuttontag = a->buttonlayer->getChildByTag(BARRACKBUTTONTAG);
@@ -267,8 +278,4 @@ else if (a->isTap(emouse_up, robotbuttontag))
 			}
 		}
 	}
-}
-/*void revmessage(char*revmsg)
-{
-	cout << "receive message：" << revmsg<<endl;
 }*/
