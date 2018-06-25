@@ -13,7 +13,7 @@ public:
 
 	CREATE_FUNC(HelloWorld);
 };
-void revmessage(char*revmsg, mymap*a, button*b);
+//void revmessage(char*revmsg, mymap*a, button*b);
 //void revmessage(char*revmsg);
-void judgecamp(char*revcamp);
+//void judgecamp(char*revcamp);
 #endif // __HELLOWORLD_SCENE_H__

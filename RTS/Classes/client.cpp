@@ -4,6 +4,7 @@
  bool    bSend;                      //发送标记位
  bool	bConnecting;						//与服务器的连接状态
  CRITICAL_SECTION cs;					    //临界区对象，锁定bufSend
+ float coordinate[7] = {0};
  extern string IP;
  extern mymap*a1;
  extern button*b1;
@@ -79,9 +80,10 @@ bool ConnectServer(void)
 }
 
 //发送数据
-void clientsend(int right,Vec2&mouse_up,Vec2&mouse_down,Vec2&fit)
+void clientsend(float right,Vec2&mouse_up,Vec2&mouse_down,Vec2&fit)
 {
 	Json::Value v_root;
+<<<<<<< HEAD
 	long  coordinate[7];
 	coordinate[0] = right;
 	coordinate[1] = mouse_down.x * 1000000;
@@ -98,23 +100,42 @@ void clientsend(int right,Vec2&mouse_up,Vec2&mouse_down,Vec2&fit)
 	v_root["fitx"] = coordinate[5];
 	v_root["fity"] = coordinate[6];
 
+=======
+	long  scoordinate[7];
+	scoordinate[0] = right;
+	scoordinate[1]=mouse_down.x*1000000;
+	scoordinate[2] = mouse_down.y * 1000000;
+	scoordinate[3] = mouse_up.x * 1000000;
+	scoordinate[4] = mouse_up.y * 1000000;
+	scoordinate[5] = fit.x * 1000000;
+	scoordinate[6] = fit.y * 1000000;
+	v_root["right"] = scoordinate[0];
+	v_root["downx"] = scoordinate[1];
+	v_root["downy"] = scoordinate[2];
+	v_root["upx"] = scoordinate[3];
+	v_root["upy"] = scoordinate[4];
+	v_root["fitx"] = scoordinate[5];
+	v_root["fity"] = scoordinate[6];
+>>>>>>> ab1ada03140212484ed3a40919f40438b177e69c
 	cout << "已发送：";
 	cout << "toStyledString()" << endl;
 	cout << v_root.toStyledString() << endl; 
 	std::string SendBuf = v_root.toStyledString();
 	//向服务器发送数据  
 	send(sClient, SendBuf.c_str(), SendBuf.size(), 0);
+	/*char data[1024] = {0};
+	sprintf(data, "%-16f%-16f%-16f%-16f%-16f%-16f%-16f", right, mouse_down.x, mouse_down.y, mouse_up.x, mouse_up.y, fit.x, fit.y);
+	cout << "已发送：" << data << endl;
+	send(sClient, data, 200, 0);*/
 }
 
-//接收数据线程
+//接收数据线程函数
 unsigned __stdcall clientreceiveThread(void* param)
 {
 	cout << "接收线程创建成功！" << endl;
 	char recData[MAX_NUM_BUF];
-	int number = 0;
 	while (true)
 	{
-		number++;
 		int ret = recv(sClient, recData, MAX_NUM_BUF, 0);
 		if (ret == SOCKET_ERROR)
 		{
@@ -123,34 +144,50 @@ unsigned __stdcall clientreceiveThread(void* param)
 		}
 		if (ret > 0)
 		{
+<<<<<<< HEAD
 			cout << "Recive message： " << recData << endl;
+=======
+			cout << "ret: " << ret << endl;
+			cout << "接收到1：" << recData << endl;
+			//revmessage(recData,a1,b1);
+>>>>>>> ab1ada03140212484ed3a40919f40438b177e69c
 			Json::Reader reader;
 			Json::Value root;
 			if (reader.parse(recData, root))
 			{
+<<<<<<< HEAD
 				coordinate[0] = ((float)root["right"].asInt());
+=======
+				coordinate[0] = ((float)root["right"].asInt()) / 1000000;
+>>>>>>> ab1ada03140212484ed3a40919f40438b177e69c
 				coordinate[1] = ((float)root["downx"].asInt()) / 1000000;
 				coordinate[2] = ((float)root["downy"].asInt()) / 1000000;
 				coordinate[3] = ((float)root["upx"].asInt()) / 1000000;
 				coordinate[4] = ((float)root["upy"].asInt()) / 1000000;
 				coordinate[5] = ((float)root["fitx"].asInt()) / 1000000;
 				coordinate[6] = ((float)root["fity"].asInt()) / 1000000;
+<<<<<<< HEAD
 				connectornot = 1;
+=======
+>>>>>>> ab1ada03140212484ed3a40919f40438b177e69c
 			}
 			Sleep(10);
 			for (int i = 0; i < 7; i++)
 			{
 				cout << "coordinate:  " << coordinate[i] << endl;
 			}
+<<<<<<< HEAD
 
 			memset(recData, 0, ret);
+=======
+			memset(recData, 0, MAX_NUM_BUF);
+>>>>>>> ab1ada03140212484ed3a40919f40438b177e69c
 		}
 	}
-	
 }
 
 /**
-* 客户端退出
+* 客户端退出，清理资源
 */
 void ExitClient(void)
 {
@@ -160,7 +197,7 @@ void ExitClient(void)
 }
 
 /**
-* 显示连接服务器失败信息
+* 显示连接服务器成功或失败信息
 */
 void ShowConnectMsg(bool bSuc)
 {
