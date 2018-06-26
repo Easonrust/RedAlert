@@ -8,7 +8,7 @@
 USING_NS_CC;
 class mymap : public Layer
 {
-
+	
 public:
 	cocos2d::TMXTiledMap* _tileMap;//µØÍ¼
 	cocos2d::TMXLayer* _collidable;
@@ -54,10 +54,7 @@ public:
 	void iscollide(float delta);
 	void soldierattack(float delta);
 	void net(float delta);
-<<<<<<< HEAD
 	void winlose(float delta);
-=======
->>>>>>> ab1ada03140212484ed3a40919f40438b177e69c
 	void ruins();
 	static bool isTap(cocos2d::Vec2 location, cocos2d::Node*node);
 

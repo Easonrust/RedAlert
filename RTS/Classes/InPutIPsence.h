@@ -40,6 +40,6 @@ bool InitSockt(void);               //非阻塞套接字
 bool ConnectServer(void);           //连接服务器
 void ShowConnectMsg(bool bSuc);     //连接打印函数
 void ExitClient(void);              //退出服务器
-void clientsend(float right,Vec2&mouse_up, Vec2&mouse_down, Vec2&fit);
+void clientsend(int right,Vec2&mouse_up, Vec2&mouse_down, Vec2&fit);
 unsigned __stdcall clientreceiveThread(void* param);
 #endif
