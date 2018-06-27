@@ -81,8 +81,6 @@ bool AppDelegate::applicationDidFinishLaunching() {
 
 	//初始化背景音乐
 	SimpleAudioEngine::getInstance()->preloadBackgroundMusic("sound/Lose1.mp3");
-	SimpleAudioEngine::getInstance()->preloadBackgroundMusic("sound/Synth.mp3");
-	SimpleAudioEngine::getInstance()->preloadBackgroundMusic("sound/Jazz.mp3");
 	//初始化音效
 	SimpleAudioEngine::getInstance()->preloadEffect("sound/Blip.wav");
 	SimpleAudioEngine::getInstance()->preloadEffect("sound/button.wav");

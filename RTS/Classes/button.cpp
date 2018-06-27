@@ -1,4 +1,5 @@
 #include"button.h"
+#include"SimpleAudioEngine.h"
 #include <iostream>
 //各类按钮初始化
 bool button::init()
@@ -97,6 +98,18 @@ bool button::init()
 	tmoneypng->setScale(0.9, 0.9);
 	tmoneypng->setPosition(1420, 23);
 	this->addChild(tmoneypng, 1);
+	wallbutton = Sprite::create("wallbutton.png");//围墙按钮
+	wallbutton->setPosition(Vec2(1480, 27));
+	addChild(wallbutton, 1, WALLBUTTONTAG);
+	auto wsmoney = String::createWithFormat("400");
+	auto wlblmoney = Label::createWithTTF(wsmoney->getCString(), "fonts/Marker Felt.ttf", 24);
+	wlblmoney->setColor(Color3B::YELLOW);
+	wlblmoney->setPosition(1540, 23);
+	this->addChild(wlblmoney, 1);
+	auto wmoneypng = Sprite::create("money.png");
+	wmoneypng->setScale(0.9, 0.9);
+	wmoneypng->setPosition(1580, 23);
+	this->addChild(wmoneypng, 1);
 	//显示钱与电力
 	moneypowerlist = Sprite::create("moneypowerlist.png");//右上钱和电力状态栏
 	moneypowerlist->setPosition(Vec2(1450, 875));
@@ -142,7 +155,9 @@ bool button::isTap(cocos2d::EventMouse*em, cocos2d::Node*node)
 //调整金钱
 void button::scheduleMoneyPower(float delta)
 {
-    if(mine_num && power>=0) money = money + 10*mine_num;
+	if (mine_num && power >= 0) {
+		money = money + 10 * mine_num;
+	}
 	this->removeChildByTag(MONEYTAG);
 	smoney = String::createWithFormat("%d", money);
 	lblmoney = Label::createWithTTF(smoney->getCString(), "fonts/Marker Felt.ttf", 24);
@@ -150,7 +165,9 @@ void button::scheduleMoneyPower(float delta)
 	lblmoney->setPosition(1370, 875);
 	this->addChild(lblmoney, 1, MONEYTAG);
     
-    
+	if (enemy_mine_num && enemy_power >= 0) {
+		enemy_money = enemy_money + 10 * enemy_mine_num;
+	}
 	this->removeChildByTag(POWERTAG);
 	spower = String::createWithFormat("%d", power);
 	lblpower = Label::createWithTTF(spower->getCString(), "fonts/Marker Felt.ttf", 24);
@@ -246,6 +263,17 @@ void button::schedulebutton(float delta)
 	}
 	robotbutton->setPosition(Vec2(1100, 27));
 	addChild(robotbutton, 1, ROBOTBUTTONTAG);
+	this->removeChildByTag(WALLBUTTONTAG);
+	if (money <= 400 || !base_num)
+	{
+		wallbutton = Sprite::create("wallbuttoncannot.png");
+	}
+	else
+	{
+		wallbutton = Sprite::create("wallbutton.png");
+	}
+	wallbutton->setPosition(Vec2(1480, 27));
+	addChild(wallbutton, 1,WALLBUTTONTAG);
 }
 //
 void button::onEnter() {
@@ -280,52 +308,122 @@ void button::onMouseUp(Event*e)
 	auto soldierbuttontag = this->getChildByTag(SOLDIERBUTTONTAG);
 	auto tankbuttontag = this->getChildByTag(TANKBUTTONTAG);
 	auto robotbuttontag = this->getChildByTag(ROBOTBUTTONTAG);
+	auto wallbuttontag = this->getChildByTag(WALLBUTTONTAG);
+	if (this->isTap(em, wallbuttontag))
+	{
+		if (money >= 400 && base_num )
+		{
+			buildornot = 1;
+			buildchoice = 8;
+			CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sound/button.wav");
+		}
+		else
+		{
+			CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sound/buttonerror.wav");
+		}
+	}
 	if (this->isTap(em, minebuttontag))
 	{
-		buildornot = 1;
-		buildchoice = 1;
+		if (money >= 2500 && power >= 150 && base_num &&epower_num)
+		{
+			buildornot = 1;
+			buildchoice = 1;
+			CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sound/button.wav");
+		}
+		else
+		{
+			CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sound/buttonerror.wav");
+		}
 	}
 	else if (this->isTap(em, barrackbuttontag))
 	{
-		buildornot = 1;
-		buildchoice = 2;
+		if (money >= 1000 && power >= 100 && base_num && epower_num)
+		{
+			buildornot = 1;
+			buildchoice = 2;
+			CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sound/button.wav");
+		}
+		else
+		{
+			CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sound/buttonerror.wav");
+		}
 	}
 	else if (this->isTap(em, epowerbuttontag))
 	{
-		buildornot = 1;
-		buildchoice = 3;
+		if (money >= 800 && base_num)
+		{
+			buildornot = 1;
+			buildchoice = 3;
+			CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sound/button.wav");
+		}
+		else
+		{
+			CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sound/buttonerror.wav");
+		}
 	}
 	else if (this->isTap(em, carincbuttontag))
 	{
-		buildornot = 1;
-		buildchoice = 4;
+		if (money >= 2000 && power >= 120 && base_num && epower_num && barrack_num &&mine_num)
+		{
+			buildornot = 1;
+			buildchoice = 4;
+			CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sound/button.wav");
+		}
+		else
+		{
+			CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sound/buttonerror.wav");
+		}
 	}
 	else if (this->isTap(em, soldierbuttontag))
 	{
-		buildornot = 2;
-		buildchoice = 5;
+		if (barrack_num &&money >= 100)
+		{
+			buildornot = 2;
+			buildchoice = 5;
+			CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sound/soldiersound.mp3");
+		}
+		else
+		{
+			CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sound/buttonerror.wav");
+		}
 	}
 	else if (this->isTap(em, tankbuttontag))
 	{
-		buildornot = 2;
-		buildchoice = 6;
+		if (carinc_num && money >= 800)
+		{
+			buildornot = 2;
+			buildchoice = 6;
+			CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sound/tanksound.wav");
+		}
+		else
+		{
+			CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sound/buttonerror.wav");
+		}
 	}
 	else if (this->isTap(em, robotbuttontag))
 	{
-		buildornot = 2;
-		buildchoice = 7;
+		if (carinc_num &&money >= 300)
+		{
+			buildornot = 2;
+			buildchoice = 7;
+			CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sound/robotsound.wav");
+		}
+		else
+		{
+			CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sound/buttonerror.wav");
+		}
 	}
 }
 //购买建筑后更新金钱
 void button::updatemoney(int buildchoice)
 {
-	if (buildchoice == 1 && money >= 2500)
+	if (buildchoice == 1 && money >= 2500&&power>=150)
 	{
 		money -= 2500;
         mine_num = mine_num+1;
         power = power - 150;
 	}
-	else if (buildchoice == 2 && money >= 1000)
+	else if (buildchoice == 2 && money >= 1000&&power>=100)
 	{
 		money -= 1000;
         barrack_num = barrack_num+1;
@@ -337,7 +435,7 @@ void button::updatemoney(int buildchoice)
         epower_num = epower_num+1;
         power = power + 250;
 	}
-	else if (buildchoice == 4 && money >= 2000)
+	else if (buildchoice == 4 && money >= 2000&&power>=120)
 	{
 		money -= 2000;
         carinc_num = carinc_num+1;
@@ -354,6 +452,10 @@ void button::updatemoney(int buildchoice)
 	else if (buildchoice == 7 && money >= 300)
 	{
 		money -= 300;
+	}
+	else if (buildchoice == 8 && money >= 400)
+	{
+		money -= 400;
 	}
 	this->removeChildByTag(MONEYTAG);
 	smoney = String::createWithFormat("%d", money);

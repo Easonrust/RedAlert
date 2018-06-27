@@ -1,42 +1,37 @@
-#include"map.h"
+#include"mapb.h"
 #include"button.h"
 #include "building.h"
 #include <string>
 #include <iostream>
 #include "client.h"
-float ourcopy[7] = { 0 };
+float ourbcopy[7] = { 0 };
 extern float coordinate[7];
 extern bool connectornot;
 extern char camp[1];
-bool mymap::init()
+bool mymapb::init()
 {
+	SimpleAudioEngine::getInstance()->stopBackgroundMusic("sound/Lose.mp3");
 	if (!Layer::init())
 	{
 		return false;
 	}
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
-	
-	//
-
-
-
-
 	SpriteFrameCache::getInstance()->addSpriteFramesWithFile("animate.plist");
 	this->setAnchorPoint(Vec2(0, 0));
 	originmap = this->getPosition();
 	repair = Vec2(0, 0);//“∆∂ØµÿÕº∫Û£¨‘⁄µÿÕº…œΩ®‘Ïæ´¡È ±◊¯±Íµƒ–ﬁ’˝¡ø
-	_tileMap = TMXTiledMap::create("map/Map1.tmx");
+	_tileMap = TMXTiledMap::create("map/Map2.tmx");
 	addChild(_tileMap, 0, MAPTAG);
 	auto base1 = building::createWithBuildingType(Base);
-	base1->setPosition(Vec2(400, 300));
+	base1->setPosition(Vec2(400, 1300));
 	building::add_blood_bar(base1);
 	addChild(base1);
 	addChild(base1->blood);
 	addChild(base1->progress);
 
 	auto base2 = building::createWithBuildingType(Base);
-	base2->setPosition(Vec2(2700, 1300));
+	base2->setPosition(Vec2(2700, 300));
 	building::add_blood_bar(base2);
 	addChild(base2);
 	addChild(base2->blood);
@@ -48,28 +43,29 @@ bool mymap::init()
 		enemy_buildings.pushBack(base2);
 		buildings.pushBack(base1);
 		base2->progress->setColor(Color3B::BLUE);
+		this->setPosition(Vec2(0, -700));
+		repair = originmap - Vec2(0, -700);
 	}
 	else if (camp[0] == '1')
 	{
 		buildings.pushBack(base2);
 		enemy_buildings.pushBack(base1);
 		base1->progress->setColor(Color3B::BLUE);
-		this->setPosition(Vec2(-1600, -700));
-		repair = originmap - Vec2(-1600, -700);
+		this->setPosition(Vec2(-1600, 0));
+		repair = originmap - Vec2(-1600,0);
 	}
 
-	schedule(schedule_selector(mymap::moveBlood), 0.1f);  //À¢–¬∫Ø ˝£¨√ø∏Ù0.1√Î
-	schedule(schedule_selector(mymap::moveAttack), 0.1f);
-	schedule(schedule_selector(mymap::protectmap), 0);
-	schedule(schedule_selector(mymap::scheduleBlood_enemy), 0.1f);
-	schedule(schedule_selector(mymap::scheduleBlood_mine), 0.1f);
-	schedule(schedule_selector(mymap::soldierattack), 0.1f);
-	//schedule(schedule_selector(mymap::iscollide), 0);
-	schedule(schedule_selector(mymap::net), 0);
-	schedule(schedule_selector(mymap::winlose), 0.1f);
+	schedule(schedule_selector(mymapb::moveBlood), 0.1f);  //À¢–¬∫Ø ˝£¨√ø∏Ù0.1√Î
+	schedule(schedule_selector(mymapb::moveAttack), 0.1f);
+	schedule(schedule_selector(mymapb::protectmap), 0);
+	schedule(schedule_selector(mymapb::scheduleBlood_enemy), 0.1f);
+	schedule(schedule_selector(mymapb::scheduleBlood_mine), 0.1f);
+	schedule(schedule_selector(mymapb::soldierattack), 0.1f);
+	schedule(schedule_selector(mymapb::net), 0);
+	schedule(schedule_selector(mymapb::winlose), 0.1f);
 	return true;
 }
-void mymap::winlose(float delta)
+void mymapb::winlose(float delta)
 {
 	int mynumber = 0;
 	int enemy_number = 0;
@@ -92,7 +88,7 @@ void mymap::winlose(float delta)
 		addChild(llose, 5);
 	}
 }
-bool mymap::isTap(cocos2d::Vec2 location, cocos2d::Node*node)//≈–∂œ «∑Òµ„÷–æ´¡Èµƒ∫Ø ˝,∏®÷˙
+bool mymapb::isTap(cocos2d::Vec2 location, cocos2d::Node*node)//≈–∂œ «∑Òµ„÷–æ´¡Èµƒ∫Ø ˝,∏®÷˙
 {
 	Vec2 locationInNode = node->convertToNodeSpace(location);
 	Size s = node->getContentSize();
@@ -103,7 +99,7 @@ bool mymap::isTap(cocos2d::Vec2 location, cocos2d::Node*node)//≈–∂œ «∑Òµ„÷–æ´¡Èµ
 	}
 	return false;
 }
-void mymap::ruins()
+void mymapb::ruins()
 {
 	for (int i = 0; i < enemy_buildings.size(); ++i)
 	{
@@ -151,7 +147,7 @@ void mymap::ruins()
 		}
 	}
 }
-void mymap::net(float delta)
+void mymapb::net(float delta)
 {
 	if (connectornot == 1)
 	{
@@ -165,7 +161,7 @@ void mymap::net(float delta)
 
 		for (int j = 0; j < 7; j++)
 		{
-			ourcopy[j] = coordinate[j];
+			ourbcopy[j] = coordinate[j];
 		}
 		//”“º¸
 		if (coordinate[0] == 1)
@@ -174,7 +170,7 @@ void mymap::net(float delta)
 			coordinate[0] = 0;
 		}
 		//button≤„
-		if (isTap(emouse_up, buttonlayer->getChildByTag(WALLBUTTONTAG)) ||isTap(emouse_up, buttonlayer->getChildByTag(ROBOTBUTTONTAG)) || isTap(emouse_up, buttonlayer->getChildByTag(TANKBUTTONTAG)) || isTap(emouse_up, buttonlayer->getChildByTag(SOLDIERBUTTONTAG)) || isTap(emouse_up, buttonlayer->getChildByTag(CARINCBUTTONTAG)) || isTap(emouse_up, buttonlayer->getChildByTag(MINEBUTTONTAG)) || isTap(emouse_up, buttonlayer->getChildByTag(EPOWERBUTTONTAG)) || isTap(emouse_up, buttonlayer->getChildByTag(BARRACKBUTTONTAG)))
+		if (isTap(emouse_up, buttonlayer->getChildByTag(WALLBUTTONTAG)) || isTap(emouse_up, buttonlayer->getChildByTag(ROBOTBUTTONTAG)) || isTap(emouse_up, buttonlayer->getChildByTag(TANKBUTTONTAG)) || isTap(emouse_up, buttonlayer->getChildByTag(SOLDIERBUTTONTAG)) || isTap(emouse_up, buttonlayer->getChildByTag(CARINCBUTTONTAG)) || isTap(emouse_up, buttonlayer->getChildByTag(MINEBUTTONTAG)) || isTap(emouse_up, buttonlayer->getChildByTag(EPOWERBUTTONTAG)) || isTap(emouse_up, buttonlayer->getChildByTag(BARRACKBUTTONTAG)))
 		{
 			auto minebuttontag = buttonlayer->getChildByTag(MINEBUTTONTAG);
 			auto barrackbuttontag = buttonlayer->getChildByTag(BARRACKBUTTONTAG);
@@ -307,7 +303,7 @@ void mymap::net(float delta)
 					enemy_moneyenough = true;
 					enemy_carincpos = position;
 				}
-				else if (buttonlayer->enemy_buildchoice ==8 && buttonlayer->enemy_money >= 400 && buttonlayer->enemy_base_num) {
+				else if (buttonlayer->enemy_buildchoice == 8 && buttonlayer->enemy_money >= 400 && buttonlayer->enemy_base_num) {
 					Building = building::createWithBuildingType(Wall);
 					enemy_moneyenough = true;
 				}
@@ -321,7 +317,7 @@ void mymap::net(float delta)
 					addChild(Building->progress);
 					Building->progress->setColor(Color3B::BLUE);
 					char name = 0;
-	
+
 					if (buttonlayer->enemy_buildchoice == 1 && buttonlayer->enemy_money >= 2500 && buttonlayer->enemy_power >= 150 && buttonlayer->enemy_base_num&&buttonlayer->enemy_epower_num)
 					{
 						buttonlayer->enemy_money -= 2500;
@@ -340,8 +336,8 @@ void mymap::net(float delta)
 						buttonlayer->enemy_epower_num += 1;
 						buttonlayer->enemy_power += 250;
 					}
-					else if (buttonlayer->enemy_buildchoice == 4 && buttonlayer->enemy_money >= 2000 && buttonlayer->enemy_power >= 120 && buttonlayer->enemy_epower_num &&buttonlayer->enemy_barrack_num&&buttonlayer->enemy_mine_num&&buttonlayer->enemy_base_num) 
-						
+					else if (buttonlayer->enemy_buildchoice == 4 && buttonlayer->enemy_money >= 2000 && buttonlayer->enemy_power >= 120 && buttonlayer->enemy_epower_num &&buttonlayer->enemy_barrack_num&&buttonlayer->enemy_mine_num&&buttonlayer->enemy_base_num)
+
 					{
 						buttonlayer->enemy_money -= 2000;
 						buttonlayer->enemy_carinc_num += 1;
@@ -376,12 +372,12 @@ void mymap::net(float delta)
 				}
 
 				for (int i = 0; i < soldiers.size(); i++) {
-					if (isTap(emouse_up+dev, soldiers.at(i))) {
+					if (isTap(emouse_up + dev, soldiers.at(i))) {
 						Soldier::attacksoldier(enemy_soldiers, soldiers, emouse_up + dev);
 					}
 				}
 				for (int i = 0; i < buildings.size(); i++) {
-					if (isTap(emouse_up+dev, buildings.at(i))) {
+					if (isTap(emouse_up + dev, buildings.at(i))) {
 						Soldier::attackbuilding(enemy_soldiers, buildings, emouse_up + dev);
 						break;
 					}
@@ -395,7 +391,7 @@ void mymap::net(float delta)
 
 }
 
-void mymap::soldierattack(float delta)
+void mymapb::soldierattack(float delta)
 {
 	for (int i = 0; i < soldiers.size(); ++i)
 	{
@@ -460,7 +456,7 @@ void mymap::soldierattack(float delta)
 		}
 	}
 }
-void mymap::moveBlood(float delta) {
+void mymapb::moveBlood(float delta) {
 	for (int i = 0; i < soldiers.size(); ++i)
 	{
 		if (soldiers.at(i)->progress->getPercentage() > 0)
@@ -478,7 +474,7 @@ void mymap::moveBlood(float delta) {
 		}
 	}
 }
-void mymap::moveAttack(float delta) {
+void mymapb::moveAttack(float delta) {
 	for (int i = 0; i < soldiers.size(); ++i)
 	{
 		if (soldiers.at(i)->sprite != nullptr)
@@ -494,7 +490,7 @@ void mymap::moveAttack(float delta) {
 		}
 	}
 }
-void mymap::scheduleBlood_enemy(float delta) {
+void mymapb::scheduleBlood_enemy(float delta) {
 	for (int i = 0; i<soldiers.size(); i++) {
 		//µ–∑Ω ø±¯
 		if (soldiers.at(i)->s_enemy != nullptr) {
@@ -534,7 +530,7 @@ void mymap::scheduleBlood_enemy(float delta) {
 							animation->setRestoreOriginalFrame(false);    //∂Øª≠÷¥––∫Ûªπ‘≠≥ı º◊¥Ã¨
 							soldiers.at(i)->s_enemy->getPhysicsBody()->setDynamic(false);
 							FiniteTimeAction* action1 = Animate::create(animation);
-							FiniteTimeAction* action2 = CallFunc::create(CC_CALLBACK_0(mymap::ruins, this));
+							FiniteTimeAction* action2 = CallFunc::create(CC_CALLBACK_0(mymapb::ruins, this));
 							ActionInterval*seq = Sequence::create(action1, action2, NULL);
 							soldiers.at(i)->s_enemy->runAction(Sequence::create(seq, NULL));
 						}
@@ -561,7 +557,7 @@ void mymap::scheduleBlood_enemy(float delta) {
 							animation->setRestoreOriginalFrame(false);    //∂Øª≠÷¥––∫Ûªπ‘≠≥ı º◊¥Ã¨
 							soldiers.at(i)->s_enemy->getPhysicsBody()->setDynamic(false);
 							FiniteTimeAction* action1 = Animate::create(animation);
-							FiniteTimeAction* action2 = CallFunc::create(CC_CALLBACK_0(mymap::ruins, this));
+							FiniteTimeAction* action2 = CallFunc::create(CC_CALLBACK_0(mymapb::ruins, this));
 							ActionInterval*seq = Sequence::create(action1, action2, NULL);
 							soldiers.at(i)->s_enemy->runAction(Sequence::create(seq, NULL));
 						}
@@ -642,7 +638,7 @@ void mymap::scheduleBlood_enemy(float delta) {
 						animation->setRestoreOriginalFrame(false);    //∂Øª≠÷¥––∫Ûªπ‘≠≥ı º◊¥Ã¨
 						soldiers.at(i)->b_enemy->getPhysicsBody()->setDynamic(false);
 						FiniteTimeAction* action1 = Animate::create(animation);
-						FiniteTimeAction* action2 = CallFunc::create(CC_CALLBACK_0(mymap::ruins, this));
+						FiniteTimeAction* action2 = CallFunc::create(CC_CALLBACK_0(mymapb::ruins, this));
 						ActionInterval*seq = Sequence::create(action1, action2, NULL);
 						soldiers.at(i)->b_enemy->runAction(Sequence::create(seq, NULL));
 						soldiers.at(i)->b_enemy = nullptr;
@@ -666,7 +662,7 @@ void mymap::scheduleBlood_enemy(float delta) {
 		}
 	}
 }
-void mymap::scheduleBlood_mine(float delta) {
+void mymapb::scheduleBlood_mine(float delta) {
 	for (int i = 0; i<enemy_soldiers.size(); i++) {
 		//µ–∑Ω ø±¯
 		if (enemy_soldiers.at(i)->s_enemy != nullptr) {
@@ -706,7 +702,7 @@ void mymap::scheduleBlood_mine(float delta) {
 							animation->setRestoreOriginalFrame(false);    //∂Øª≠÷¥––∫Ûªπ‘≠≥ı º◊¥Ã¨
 							enemy_soldiers.at(i)->s_enemy->getPhysicsBody()->setDynamic(false);
 							FiniteTimeAction* action1 = Animate::create(animation);
-							FiniteTimeAction* action2 = CallFunc::create(CC_CALLBACK_0(mymap::ruins, this));
+							FiniteTimeAction* action2 = CallFunc::create(CC_CALLBACK_0(mymapb::ruins, this));
 							ActionInterval*seq = Sequence::create(action1, action2, NULL);
 							enemy_soldiers.at(i)->s_enemy->runAction(Sequence::create(seq, NULL));
 							enemy_soldiers.at(i)->stopAllActions();
@@ -734,7 +730,7 @@ void mymap::scheduleBlood_mine(float delta) {
 							animation->setRestoreOriginalFrame(false);    //∂Øª≠÷¥––∫Ûªπ‘≠≥ı º◊¥Ã¨
 							enemy_soldiers.at(i)->s_enemy->getPhysicsBody()->setDynamic(false);
 							FiniteTimeAction* action1 = Animate::create(animation);
-							FiniteTimeAction* action2 = CallFunc::create(CC_CALLBACK_0(mymap::ruins, this));
+							FiniteTimeAction* action2 = CallFunc::create(CC_CALLBACK_0(mymapb::ruins, this));
 							ActionInterval*seq = Sequence::create(action1, action2, NULL);
 							enemy_soldiers.at(i)->s_enemy->runAction(Sequence::create(seq, NULL));
 							enemy_soldiers.at(i)->stopAllActions();
@@ -817,7 +813,7 @@ void mymap::scheduleBlood_mine(float delta) {
 						animation->setRestoreOriginalFrame(false);    //∂Øª≠÷¥––∫Ûªπ‘≠≥ı º◊¥Ã¨
 						enemy_soldiers.at(i)->b_enemy->getPhysicsBody()->setDynamic(false);
 						FiniteTimeAction* action1 = Animate::create(animation);
-						FiniteTimeAction* action2 = CallFunc::create(CC_CALLBACK_0(mymap::ruins, this));
+						FiniteTimeAction* action2 = CallFunc::create(CC_CALLBACK_0(mymapb::ruins, this));
 						ActionInterval*seq = Sequence::create(action1, action2, NULL);
 						enemy_soldiers.at(i)->b_enemy->runAction(Sequence::create(seq, NULL));
 						enemy_soldiers.at(i)->stopAllActions();
@@ -840,7 +836,7 @@ void mymap::scheduleBlood_mine(float delta) {
 		}
 	}
 }
-void mymap::onEnter() {
+void mymapb::onEnter() {
 	Layer::onEnter();
 	log("mouseTouchEvent onEnter");
 
@@ -1085,12 +1081,12 @@ void mymap::onEnter() {
 	EventDispatcher* eventDispatcher = Director::getInstance()->getEventDispatcher();
 	eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
 }
-void mymap::onExit() {
+void mymapb::onExit() {
 	Layer::onExit();
 	log("mouseTouchEvent onExit");
 	Director::getInstance()->getEventDispatcher()->removeAllEventListeners();
 }
-void mymap::protectmap(float delta)
+void mymapb::protectmap(float delta)
 {
 
 	pos1 = this->getPosition();
@@ -1119,7 +1115,7 @@ void mymap::protectmap(float delta)
 	pos1 = this->getPosition();
 	repair = originmap - pos1;
 }
-bool mymap::tapenemy(Vec2 location, Vector<building*>enemy_buildings, Vector<Soldier*>enemy_soldiers)
+bool mymapb::tapenemy(Vec2 location, Vector<building*>enemy_buildings, Vector<Soldier*>enemy_soldiers)
 {
 	bool tap = 0;
 	for (int i = 0; i < enemy_soldiers.size(); i++) {
@@ -1136,7 +1132,7 @@ bool mymap::tapenemy(Vec2 location, Vector<building*>enemy_buildings, Vector<Sol
 	}
 	return tap;
 }
-bool mymap::taparmy(Vec2 location, Vector<building*>buildings, Vector<Soldier*>soldiers)
+bool mymapb::taparmy(Vec2 location, Vector<building*>buildings, Vector<Soldier*>soldiers)
 {
 	bool tap = 0;
 	for (int i = 0; i < soldiers.size(); i++) {
@@ -1153,11 +1149,3 @@ bool mymap::taparmy(Vec2 location, Vector<building*>buildings, Vector<Soldier*>s
 	}
 	return tap;
 }
-
-
-
-
-
-
-
-

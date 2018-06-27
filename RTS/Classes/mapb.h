@@ -1,5 +1,5 @@
-#ifndef __MAP_H__
-#define __MAP_H__
+#ifndef __MAPB_H__
+#define __MAPB_H__
 #define MAPTAG 0
 #include"cocos2d.h"  
 #include"button.h"
@@ -7,13 +7,14 @@
 #include"Soldier.h"
 #include "SimpleAudioEngine.h"
 #include "SystemHeader.h"
+
+using namespace CocosDenshion;
 USING_NS_CC;
-class mymap : public Layer
+class mymapb : public Layer
 {
-	
+
 public:
 	cocos2d::TMXTiledMap* _tileMap;//地图
-	//cocos2d::TMXLayer* _collidable;
 	Vec2 originmap;
 	Vector<building*>buildings;//建筑容器
 	Vector<building*>enemy_buildings;
@@ -36,12 +37,14 @@ public:
 	int bloodnum = 100;//血量条的数量+100
 	bool moneyenough = false;
 	bool enemy_moneyenough = false;
-	
+
 
 	button*buttonlayer;//按钮层指针（用于信息交互）
-					   
+					   //士兵容器
+	bool collide(Vec2 pos);//检测碰撞的函数
 	bool tapenemy(Vec2 location, Vector<building*>enemy_building, Vector<Soldier*>enemy_soldiers);
 	bool taparmy(Vec2 location, Vector<building*>buildings, Vector<Soldier*>soldiers);
+	cocos2d::Vec2 tileCoordFromPosition(cocos2d::Vec2 position);
 	virtual bool init();
 	virtual void onEnter();
 	virtual void onExit();
@@ -57,8 +60,8 @@ public:
 	void ruins();
 	static bool isTap(cocos2d::Vec2 location, cocos2d::Node*node);
 
-	CREATE_FUNC(mymap);
+	CREATE_FUNC(mymapb);
 };
-
 #endif
+
 

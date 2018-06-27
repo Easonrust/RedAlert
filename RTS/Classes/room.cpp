@@ -1,19 +1,22 @@
-#include "InPutIPsence.h"
+#include "room.h"
 #include "extensions\cocos-ext.h"  
 
 USING_NS_CC_EXT;
 USING_NS_CC;
 using namespace cocos2d::extension;
 using namespace CocosDenshion;
-string IP;
+//string message;
 
-Scene* InputIP::createScene()
+//extern SOCKET sClient;
+//char camp[1] = { '2' };
+
+Scene* Room::createScene()
 {
 	// 'scene' is an autorelease object
 	auto scene = Scene::create();
 
 	// 'layer' is an autorelease object
-	auto layer = InputIP::create();
+	auto layer = Room::create();
 
 	// add layer as a child to scene
 	scene->addChild(layer);
@@ -28,14 +31,56 @@ Scene* InputIP::createScene()
 		printf("Error while loading: %s\n", filename);
 		printf("Depending on how you compiled you might have to add 'Resources/' in front of filenames in InputIPScene.cpp\n");
 	}
- 
+
 	// on "init" you need to initialize your instance
-	bool InputIP::init()
+	bool Room::init()
 	{
+     /*   //初始化
+		if (!InitClient())
+		{
+			ExitClient();
+		}
+
+		//连接服务器
+		if (ConnectServer())
+		{
+			ShowConnectMsg(TRUE);
+		}
+		else
+		{
+			ShowConnectMsg(FALSE);
+			ExitClient();
+		}
+
+		int rcamp = recv(sClient, camp, 1, 0);
+		if (rcamp>0)
+		{
+			cout << "camp:" << camp << endl;
+		}*/
+	auto visibleSize = Director::getInstance()->getVisibleSize();//visiblezSize
+	Vec2 origin = Director::getInstance()->getVisibleOrigin();//origm
+	/*if (camp[1] == '1')
+	{
+		Sprite *head = Sprite::create("head1.jpg");
+		// position the label on the center of the screen
+		head->setPosition(Vec2(origin.x + visibleSize.width *0.7,
+			origin.y + visibleSize.height*0.7));
+		this->addChild(head);
+	}
+	else
+	{
+		Sprite *head = Sprite::create("head2.jpg");
+		// position the label on the center of the screen
+		head->setPosition(Vec2(origin.x + visibleSize.width *0.9,
+			origin.y + visibleSize.height*0.9));
+		this->addChild(head);
+	}
+	//创建接收数据线程
+	_beginthreadex(NULL, 0, clientreceiveThread, &sClient, 0, NULL); //启动接收消息线程
+	*/
 	//////////////////////////////
 	// 1. super init first
-	auto visibleSize = Director::getInstance()->getVisibleSize();
-	Vec2 origin = Director::getInstance()->getVisibleOrigin();
+	
 	if (!Layer::init())
 	{
 		return false;
@@ -54,16 +99,16 @@ Scene* InputIP::createScene()
 	//    you may modify it.
 
 	// add a "close" icon to exit the progress. it's an autorelease object
-	auto closeItem = MenuItemImage::create(
+	auto gobackItem = MenuItemImage::create(
 		"CloseNormal.png",
 		"CloseSelected.png",
-		CC_CALLBACK_1(InputIP::menuCloseCallback, this));
-		float x = origin.x + visibleSize.width - closeItem->getContentSize().width / 2;
-		float y = origin.y + closeItem->getContentSize().height / 2;
-		closeItem->setPosition(Vec2(x, y));
+		CC_CALLBACK_1(Room::menuGobackCallback, this));
+		float x = origin.x + visibleSize.width - gobackItem->getContentSize().width / 2;
+		float y = origin.y + gobackItem->getContentSize().height / 2;
+		gobackItem->setPosition(Vec2(x, y));
 
 		// create menu, it's an autorelease object
-		auto menu = Menu::create(closeItem, NULL);
+		auto menu = Menu::create(gobackItem, NULL);
 		menu->setPosition(Vec2::ZERO);
 		this->addChild(menu, 1);
 
@@ -73,37 +118,37 @@ Scene* InputIP::createScene()
 		// add a label shows "Hello World"
 		// create and initialize a label
 
-		auto editbox1 = EditBox::create(Size(200, 35), Scale9Sprite::create("text.png"));
+	/*	auto editbox1 = EditBox::create(Size(300, 55), Scale9Sprite::create("text.png"));
 		editbox1->setAnchorPoint(Point(0, 0));
 		editbox1->setPosition(Point(visibleSize.width *0.3, visibleSize.height*0.55));
-		editbox1->setPlaceHolder("IP:");//占位字符  
-		editbox1->setMaxLength(30);
+		editbox1->setPlaceHolder("输入您的消息:");//占位字符  
+		editbox1->setMaxLength(100);
 		editbox1->setFontColor(Color3B::BLACK);//设置输入字体的颜色  
 		editbox1->setTag(1);
 		this->addChild(editbox1, 2);
 		//兑换按钮
 
-		auto Exchangebuttom = MenuItemImage::create("enterbutton.png", "enterbutton2.png");
-		Exchangebuttom->setCallback([&, editbox1](Ref*obj) {
+		auto Enterbuttom = MenuItemImage::create("enterbutton.png", "enterbutton2.png");
+		Enterbuttom->setCallback([&, editbox1](Ref*obj) {
 
 			//取得输入框里面的文字，输出到控制台
-			IP = editbox1->getText();
-			cout << "ip:"<<IP;
+			message = editbox1->getText();
+			cout << "已发送消息:"<<message;
 			if (UserDefault::getInstance()->getBoolForKey(SOUND_KEY)) {
 				SimpleAudioEngine::getInstance()->playEffect("sound/button.wav");
 			}
 			log("%s", editbox1->getText());
-			auto sc = Select::createScene();
+			auto sc = HelloWorld::createScene();
 			Director::getInstance()->pushScene(sc);
 			
 		});
-		Menu* mu = Menu::create(Exchangebuttom, NULL);
-		mu->setPosition(Vec2(400, 260));
-		this->addChild(mu);
+		Menu* mu = Menu::create(Enterbuttom, NULL);
+		mu->setPosition(origin.x + visibleSize.width * 0.3, origin.y + visibleSize.height * 0.2);//(Vec2(400, 260));
+		this->addChild(mu);*/
 		return true;
 }
 
-	void InputIP::menuCloseCallback(Ref* pSender)
+	void Room::menuGobackCallback(Ref* pSender)
 	{
 		if (UserDefault::getInstance()->getBoolForKey(SOUND_KEY)) {
 			SimpleAudioEngine::getInstance()->playEffect("sound/button.wav");

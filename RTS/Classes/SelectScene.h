@@ -5,7 +5,6 @@
 #include "cocos2d.h"
 #include "SimpleAudioEngine.h"
 #include "SystemHeader.h"
-#include "HelloWorldScene.h"
 
 class Select : public cocos2d::Layer
 {

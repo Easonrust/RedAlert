@@ -1,4 +1,4 @@
-#include "HelloWorldScene.h"
+#include "gamesceneb.h"
 #define BUTTONLISTTAG 0
 #define MINEBUTTONTAG 1
 #define EPOWERBUTTONTAG 2
@@ -14,10 +14,10 @@
 #define ROBOTBUTTONTAG 12
 USING_NS_CC;
 
-Scene* HelloWorld::createScene()
+Scene* GameSceneb::createScene()
 
 {
-	auto a = mymap::create();//创建地图层
+	auto a = mymapb::create();//创建地图层
     auto b = button::create();//创建按钮层
 	auto scene = Scene::createWithPhysics();//创造物理场景
 	scene->getPhysicsWorld()->setGravity(Vec2(0, 0));//重力为零

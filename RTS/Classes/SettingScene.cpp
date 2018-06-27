@@ -47,20 +47,20 @@ bool Setting::init()
 												MenuItemImage::create("offbutton.png", "offbutton.png"),
 												NULL);
 
-	soundToggleMenuItem->setPosition(Director::getInstance()->convertToGL(Vec2(710,279 )));
+	soundToggleMenuItem->setPosition(origin.x + visibleSize.width * 0.6, origin.y + visibleSize.height * 0.56);//(Director::getInstance()->convertToGL(Vec2(710,279 )));
 
     //ÒôÀÖ
     auto musicToggleMenuItem = MenuItemToggle::createWithCallback(CC_CALLBACK_1(Setting::menuMusicToggleCallback, this), 
 												MenuItemImage::create("onbutton.png", "onbutton.png"),
 												MenuItemImage::create("offbutton.png", "offbutton.png"),
 												NULL);
-	musicToggleMenuItem->setPosition(Director::getInstance()->convertToGL(Vec2(710, 190)));
+	musicToggleMenuItem->setPosition(origin.x + visibleSize.width * 0.6, origin.y + visibleSize.height * 0.71);//(Director::getInstance()->convertToGL(Vec2(710, 190)));
 
 	MenuItemFont::setFontName("Times New Roman");
 	MenuItemFont::setFontSize(80);
     //Ok°´Å¥
 	MenuItemImage*okMenuItem = MenuItemImage::create("okbutton.png", "okbutton2.png", CC_CALLBACK_1(Setting::menuOkCallback, this));
-	okMenuItem->setPosition(Director::getInstance()->convertToGL(Vec2(580, 410)));
+	okMenuItem->setPosition(origin.x + visibleSize.width * 0.5, origin.y + visibleSize.height * 0.3);//(Director::getInstance()->convertToGL(Vec2(580, 410)));
 
 	Menu* mu = Menu::create(soundToggleMenuItem, musicToggleMenuItem,okMenuItem, NULL);
 	mu->setPosition(Vec2::ZERO);

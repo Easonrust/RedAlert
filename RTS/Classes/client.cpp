@@ -1,14 +1,14 @@
-#include "InPutIPsence.h"
+#include "client.h"
+#include"json\json.h"
 //变量
  SOCKET	sClient;							//套接字
  bool    bSend;                      //发送标记位
  bool	bConnecting;						//与服务器的连接状态
  CRITICAL_SECTION cs;					    //临界区对象，锁定bufSend
- extern string IP;
- extern mymap*a1;
- extern button*b1;
+ //extern string IP;
  float coordinate[7] = { 0 };
  bool connectornot = 0;
+ bool comein=0;
 //变量
 	/**
 		*	初始化
@@ -57,8 +57,8 @@ bool ConnectServer(void)
 						
 	serAddr.sin_family = AF_INET;
 	serAddr.sin_port = htons(SERVERPORT);
-	serAddr.sin_addr.S_un.S_addr = inet_addr(IP.c_str());
-	cout << IP;
+	serAddr.sin_addr.S_un.S_addr = inet_addr("119.29.202.243");//(IP.c_str());
+	//cout << IP;
 	//连接服务器
 	reVal = connect(sClient, (struct sockaddr*)&serAddr, sizeof(serAddr));
 	//处理连接错误
@@ -111,10 +111,8 @@ unsigned __stdcall clientreceiveThread(void* param)
 {
 	cout << "接收线程创建成功！" << endl;
 	char recData[MAX_NUM_BUF];
-	int number = 0;
 	while (true)
 	{
-		number++;
 		int ret = recv(sClient, recData, MAX_NUM_BUF, 0);
 		if (ret == SOCKET_ERROR)
 		{
@@ -135,14 +133,17 @@ unsigned __stdcall clientreceiveThread(void* param)
 				coordinate[4] = ((float)root["upy"].asInt()) / 1000000;
 				coordinate[5] = ((float)root["fitx"].asInt()) / 1000000;
 				coordinate[6] = ((float)root["fity"].asInt()) / 1000000;
-				connectornot = 1;
+				Sleep(10);
+				for (int i = 0; i < 7; i++)
+				{
+					cout << "coordinate:  " << coordinate[i] << endl;
+				}
+					connectornot = 1;
 			}
-			Sleep(10);
-			for (int i = 0; i < 7; i++)
+			else
 			{
-				cout << "coordinate:  " << coordinate[i] << endl;
+				comein = 1;
 			}
-
 			memset(recData, 0, ret);
 		}
 	}

@@ -1,6 +1,6 @@
 #include "MainMenuScene.h"
 #include "SystemHeader.h"
-#include "InPutIPsence.h"
+#include "SelectScene.h"
 USING_NS_CC;
 using namespace CocosDenshion;
 
@@ -22,6 +22,10 @@ Scene* MainMenu::createScene()
 // on "init" you need to initialize your instance
 bool MainMenu::init()
 {
+
+	if (UserDefault::getInstance()->getBoolForKey(MUSIC_KEY)) {
+		SimpleAudioEngine::getInstance()->playBackgroundMusic("sound/Lose1.mp3", true);
+	}
     //////////////////////////////
     // 1. super init first
     if ( !Layer::init() )
@@ -45,9 +49,9 @@ bool MainMenu::init()
 	MenuItemImage*settingMenuItem = MenuItemImage::create("setbutton.png", "setbutton2.png", CC_CALLBACK_1(MainMenu::menuItemSettingCallback, this));
 	MenuItemImage*exitMenuItem = MenuItemImage::create("exitbutton.png", "exitbutton2.png", CC_CALLBACK_1(MainMenu::menuItemExitCallback, this));
 
-	startMenuItem->setPosition(Director::getInstance()->convertToGL(Vec2(570, 230)));
-	settingMenuItem->setPosition(Director::getInstance()->convertToGL(Vec2(570, 320)));
-	exitMenuItem->setPosition(Director::getInstance()->convertToGL(Vec2(570, 410)));
+	startMenuItem->setPosition(origin.x + visibleSize.width * 0.5, origin.y + visibleSize.height * 0.6);//(Director::getInstance()->convertToGL(Vec2(570, 230)));
+	settingMenuItem->setPosition(origin.x + visibleSize.width * 0.5, origin.y + visibleSize.height * 0.5);//(Director::getInstance()->convertToGL(Vec2(570, 320)));
+	exitMenuItem->setPosition(origin.x + visibleSize.width * 0.5, origin.y + visibleSize.height * 0.4);//(Director::getInstance()->convertToGL(Vec2(570, 410)));
 
 	Menu* mu = Menu::create(startMenuItem, settingMenuItem, exitMenuItem, NULL);	
 	mu->setPosition(Vec2::ZERO);
@@ -62,7 +66,7 @@ void MainMenu::menuItemStartCallback(Ref* pSender)
 		SimpleAudioEngine::getInstance()->playEffect("sound/button.wav");
 	}
 	log("start");
-	auto sc = InputIP::createScene();
+	auto sc = Select::createScene();
 	//Director::getInstance()->replaceScene(sc);
 	Director::getInstance()->pushScene(sc);
 }
@@ -106,9 +110,9 @@ void MainMenu::onEnterTransitionDidFinish()
 	Layer::onEnterTransitionDidFinish();
 	log("MainMenu onEnterTransitionDidFinish");
 	//²¥·Å
-	if (UserDefault::getInstance()->getBoolForKey(MUSIC_KEY)) {
-		SimpleAudioEngine::getInstance()->playBackgroundMusic("sound/Lose1.mp3", true);
-	}
+	//if (UserDefault::getInstance()->getBoolForKey(MUSIC_KEY)) {
+	//	SimpleAudioEngine::getInstance()->playBackgroundMusic("sound/Lose1.mp3", true);
+	//}
 }
 
 void MainMenu::onExit()
@@ -128,5 +132,5 @@ void MainMenu::cleanup()
 	Layer::cleanup();
 	log("MainMenu cleanup");
 	//Í£Ö¹
-	//SimpleAudioEngine::getInstance()->stopBackgroundMusic("sound/Lose.mp3");
+	SimpleAudioEngine::getInstance()->stopBackgroundMusic("sound/Lose.mp3");
 }
