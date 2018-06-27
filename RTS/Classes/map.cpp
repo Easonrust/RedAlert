@@ -66,7 +66,7 @@ bool mymap::init()
 	schedule(schedule_selector(mymap::soldierattack), 0.1f);
 	//schedule(schedule_selector(mymap::iscollide), 0);
 	schedule(schedule_selector(mymap::net), 0);
-	schedule(schedule_selector(mymap::winlose), 0.1f);
+	schedule(schedule_selector(mymap::winlose), 0);
 	return true;
 }
 void mymap::winlose(float delta)
@@ -79,7 +79,7 @@ void mymap::winlose(float delta)
 	{
 		String*swin = String::createWithFormat("you lose");
 		Label*lwin = Label::createWithTTF(swin->getCString(), "fonts/Marker Felt.ttf", 60);
-		lwin->setColor(Color3B::YELLOW);
+		lwin->setColor(Color3B::RED);
 		lwin->setPosition(800 + repair.x, 450 + repair.y);
 		addChild(lwin, 5);
 	}
@@ -87,7 +87,7 @@ void mymap::winlose(float delta)
 	{
 		String*slose = String::createWithFormat("you win");
 		Label*llose = Label::createWithTTF(slose->getCString(), "fonts/Marker Felt.ttf", 60);
-		llose->setColor(Color3B::RED);
+		llose->setColor(Color3B::YELLOW);
 		llose->setPosition(800 + repair.x, 450 + repair.y);
 		addChild(llose, 5);
 	}
@@ -258,8 +258,8 @@ void mymap::net(float delta)
 					Soldier::add_bloodbar(bing, repair);
 
 					addChild(bing);
-					addChild(bing->blood);
-					addChild(bing->progress);
+					addChild(bing->blood,2);
+					addChild(bing->progress,3);
 					bing->progress->setColor(Color3B::BLUE);
 					enemy_soldiers.pushBack(bing);
 				}
@@ -362,7 +362,7 @@ void mymap::net(float delta)
 			Soldier::judge_selected(enemy_soldiers, emouse_down + dev, emouse_up + dev, repair);
 			if (emouse_up == emouse_down)
 			{
-				if (tapenemy(emouse_up, buildings, soldiers) == 0)
+				if (tapenemy(emouse_up+dev, buildings, soldiers) == 0)
 				{
 					for (int i = 0; i < enemy_soldiers.size(); ++i)
 					{
@@ -372,7 +372,7 @@ void mymap::net(float delta)
 							enemy_soldiers.at(i)->b_enemy = nullptr;
 						}
 					}
-					Soldier::run(enemy_soldiers, emouse_up + dev + repair);
+					Soldier::run(enemy_soldiers, emouse_up + dev+repair);
 				}
 
 				for (int i = 0; i < soldiers.size(); i++) {
@@ -399,7 +399,7 @@ void mymap::soldierattack(float delta)
 {
 	for (int i = 0; i < soldiers.size(); ++i)
 	{
-		if (soldiers.at(i)->atk == 1 && soldiers.at(i)->b_enemy&&soldiers.at(i)->getPosition().getDistance(soldiers.at(i)->b_enemy->getPosition()) <= 100)
+		if (soldiers.at(i)->atk == 1 && soldiers.at(i)->b_enemy&&soldiers.at(i)->getPosition().getDistance(soldiers.at(i)->b_enemy->getPosition()) <= 150)
 		{
 			Vec2 location = soldiers.at(i)->getPosition();
 			soldiers.at(i)->setVisible(false);
@@ -430,7 +430,7 @@ void mymap::soldierattack(float delta)
 	}
 	for (int i = 0; i < enemy_soldiers.size(); ++i)
 	{
-		if (enemy_soldiers.at(i)->atk == 1 && enemy_soldiers.at(i)->b_enemy&&enemy_soldiers.at(i)->getPosition().getDistance(enemy_soldiers.at(i)->b_enemy->getPosition()) <= 100)
+		if (enemy_soldiers.at(i)->atk == 1 && enemy_soldiers.at(i)->b_enemy&&enemy_soldiers.at(i)->getPosition().getDistance(enemy_soldiers.at(i)->b_enemy->getPosition()) <= 150)
 		{
 			Vec2 location = enemy_soldiers.at(i)->getPosition();
 			enemy_soldiers.at(i)->setVisible(false);
@@ -498,8 +498,6 @@ void mymap::scheduleBlood_enemy(float delta) {
 	for (int i = 0; i<soldiers.size(); i++) {
 		//敌方士兵
 		if (soldiers.at(i)->s_enemy != nullptr) {
-			soldiers.at(i)->s_enemy->blood->setVisible(true);
-			soldiers.at(i)->s_enemy->progress->setVisible(true);
 			if (soldiers.at(i)->getPosition().getDistance(soldiers.at(i)->s_enemy->getPosition()) <= 150) {
 				soldiers.at(i)->stopAllActions();
 				if (soldiers.at(i)->getPosition().x < soldiers.at(i)->s_enemy->getPosition().x)
@@ -512,6 +510,8 @@ void mymap::scheduleBlood_enemy(float delta) {
 				}
 				if (soldiers.at(i)->s_enemy->progress->getPercentage() > 0)
 				{
+					soldiers.at(i)->s_enemy->blood->setVisible(true);
+					soldiers.at(i)->s_enemy->progress->setVisible(true);
 					int prehealth = soldiers.at(i)->s_enemy->health;
 					int nowhealth = prehealth - soldiers.at(i)->atk;
 					soldiers.at(i)->s_enemy->health = nowhealth;
@@ -577,14 +577,13 @@ void mymap::scheduleBlood_enemy(float delta) {
 				}
 			}
 			else {
-				Soldier::run(soldiers, soldiers.at(i)->s_enemy->getPosition());
+				Soldier::run(soldiers, soldiers.at(i)->s_enemy->getPosition()+repair);
 			}
 		}
 
 		//地方建筑
 		if (soldiers.at(i)->b_enemy != nullptr) {
-			soldiers.at(i)->b_enemy->blood->setVisible(true);
-			soldiers.at(i)->b_enemy->progress->setVisible(true);
+			
 			if (soldiers.at(i)->getPosition().getDistance(soldiers.at(i)->b_enemy->getPosition()) <= 100) {
 				soldiers.at(i)->stopAllActions();
 				if (soldiers.at(i)->getPosition().x < soldiers.at(i)->b_enemy->getPosition().x)
@@ -597,7 +596,8 @@ void mymap::scheduleBlood_enemy(float delta) {
 				}
 				if (soldiers.at(i)->b_enemy->progress->getPercentage() > 0)
 				{
-
+					soldiers.at(i)->b_enemy->blood->setVisible(true);
+					soldiers.at(i)->b_enemy->progress->setVisible(true);
 					int prehealth = soldiers.at(i)->b_enemy->building_health;
 					int nowhealth = prehealth - soldiers.at(i)->atk;
 					soldiers.at(i)->b_enemy->building_health = nowhealth;
@@ -645,10 +645,8 @@ void mymap::scheduleBlood_enemy(float delta) {
 						FiniteTimeAction* action2 = CallFunc::create(CC_CALLBACK_0(mymap::ruins, this));
 						ActionInterval*seq = Sequence::create(action1, action2, NULL);
 						soldiers.at(i)->b_enemy->runAction(Sequence::create(seq, NULL));
-						soldiers.at(i)->b_enemy = nullptr;
 						soldiers.at(i)->stopAllActions();
 					}
-
 				}
 				else
 				{
@@ -670,8 +668,7 @@ void mymap::scheduleBlood_mine(float delta) {
 	for (int i = 0; i<enemy_soldiers.size(); i++) {
 		//敌方士兵
 		if (enemy_soldiers.at(i)->s_enemy != nullptr) {
-			enemy_soldiers.at(i)->s_enemy->blood->setVisible(true);
-			enemy_soldiers.at(i)->s_enemy->progress->setVisible(true);
+			
 			if (enemy_soldiers.at(i)->getPosition().getDistance(enemy_soldiers.at(i)->s_enemy->getPosition()) <= 150) {
 				enemy_soldiers.at(i)->stopAllActions();
 				if (enemy_soldiers.at(i)->getPosition().x < enemy_soldiers.at(i)->s_enemy->getPosition().x)
@@ -684,6 +681,8 @@ void mymap::scheduleBlood_mine(float delta) {
 				}
 				if (enemy_soldiers.at(i)->s_enemy->progress->getPercentage() > 0)
 				{
+					enemy_soldiers.at(i)->s_enemy->blood->setVisible(true);
+					enemy_soldiers.at(i)->s_enemy->progress->setVisible(true);
 					int prehealth = enemy_soldiers.at(i)->s_enemy->health;
 					int nowhealth = prehealth - enemy_soldiers.at(i)->atk;
 					enemy_soldiers.at(i)->s_enemy->health = nowhealth;
@@ -758,9 +757,8 @@ void mymap::scheduleBlood_mine(float delta) {
 
 		//地方建筑
 		if (enemy_soldiers.at(i)->b_enemy != nullptr) {
-			enemy_soldiers.at(i)->b_enemy->blood->setVisible(true);
-			enemy_soldiers.at(i)->b_enemy->progress->setVisible(true);
-			if (enemy_soldiers.at(i)->getPosition().getDistance(enemy_soldiers.at(i)->b_enemy->getPosition()) <= 100) {
+			
+			if (enemy_soldiers.at(i)->getPosition().getDistance(enemy_soldiers.at(i)->b_enemy->getPosition()) <= 150) {
 				enemy_soldiers.at(i)->stopAllActions();
 				if (enemy_soldiers.at(i)->getPosition().x < enemy_soldiers.at(i)->b_enemy->getPosition().x)
 				{
@@ -772,7 +770,8 @@ void mymap::scheduleBlood_mine(float delta) {
 				}
 				if (enemy_soldiers.at(i)->b_enemy->progress->getPercentage() > 0)
 				{
-
+					enemy_soldiers.at(i)->b_enemy->blood->setVisible(true);
+					enemy_soldiers.at(i)->b_enemy->progress->setVisible(true);
 					int prehealth = enemy_soldiers.at(i)->b_enemy->building_health;
 					int nowhealth = prehealth - enemy_soldiers.at(i)->atk;
 					enemy_soldiers.at(i)->b_enemy->building_health = nowhealth;
@@ -1023,11 +1022,17 @@ void mymap::onEnter() {
 						SpriteFrame *spriteFrame = SpriteFrameCache::getInstance()->getSpriteFrameByName(frameName->getCString());
 						animation->addSpriteFrame(spriteFrame);
 					}
+				
 					animation->setDelayPerUnit(0.5f);           //设置两个帧播放时间
 					animation->setRestoreOriginalFrame(false);    //动画执行后还原初始状态
 
 					Animate* action = Animate::create(animation);
 					Building->runAction(action);
+				}
+				else
+				{
+					Building->blood->setScale(0.05);
+					Building->progress->setScale(0.05);
 				}
 				moneyenough = false;
 			}

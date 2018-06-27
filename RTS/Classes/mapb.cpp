@@ -494,8 +494,7 @@ void mymapb::scheduleBlood_enemy(float delta) {
 	for (int i = 0; i<soldiers.size(); i++) {
 		//敌方士兵
 		if (soldiers.at(i)->s_enemy != nullptr) {
-			soldiers.at(i)->s_enemy->blood->setVisible(true);
-			soldiers.at(i)->s_enemy->progress->setVisible(true);
+			
 			if (soldiers.at(i)->getPosition().getDistance(soldiers.at(i)->s_enemy->getPosition()) <= 150) {
 				soldiers.at(i)->stopAllActions();
 				if (soldiers.at(i)->getPosition().x < soldiers.at(i)->s_enemy->getPosition().x)
@@ -508,6 +507,8 @@ void mymapb::scheduleBlood_enemy(float delta) {
 				}
 				if (soldiers.at(i)->s_enemy->progress->getPercentage() > 0)
 				{
+					soldiers.at(i)->s_enemy->blood->setVisible(true);
+					soldiers.at(i)->s_enemy->progress->setVisible(true);
 					int prehealth = soldiers.at(i)->s_enemy->health;
 					int nowhealth = prehealth - soldiers.at(i)->atk;
 					soldiers.at(i)->s_enemy->health = nowhealth;
@@ -579,8 +580,7 @@ void mymapb::scheduleBlood_enemy(float delta) {
 
 		//地方建筑
 		if (soldiers.at(i)->b_enemy != nullptr) {
-			soldiers.at(i)->b_enemy->blood->setVisible(true);
-			soldiers.at(i)->b_enemy->progress->setVisible(true);
+			
 			if (soldiers.at(i)->getPosition().getDistance(soldiers.at(i)->b_enemy->getPosition()) <= 100) {
 				soldiers.at(i)->stopAllActions();
 				if (soldiers.at(i)->getPosition().x < soldiers.at(i)->b_enemy->getPosition().x)
@@ -593,7 +593,8 @@ void mymapb::scheduleBlood_enemy(float delta) {
 				}
 				if (soldiers.at(i)->b_enemy->progress->getPercentage() > 0)
 				{
-
+					soldiers.at(i)->b_enemy->blood->setVisible(true);
+					soldiers.at(i)->b_enemy->progress->setVisible(true);
 					int prehealth = soldiers.at(i)->b_enemy->building_health;
 					int nowhealth = prehealth - soldiers.at(i)->atk;
 					soldiers.at(i)->b_enemy->building_health = nowhealth;
@@ -666,8 +667,7 @@ void mymapb::scheduleBlood_mine(float delta) {
 	for (int i = 0; i<enemy_soldiers.size(); i++) {
 		//敌方士兵
 		if (enemy_soldiers.at(i)->s_enemy != nullptr) {
-			enemy_soldiers.at(i)->s_enemy->blood->setVisible(true);
-			enemy_soldiers.at(i)->s_enemy->progress->setVisible(true);
+			
 			if (enemy_soldiers.at(i)->getPosition().getDistance(enemy_soldiers.at(i)->s_enemy->getPosition()) <= 150) {
 				enemy_soldiers.at(i)->stopAllActions();
 				if (enemy_soldiers.at(i)->getPosition().x < enemy_soldiers.at(i)->s_enemy->getPosition().x)
@@ -680,6 +680,8 @@ void mymapb::scheduleBlood_mine(float delta) {
 				}
 				if (enemy_soldiers.at(i)->s_enemy->progress->getPercentage() > 0)
 				{
+					enemy_soldiers.at(i)->s_enemy->blood->setVisible(true);
+					enemy_soldiers.at(i)->s_enemy->progress->setVisible(true);
 					int prehealth = enemy_soldiers.at(i)->s_enemy->health;
 					int nowhealth = prehealth - enemy_soldiers.at(i)->atk;
 					enemy_soldiers.at(i)->s_enemy->health = nowhealth;
@@ -754,8 +756,7 @@ void mymapb::scheduleBlood_mine(float delta) {
 
 		//地方建筑
 		if (enemy_soldiers.at(i)->b_enemy != nullptr) {
-			enemy_soldiers.at(i)->b_enemy->blood->setVisible(true);
-			enemy_soldiers.at(i)->b_enemy->progress->setVisible(true);
+			
 			if (enemy_soldiers.at(i)->getPosition().getDistance(enemy_soldiers.at(i)->b_enemy->getPosition()) <= 100) {
 				enemy_soldiers.at(i)->stopAllActions();
 				if (enemy_soldiers.at(i)->getPosition().x < enemy_soldiers.at(i)->b_enemy->getPosition().x)
@@ -768,7 +769,8 @@ void mymapb::scheduleBlood_mine(float delta) {
 				}
 				if (enemy_soldiers.at(i)->b_enemy->progress->getPercentage() > 0)
 				{
-
+					enemy_soldiers.at(i)->b_enemy->blood->setVisible(true);
+					enemy_soldiers.at(i)->b_enemy->progress->setVisible(true);
 					int prehealth = enemy_soldiers.at(i)->b_enemy->building_health;
 					int nowhealth = prehealth - enemy_soldiers.at(i)->atk;
 					enemy_soldiers.at(i)->b_enemy->building_health = nowhealth;

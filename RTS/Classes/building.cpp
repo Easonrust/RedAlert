@@ -9,8 +9,7 @@ void building::add_blood_bar(building* spr) {
 	spr->progress->setPosition(Vec2(spr->getPositionX(), spr->getPositionY() + 65));
 	spr->progress->setScale(0.2);
 	spr->progress->setPercentage(100);
-	spr->blood->setScale(0.05);
-	spr->progress->setScale(0.05);
+	
 	//从右到左减少血量
 	spr->progress->setMidpoint(Vec2(0, 0.5));     //如果是从左到右的话，改成(1,0.5)即可
 	spr->progress->setBarChangeRate(Vec2(1, 0));
