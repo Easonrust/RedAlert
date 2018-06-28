@@ -34,8 +34,8 @@ bool mymapb::init()
 	base2->setPosition(Vec2(2700, 300));
 	building::add_blood_bar(base2);
 	addChild(base2);
-	addChild(base2->blood);
-	addChild(base2->progress);
+	addChild(base2->blood,2);
+	addChild(base2->progress,3);
 	drawNode = DrawNode::create();
 	this->addChild(drawNode);
 	if (camp[0] == '0')
@@ -1028,7 +1028,7 @@ void mymapb::onEnter() {
 						SpriteFrame *spriteFrame = SpriteFrameCache::getInstance()->getSpriteFrameByName(frameName->getCString());
 						animation->addSpriteFrame(spriteFrame);
 					}
-					animation->setDelayPerUnit(0.5f);           //设置两个帧播放时间
+					animation->setDelayPerUnit(0.08f);           //设置两个帧播放时间
 					animation->setRestoreOriginalFrame(false);    //动画执行后还原初始状态
 
 					Animate* action = Animate::create(animation);

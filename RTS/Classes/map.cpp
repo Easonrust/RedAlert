@@ -33,8 +33,8 @@ bool mymap::init()
 	base1->setPosition(Vec2(400, 300));
 	building::add_blood_bar(base1);
 	addChild(base1);
-	addChild(base1->blood);
-	addChild(base1->progress);
+	addChild(base1->blood,2);
+	addChild(base1->progress,3);
 
 	auto base2 = building::createWithBuildingType(Base);
 	base2->setPosition(Vec2(2700, 1300));
@@ -65,7 +65,6 @@ bool mymap::init()
 	schedule(schedule_selector(mymap::scheduleBlood_enemy), 0.1f);
 	schedule(schedule_selector(mymap::scheduleBlood_mine), 0.1f);
 	schedule(schedule_selector(mymap::soldierattack), 0.1f);
-	//schedule(schedule_selector(mymap::iscollide), 0);
 	schedule(schedule_selector(mymap::net), 0);
 	schedule(schedule_selector(mymap::winlose), 0);
 	return true;
@@ -115,6 +114,7 @@ void mymap::ruins()
 		if (enemy_buildings.at(i)->progress->getPercentage() <= 0)
 		{
 			enemy_buildings.at(i)->stopAllActions();
+			
 			this->removeChild(enemy_buildings.at(i));
 			this->removeChild(enemy_buildings.at(i)->progress);
 			this->removeChild(enemy_buildings.at(i)->blood);
@@ -590,7 +590,7 @@ void mymap::scheduleBlood_enemy(float delta) {
 		//地方建筑
 		if (soldiers.at(i)->b_enemy != nullptr) {
 			
-			if (soldiers.at(i)->getPosition().getDistance(soldiers.at(i)->b_enemy->getPosition()) <= 100) {
+			if (soldiers.at(i)->getPosition().getDistance(soldiers.at(i)->b_enemy->getPosition()) <= 150) {
 				soldiers.at(i)->stopAllActions();
 				if (soldiers.at(i)->getPosition().x < soldiers.at(i)->b_enemy->getPosition().x)
 				{
@@ -1031,7 +1031,7 @@ void mymap::onEnter() {
 						animation->addSpriteFrame(spriteFrame);
 					}
 				
-					animation->setDelayPerUnit(0.5f);           //设置两个帧播放时间
+					animation->setDelayPerUnit(0.08f);           //设置两个帧播放时间
 					animation->setRestoreOriginalFrame(false);    //动画执行后还原初始状态
 
 					Animate* action = Animate::create(animation);
