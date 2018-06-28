@@ -182,7 +182,7 @@ void button::schedulebutton(float delta)
 {
 	//barrack
 	this->removeChildByTag(BARRACKBUTTONTAG);
-	if (money < 1000 || !base_num || !epower_num)
+	if (money < 1000 || !base_num || !epower_num||power<100)
 	{
 		barrackbutton = Sprite::create("barrackbuttoncannot.png");
 	}
@@ -194,7 +194,7 @@ void button::schedulebutton(float delta)
 	addChild(barrackbutton, 1, BARRACKBUTTONTAG);
 	//mine
 	this->removeChildByTag(MINEBUTTONTAG);
-	if (money < 2500 || !base_num || !epower_num )
+	if (money < 2500 || !base_num || !epower_num|| power < 150)
 	{
 		minebutton = Sprite::create("minebuttoncannot.png");
 	}
@@ -230,7 +230,7 @@ void button::schedulebutton(float delta)
 	addChild(carincbutton, 1, CARINCBUTTONTAG);
 	//soldier
 	this->removeChildByTag(SOLDIERBUTTONTAG);
-	if (money <= 100 || !barrack_num)
+	if (money <100 ||!barrack_num)
 	{
 		soldierbutton = Sprite::create("soldierbuttoncannot.png");
 	}
@@ -242,7 +242,7 @@ void button::schedulebutton(float delta)
 	addChild(soldierbutton, 1, SOLDIERBUTTONTAG);
 	//tank
 	this->removeChildByTag(TANKBUTTONTAG);
-	if (money <= 800 || !carinc_num)
+	if (money < 800 || !carinc_num)
 	{
 		tankbutton = Sprite::create("tankbuttoncannot.png");
 	}
@@ -253,7 +253,7 @@ void button::schedulebutton(float delta)
 	tankbutton->setPosition(Vec2(1300, 27));
 	addChild(tankbutton, 1, TANKBUTTONTAG);
 	this->removeChildByTag(ROBOTBUTTONTAG);
-	if (money <= 300 || !carinc_num)
+	if (money <300 || !carinc_num)
 	{
 		robotbutton = Sprite::create("robotbuttoncannot.png");
 	}
@@ -264,7 +264,7 @@ void button::schedulebutton(float delta)
 	robotbutton->setPosition(Vec2(1100, 27));
 	addChild(robotbutton, 1, ROBOTBUTTONTAG);
 	this->removeChildByTag(WALLBUTTONTAG);
-	if (money <= 400 || !base_num)
+	if (money <= 400 ||!base_num)
 	{
 		wallbutton = Sprite::create("wallbuttoncannot.png");
 	}

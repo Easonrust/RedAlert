@@ -7,6 +7,7 @@
 #include"Soldier.h"
 #include "SimpleAudioEngine.h"
 #include "SystemHeader.h"
+using namespace CocosDenshion;
 USING_NS_CC;
 class mymap : public Layer
 {

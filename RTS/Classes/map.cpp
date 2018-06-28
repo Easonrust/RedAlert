@@ -10,6 +10,7 @@ extern bool connectornot;
 extern char camp[1];
 bool mymap::init()
 {
+	SimpleAudioEngine::getInstance()->stopBackgroundMusic("sound/Lose.mp3");
 	if (!Layer::init())
 	{
 		return false;
@@ -77,19 +78,23 @@ void mymap::winlose(float delta)
 	enemy_number = enemy_soldiers.size() + enemy_buildings.size();
 	if (mynumber == 0)
 	{
+		removeChildByTag(200);
 		String*swin = String::createWithFormat("you lose");
 		Label*lwin = Label::createWithTTF(swin->getCString(), "fonts/Marker Felt.ttf", 60);
 		lwin->setColor(Color3B::RED);
 		lwin->setPosition(800 + repair.x, 450 + repair.y);
 		addChild(lwin, 5);
+		lwin->setTag(200);
 	}
 	if (enemy_number == 0)
 	{
+		removeChildByTag(100);
 		String*slose = String::createWithFormat("you win");
 		Label*llose = Label::createWithTTF(slose->getCString(), "fonts/Marker Felt.ttf", 60);
 		llose->setColor(Color3B::YELLOW);
 		llose->setPosition(800 + repair.x, 450 + repair.y);
 		addChild(llose, 5);
+		llose->setTag(100);
 	}
 }
 bool mymap::isTap(cocos2d::Vec2 location, cocos2d::Node*node)//判断是否点中精灵的函数,辅助
@@ -567,6 +572,7 @@ void mymap::scheduleBlood_enemy(float delta) {
 						}
 						soldiers.at(i)->s_enemy = nullptr;
 						soldiers.at(i)->stopAllActions();
+						soldiers.at(i)->s_enemy = nullptr;
 
 					}
 				}
@@ -646,6 +652,7 @@ void mymap::scheduleBlood_enemy(float delta) {
 						ActionInterval*seq = Sequence::create(action1, action2, NULL);
 						soldiers.at(i)->b_enemy->runAction(Sequence::create(seq, NULL));
 						soldiers.at(i)->stopAllActions();
+						soldiers.at(i)->b_enemy = nullptr;
 					}
 				}
 				else
@@ -870,23 +877,23 @@ void mymap::onEnter() {
 		auto visize = Director::getInstance()->getVisibleSize();
 		if (mouse_move.y >= 880 && pos1.y > -700)
 		{
-			Action*actionup = this->runAction(MoveTo::create((pos1.y + 700) / 10, Vec2(pos1.x, -700)));
+			Action*actionup = this->runAction(MoveTo::create((pos1.y + 700) / 20, Vec2(pos1.x, -700)));
 			actionup->setTag(1);
 		}
 		if (mouse_move.y <= 20 && pos1.y < 0)
 		{
 			//this->stopAllActions();
-			Action*actiondown = this->runAction(MoveTo::create(-pos1.y / 10, Vec2(pos1.x, 0)));
+			Action*actiondown = this->runAction(MoveTo::create(-pos1.y / 20, Vec2(pos1.x, 0)));
 			actiondown->setTag(2);
 		}
 		else if (mouse_move.x <= 20 && pos1.x < 0)
 		{
-			Action*actionleft = this->runAction(MoveTo::create(-pos1.x / 10, Vec2(0, pos1.y)));
+			Action*actionleft = this->runAction(MoveTo::create(-pos1.x / 20, Vec2(0, pos1.y)));
 			actionleft->setTag(3);
 		}
 		else if (mouse_move.x >= 1580 && pos1.x > -1600)
 		{
-			Action*actionright = this->runAction(MoveTo::create((pos1.x + 1600) / 10, Vec2(-1600, pos1.y)));
+			Action*actionright = this->runAction(MoveTo::create((pos1.x + 1600) / 20, Vec2(-1600, pos1.y)));
 			actionright->setTag(4);
 		}
 		pos1 = this->getPosition();
@@ -911,6 +918,7 @@ void mymap::onEnter() {
 			repair = originmap - pos1;
 		}
 	};
+
 	listener->onMouseUp = [this](Event *e) {
 		ismousedown = 0;
 		int right = 0;
