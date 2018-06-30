@@ -1,4 +1,5 @@
 #include "client.h"
+#include"iostream"
 #include"json\json.h"
 //±äÁ¿
  SOCKET	sClient;							//Ì×½Ó×Ö

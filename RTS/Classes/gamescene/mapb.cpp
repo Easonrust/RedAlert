@@ -326,7 +326,7 @@ void mymapb::net(float delta)
 					{
 						buttonlayer->enemy_money -= 2500;
 						buttonlayer->enemy_mine_num += 1;
-						buttonlayer->enemy_power -= 250;
+						buttonlayer->enemy_power -= 150;
 					}
 					else if (buttonlayer->enemy_buildchoice == 2 && buttonlayer->enemy_money >= 1000 && buttonlayer->enemy_power >= 100 && buttonlayer->enemy_base_num &&buttonlayer->enemy_epower_num)
 					{
@@ -1028,7 +1028,7 @@ void mymapb::onEnter() {
 						SpriteFrame *spriteFrame = SpriteFrameCache::getInstance()->getSpriteFrameByName(frameName->getCString());
 						animation->addSpriteFrame(spriteFrame);
 					}
-					animation->setDelayPerUnit(0.5f);           //设置两个帧播放时间
+					animation->setDelayPerUnit(0.08f);           //设置两个帧播放时间
 					animation->setRestoreOriginalFrame(false);    //动画执行后还原初始状态
 
 					Animate* action = Animate::create(animation);

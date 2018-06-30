@@ -33,15 +33,15 @@ bool mymap::init()
 	base1->setPosition(Vec2(400, 300));
 	building::add_blood_bar(base1);
 	addChild(base1);
-	addChild(base1->blood);
-	addChild(base1->progress);
+	addChild(base1->blood,2);
+	addChild(base1->progress,3);
 
 	auto base2 = building::createWithBuildingType(Base);
 	base2->setPosition(Vec2(2700, 1300));
 	building::add_blood_bar(base2);
 	addChild(base2);
-	addChild(base2->blood);
-	addChild(base2->progress);
+	addChild(base2->blood,2);
+	addChild(base2->progress,3);
 	drawNode = DrawNode::create();
 	this->addChild(drawNode);
 	if (camp[0] == '0')
@@ -118,7 +118,7 @@ void mymap::ruins()
 			this->removeChild(enemy_buildings.at(i));
 			this->removeChild(enemy_buildings.at(i)->progress);
 			this->removeChild(enemy_buildings.at(i)->blood);
-			enemy_buildings.eraseObject(enemy_buildings.at(i));
+			//enemy_buildings.eraseObject(enemy_buildings.at(i));
 		}
 	}
 	for (int i = 0; i < enemy_soldiers.size(); ++i)
@@ -331,7 +331,7 @@ void mymap::net(float delta)
 					{
 						buttonlayer->enemy_money -= 2500;
 						buttonlayer->enemy_mine_num += 1;
-						buttonlayer->enemy_power -= 250;
+						buttonlayer->enemy_power -= 150;
 					}
 					else if (buttonlayer->enemy_buildchoice == 2 && buttonlayer->enemy_money >= 1000 && buttonlayer->enemy_power >= 100 && buttonlayer->enemy_base_num &&buttonlayer->enemy_epower_num)
 					{
@@ -877,23 +877,23 @@ void mymap::onEnter() {
 		auto visize = Director::getInstance()->getVisibleSize();
 		if (mouse_move.y >= 880 && pos1.y > -700)
 		{
-			Action*actionup = this->runAction(MoveTo::create((pos1.y + 700) / 20, Vec2(pos1.x, -700)));
+			Action*actionup = this->runAction(MoveTo::create((pos1.y + 700) / 10, Vec2(pos1.x, -700)));
 			actionup->setTag(1);
 		}
 		if (mouse_move.y <= 20 && pos1.y < 0)
 		{
 			//this->stopAllActions();
-			Action*actiondown = this->runAction(MoveTo::create(-pos1.y / 20, Vec2(pos1.x, 0)));
+			Action*actiondown = this->runAction(MoveTo::create(-pos1.y / 10, Vec2(pos1.x, 0)));
 			actiondown->setTag(2);
 		}
 		else if (mouse_move.x <= 20 && pos1.x < 0)
 		{
-			Action*actionleft = this->runAction(MoveTo::create(-pos1.x / 20, Vec2(0, pos1.y)));
+			Action*actionleft = this->runAction(MoveTo::create(-pos1.x / 10, Vec2(0, pos1.y)));
 			actionleft->setTag(3);
 		}
 		else if (mouse_move.x >= 1580 && pos1.x > -1600)
 		{
-			Action*actionright = this->runAction(MoveTo::create((pos1.x + 1600) / 20, Vec2(-1600, pos1.y)));
+			Action*actionright = this->runAction(MoveTo::create((pos1.x + 1600) / 10, Vec2(-1600, pos1.y)));
 			actionright->setTag(4);
 		}
 		pos1 = this->getPosition();
