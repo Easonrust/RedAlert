@@ -34,8 +34,8 @@ bool mymapb::init()
 	base2->setPosition(Vec2(2700, 300));
 	building::add_blood_bar(base2);
 	addChild(base2);
-	addChild(base2->blood);
-	addChild(base2->progress);
+	addChild(base2->blood,2);
+	addChild(base2->progress,3);
 	drawNode = DrawNode::create();
 	this->addChild(drawNode);
 	if (camp[0] == '0')
